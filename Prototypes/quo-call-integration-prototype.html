@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DripJobs - Quo Call Integration Prototype</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f0f5;
+            color: #111827;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* ─── Prototype Header ─── */
+        .proto-header {
+            text-align: center;
+            margin-bottom: 20px;
+            max-width: 900px;
+        }
+        .proto-header h1 { font-size: 22px; font-weight: 700; color: #111827; }
+        .proto-header p { font-size: 13px; color: #6B7280; margin-top: 4px; }
+
+        /* ─── Screen Nav ─── */
+        .screen-nav {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+        .screen-nav button {
+            padding: 8px 18px;
+            border: 2px solid #e5e7eb;
+            background: #fff;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .screen-nav button:hover { border-color: #7C3AED; color: #7C3AED; }
+        .screen-nav button.active {
+            background: #7C3AED;
+            color: #fff;
+            border-color: #7C3AED;
+        }
+
+        /* ─── Phone Frame ─── */
+        .phone-frame {
+            width: 390px;
+            min-height: 780px;
+            background: #fff;
+            border-radius: 40px;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 0 0 2px #1e1b2e;
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            position: relative;
+        }
+        .phone-frame.active { display: flex; }
+
+        /* ─── Status Bar ─── */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #fff;
+        }
+        .status-bar .time { font-size: 14px; font-weight: 700; }
+        .status-bar .icons { display: flex; gap: 5px; align-items: center; }
+        .status-bar .icons span { font-size: 13px; }
+
+        /* ─── App Header ─── */
+        .app-header {
+            background: #f5a623;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .app-header .back-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .app-header h2 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #fff;
+            flex: 1;
+        }
+        .app-header .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        .app-header .header-actions button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* ─── Sub Tabs ─── */
+        .sub-tabs {
+            display: flex;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .sub-tabs button {
+            flex: 1;
+            padding: 10px 8px;
+            border: none;
+            background: none;
+            font-size: 12px;
+            font-weight: 600;
+            color: #9ca3af;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .sub-tabs button.active {
+            color: #7C3AED;
+            border-bottom-color: #7C3AED;
+        }
+        .sub-tabs button:hover { color: #7C3AED; }
+
+        /* ─── Scrollable Content ─── */
+        .scroll-content {
+            flex: 1;
+            overflow-y: auto;
+            background: #f9fafb;
+        }
+
+        /* ─── Customer Info Bar ─── */
+        .customer-bar {
+            background: #fff;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .customer-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7C3AED, #a78bfa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .customer-info h3 { font-size: 15px; font-weight: 700; color: #111827; }
+        .customer-info p { font-size: 12px; color: #6B7280; margin-top: 1px; }
+
+        /* ─── Note Item ─── */
+        .note-item {
+            background: #fff;
+            margin: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+        .note-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .note-item.quo-call { border-left: 3px solid #3b82f6; }
+        .note-item.manual-note { border-left: 3px solid #10b981; }
+        .note-item.system-note { border-left: 3px solid #9ca3af; }
+
+        .note-header {
+            padding: 10px 14px 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .note-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        .note-icon.call { background: #eff6ff; color: #3b82f6; }
+        .note-icon.manual { background: #ecfdf5; color: #10b981; }
+        .note-icon.system { background: #f3f4f6; color: #6B7280; }
+
+        .note-meta {
+            flex: 1;
+        }
+        .note-meta .note-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .note-meta .note-time {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 1px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 7px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .badge-quo { background: #eff6ff; color: #2563eb; }
+        .badge-inbound { background: #ecfdf5; color: #059669; }
+        .badge-outbound { background: #fef3c7; color: #d97706; }
+        .badge-missed { background: #fef2f2; color: #dc2626; }
+        .badge-ai { background: #f5f3ff; color: #7C3AED; }
+
+        .note-preview {
+            padding: 4px 14px 10px;
+            font-size: 12px;
+            color: #6B7280;
+            line-height: 1.5;
+        }
+        .note-preview .summary-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .note-footer {
+            padding: 6px 14px 10px;
+            display: flex;
+            gap: 12px;
+            font-size: 11px;
+            color: #9ca3af;
+        }
+        .note-footer span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ─── Full Note Modal / Detail View ─── */
+        .detail-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #fff;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+        }
+        .detail-overlay.active { display: flex; }
+
+        .detail-header {
+            background: #f5a623;
+            padding: 0;
+        }
+        .detail-header .status-bar { background: #f5a623; color: #fff; }
+        .detail-header .status-bar .time,
+        .detail-header .status-bar .icons span { color: #fff; }
+        .detail-header .bar {
+            padding: 10px 16px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .detail-header .bar button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .detail-header .bar h2 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .detail-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .call-card {
+            background: #fff;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+        .call-card-header {
+            background: linear-gradient(135deg, #eff6ff, #f5f3ff);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .call-card-icon {
+            width: 48px;
+            height: 48px;
+            background: #3b82f6;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #fff;
+        }
+        .call-card-title h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .call-card-title p {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 2px;
+        }
+
+        .call-meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: #e5e7eb;
+            border-top: 1px solid #e5e7eb;
+        }
+        .call-meta-item {
+            background: #fff;
+            padding: 10px 16px;
+        }
+        .call-meta-item .label {
+            font-size: 10px;
+            font-weight: 600;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .call-meta-item .value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            margin-top: 2px;
+        }
+
+        .recording-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 12px 16px;
+            padding: 10px 14px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .recording-btn:hover { background: #dbeafe; }
+        .recording-btn .play-icon {
+            width: 32px;
+            height: 32px;
+            background: #3b82f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+        }
+        .recording-btn .rec-info {
+            flex: 1;
+        }
+        .recording-btn .rec-info .rec-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1d4ed8;
+        }
+        .recording-btn .rec-info .rec-duration {
+            font-size: 11px;
+            color: #6B7280;
+        }
+
+        /* Audio Player */
+        .audio-player {
+            display: none;
+            margin: 0 16px 12px;
+            padding: 12px 14px;
+            background: #1e1b2e;
+            border-radius: 10px;
+        }
+        .audio-player.active { display: block; }
+        .audio-waveform {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .audio-waveform .pause-btn {
+            width: 28px;
+            height: 28px;
+            background: #7C3AED;
+            border: none;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .waveform-bars {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 24px;
+        }
+        .waveform-bars .bar {
+            flex: 1;
+            background: #4a3f6b;
+            border-radius: 2px;
+            transition: background 0.2s;
+        }
+        .waveform-bars .bar.played { background: #7C3AED; }
+        .audio-time {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #a5a0c0;
+        }
+
+        /* ─── AI Summary Section ─── */
+        .ai-summary-section {
+            margin-top: 16px;
+        }
+        .ai-summary-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #7C3AED;
+            margin-bottom: 10px;
+        }
+        .ai-summary-label .sparkle { font-size: 14px; }
+
+        .ai-summary-card {
+            background: #faf8ff;
+            border: 1px solid #e9e3ff;
+            border-radius: 10px;
+            padding: 14px;
+        }
+        .ai-summary-card .summary-text {
+            font-size: 13px;
+            color: #374151;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .key-points-section {
+            margin-top: 10px;
+        }
+        .key-points-section h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 6px;
+        }
+        .key-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            font-size: 12px;
+            color: #374151;
+            line-height: 1.5;
+            margin-bottom: 4px;
+        }
+        .key-point .bullet {
+            color: #7C3AED;
+            font-weight: 700;
+            margin-top: 1px;
+        }
+
+        .action-items-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e9e3ff;
+        }
+        .action-items-section h4 {
+            font-size: 12px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 6px;
+        }
+        .action-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 12px;
+            color: #374151;
+            line-height: 1.5;
+            margin-bottom: 6px;
+            cursor: pointer;
+        }
+        .action-item input[type="checkbox"] {
+            accent-color: #7C3AED;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        .source-label {
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px solid #e5e7eb;
+            font-size: 11px;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ─── Toast / Notification ─── */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e1b2e;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 9999;
+            white-space: nowrap;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ─── Settings Screen ─── */
+        .settings-section {
+            padding: 16px;
+        }
+        .settings-group {
+            margin-bottom: 20px;
+        }
+        .settings-group-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 0 4px 8px;
+        }
+        .settings-card {
+            background: #fff;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+        .setting-row {
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-row .setting-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .setting-row .setting-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .setting-row .setting-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: #111827;
+        }
+        .setting-row .setting-desc {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 1px;
+        }
+
+        /* Toggle Switch */
+        .toggle {
+            width: 44px;
+            height: 24px;
+            background: #d1d5db;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .toggle.on { background: #7C3AED; }
+        .toggle .toggle-knob {
+            width: 20px;
+            height: 20px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+        .toggle.on .toggle-knob { left: 22px; }
+
+        .chevron-right {
+            color: #d1d5db;
+            font-size: 14px;
+        }
+
+        /* ─── Connection Status ─── */
+        .connection-status {
+            margin: 16px;
+            padding: 14px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .connection-status.disconnected {
+            background: #fef2f2;
+            border-color: #fecaca;
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981;
+            flex-shrink: 0;
+        }
+        .connection-status.disconnected .status-dot { background: #ef4444; }
+        .status-text { font-size: 13px; font-weight: 600; color: #065f46; }
+        .connection-status.disconnected .status-text { color: #991b1b; }
+        .status-detail { font-size: 11px; color: #6B7280; margin-top: 1px; }
+
+        /* ─── Admin Unmatched Calls ─── */
+        .unmatched-header {
+            padding: 16px;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .unmatched-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .unmatched-header p {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 2px;
+        }
+        .unmatched-count {
+            display: inline-flex;
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+
+        .unmatched-card {
+            background: #fff;
+            margin: 8px 12px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            padding: 12px 14px;
+        }
+        .unmatched-card .uc-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .unmatched-card .uc-phone {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .unmatched-card .uc-time {
+            font-size: 11px;
+            color: #9ca3af;
+        }
+        .unmatched-card .uc-details {
+            display: flex;
+            gap: 12px;
+            margin-top: 6px;
+            font-size: 12px;
+            color: #6B7280;
+        }
+        .unmatched-card .uc-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: 0.15s;
+        }
+        .btn-primary { background: #7C3AED; color: #fff; }
+        .btn-primary:hover { background: #6D28D9; }
+        .btn-secondary { background: #f3f4f6; color: #374151; }
+        .btn-secondary:hover { background: #e5e7eb; }
+        .btn-outline-danger {
+            background: transparent;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+        .btn-outline-danger:hover { background: #fef2f2; }
+
+        /* ─── Match Modal ─── */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-sheet {
+            background: #fff;
+            border-radius: 16px 16px 0 0;
+            width: 100%;
+            max-height: 70%;
+            overflow-y: auto;
+            padding: 20px 16px 32px;
+            animation: slideUp 0.25s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+        .modal-sheet .drag-handle {
+            width: 36px;
+            height: 4px;
+            background: #d1d5db;
+            border-radius: 2px;
+            margin: 0 auto 16px;
+        }
+        .modal-sheet h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+        .modal-sheet .modal-desc {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 14px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 10px 12px 10px 36px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #f9fafb url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%239ca3af' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E") 12px center no-repeat;
+            margin-bottom: 10px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .search-input:focus { border-color: #7C3AED; box-shadow: 0 0 0 3px rgba(124,58,237,0.1); }
+
+        .customer-match-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .customer-match-option:hover { background: #f5f3ff; }
+        .customer-match-option .cm-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7C3AED, #a78bfa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+        .customer-match-option .cm-info h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #111827;
+        }
+        .customer-match-option .cm-info p {
+            font-size: 11px;
+            color: #6B7280;
+        }
+
+        /* ─── Incoming Call Notification ─── */
+        .call-notification {
+            position: absolute;
+            top: 60px;
+            left: 16px;
+            right: 16px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+            padding: 14px;
+            z-index: 300;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+        .call-notification.show { display: block; }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .cn-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .cn-top .cn-icon {
+            width: 40px;
+            height: 40px;
+            background: #10b981;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #fff;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .cn-top .cn-text h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .cn-top .cn-text p {
+            font-size: 12px;
+            color: #6B7280;
+        }
+        .cn-progress {
+            height: 3px;
+            background: #e5e7eb;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .cn-progress .cn-progress-bar {
+            height: 100%;
+            background: #7C3AED;
+            border-radius: 2px;
+            width: 0%;
+            animation: progressFill 3s linear forwards;
+        }
+        @keyframes progressFill {
+            to { width: 100%; }
+        }
+        .cn-message {
+            font-size: 12px;
+            color: #6B7280;
+            text-align: center;
+        }
+
+        /* ─── Stats Bar ─── */
+        .stats-bar {
+            display: flex;
+            gap: 1px;
+            background: #e5e7eb;
+            margin: 12px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .stat-item {
+            flex: 1;
+            background: #fff;
+            padding: 10px 8px;
+            text-align: center;
+        }
+        .stat-item:first-child { border-radius: 10px 0 0 10px; }
+        .stat-item:last-child { border-radius: 0 10px 10px 0; }
+        .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .stat-label {
+            font-size: 10px;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* ─── Empty / Processing State ─── */
+        .processing-note {
+            background: #fff;
+            margin: 8px 12px;
+            border-radius: 10px;
+            border: 1px dashed #d1d5db;
+            padding: 14px;
+            text-align: center;
+        }
+        .processing-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e5e7eb;
+            border-top-color: #7C3AED;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 6px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .processing-note p {
+            font-size: 12px;
+            color: #9ca3af;
+        }
+
+        /* ─── Bottom Nav ─── */
+        .bottom-nav {
+            display: flex;
+            background: #fff;
+            border-top: 1px solid #e5e7eb;
+            padding: 6px 0 20px;
+        }
+        .bottom-nav .nav-item {
+            flex: 1;
+            text-align: center;
+            padding: 6px 0;
+            cursor: pointer;
+        }
+        .bottom-nav .nav-item .nav-icon {
+            font-size: 20px;
+            color: #9ca3af;
+            margin-bottom: 2px;
+        }
+        .bottom-nav .nav-item .nav-label {
+            font-size: 10px;
+            color: #9ca3af;
+            font-weight: 600;
+        }
+        .bottom-nav .nav-item.active .nav-icon,
+        .bottom-nav .nav-item.active .nav-label { color: #7C3AED; }
+
+        /* ─── Sentiment Indicator ─── */
+        .sentiment {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+        .sentiment.positive { background: #ecfdf5; color: #059669; }
+        .sentiment.neutral { background: #f3f4f6; color: #6B7280; }
+        .sentiment.negative { background: #fef2f2; color: #dc2626; }
+
+        /* ─── Dual Phone Layout ─── */
+        .dual-phone {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .phone-label {
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        /* ─── Filter Chips ─── */
+        .filter-chips {
+            display: flex;
+            gap: 6px;
+            padding: 10px 12px;
+            overflow-x: auto;
+            background: #fff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .filter-chip {
+            padding: 5px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #6B7280;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.15s;
+            background: #fff;
+        }
+        .filter-chip:hover { border-color: #7C3AED; color: #7C3AED; }
+        .filter-chip.active { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 480px) {
+            body { padding: 10px; }
+            .phone-frame { width: 100%; border-radius: 0; min-height: 100vh; }
+        }
+    </style>
+</head>
+<body>
+    <div class="proto-header">
+        <h1>Quo Call Integration - DripJobs Prototype</h1>
+        <p>Clickable prototype showing auto-saved call history & AI summaries in customer notes</p>
+    </div>
+
+    <div class="screen-nav">
+        <button class="active" onclick="showScreen('notes')">Customer Notes</button>
+        <button onclick="showScreen('detail')">Call Detail</button>
+        <button onclick="showScreen('notification')">Live Sync</button>
+        <button onclick="showScreen('settings')">Quo Settings</button>
+        <button onclick="showScreen('unmatched')">Unmatched Calls</button>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  SCREEN 1: Customer Notes Timeline             -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="phone-frame active" id="screen-notes">
+        <div class="status-bar">
+            <span class="time">9:41</span>
+            <div class="icons">
+                <span>&#9679;&#9679;&#9679;&#9679;&#9675;</span>
+                <span>&#128267;</span>
+            </div>
+        </div>
+        <div class="app-header">
+            <button class="back-btn">&#8249;</button>
+            <h2>Sarah Mitchell</h2>
+            <div class="header-actions">
+                <button>&#9743;</button>
+                <button>&#8943;</button>
+            </div>
+        </div>
+        <div class="sub-tabs">
+            <button>Details</button>
+            <button>Estimate</button>
+            <button>Invoice</button>
+            <button class="active">Notes</button>
+            <button>Photos</button>
+        </div>
+        <div class="customer-bar">
+            <div class="customer-avatar">SM</div>
+            <div class="customer-info">
+                <h3>Kitchen Remodel - Phase 2</h3>
+                <p>(352) 555-0187 &bull; Ocala, FL</p>
+            </div>
+        </div>
+
+        <div class="filter-chips">
+            <div class="filter-chip active">All Notes</div>
+            <div class="filter-chip" onclick="filterCalls(this)">&#128222; Quo Calls</div>
+            <div class="filter-chip">&#9997; Manual</div>
+            <div class="filter-chip">&#9881; System</div>
+        </div>
+
+        <div class="scroll-content" style="padding-bottom: 80px;">
+            <!-- Processing Note (most recent) -->
+            <div class="processing-note">
+                <div class="processing-spinner"></div>
+                <p>Call summary being generated by Quo AI...</p>
+                <p style="font-size:11px; margin-top:4px; color:#b0adc0;">Call ended 30 seconds ago &bull; 4m 12s</p>
+            </div>
+
+            <!-- Quo Call Note 1 -->
+            <div class="note-item quo-call" onclick="showScreen('detail')">
+                <div class="note-header">
+                    <div class="note-icon call">&#128222;</div>
+                    <div class="note-meta">
+                        <div class="note-title">
+                            Phone Call
+                            <span class="badge badge-quo">Via Quo</span>
+                            <span class="badge badge-outbound">Outbound</span>
+                        </div>
+                        <div class="note-time">Today at 2:15 PM &bull; 8m 34s</div>
+                    </div>
+                    <span class="sentiment positive">&#128578; Positive</span>
+                </div>
+                <div class="note-preview">
+                    <div class="summary-text">Discussed cabinet delivery timeline. Customer confirmed preference for white shaker style. Agreed to schedule installation for next Tuesday morning.</div>
+                </div>
+                <div class="note-footer">
+                    <span>&#129302; AI Summary</span>
+                    <span>&#127908; Recording</span>
+                    <span>&#128100; Mike T.</span>
+                </div>
+            </div>
+
+            <!-- Quo Call Note 2 -->
+            <div class="note-item quo-call" onclick="showScreen('detail')">
+                <div class="note-header">
+                    <div class="note-icon call">&#128222;</div>
+                    <div class="note-meta">
+                        <div class="note-title">
+                            Phone Call
+                            <span class="badge badge-quo">Via Quo</span>
+                            <span class="badge badge-inbound">Inbound</span>
+                        </div>
+                        <div class="note-time">Yesterday at 10:42 AM &bull; 3m 15s</div>
+                    </div>
+                    <span class="sentiment positive">&#128578; Positive</span>
+                </div>
+                <div class="note-preview">
+                    <div class="summary-text">Customer called about countertop material samples. Requesting granite samples in "River White" and "Colonial White". Wants to compare before final decision.</div>
+                </div>
+                <div class="note-footer">
+                    <span>&#129302; AI Summary</span>
+                    <span>&#127908; Recording</span>
+                    <span>&#128100; Mike T.</span>
+                </div>
+            </div>
+
+            <!-- Manual Note -->
+            <div class="note-item manual-note">
+                <div class="note-header">
+                    <div class="note-icon manual">&#9997;</div>
+                    <div class="note-meta">
+                        <div class="note-title">Site Visit Note</div>
+                        <div class="note-time">Feb 16 at 4:30 PM</div>
+                    </div>
+                </div>
+                <div class="note-preview">
+                    <div class="summary-text">Completed measurements for upper cabinets. Ceiling height is 9ft. Need to order 42" uppers instead of standard 36". Updated estimate accordingly.</div>
+                </div>
+                <div class="note-footer">
+                    <span>&#128100; Mike T.</span>
+                </div>
+            </div>
+
+            <!-- Quo Call Note 3 - Missed -->
+            <div class="note-item quo-call">
+                <div class="note-header">
+                    <div class="note-icon call">&#128222;</div>
+                    <div class="note-meta">
+                        <div class="note-title">
+                            Missed Call
+                            <span class="badge badge-quo">Via Quo</span>
+                            <span class="badge badge-missed">Missed</span>
+                        </div>
+                        <div class="note-time">Feb 15 at 9:15 AM &bull; No answer</div>
+                    </div>
+                </div>
+                <div class="note-preview">
+                    <div class="summary-text">Inbound call from (352) 555-0187 - No answer. No voicemail left.</div>
+                </div>
+                <div class="note-footer">
+                    <span>&#128100; Mike T.</span>
+                </div>
+            </div>
+
+            <!-- Quo Call Note 4 -->
+            <div class="note-item quo-call" onclick="showScreen('detail')">
+                <div class="note-header">
+                    <div class="note-icon call">&#128222;</div>
+                    <div class="note-meta">
+                        <div class="note-title">
+                            Phone Call
+                            <span class="badge badge-quo">Via Quo</span>
+                            <span class="badge badge-outbound">Outbound</span>
+                        </div>
+                        <div class="note-time">Feb 14 at 11:20 AM &bull; 12m 47s</div>
+                    </div>
+                    <span class="sentiment neutral">&#128528; Neutral</span>
+                </div>
+                <div class="note-preview">
+                    <div class="summary-text">Initial project discussion. Reviewed scope of kitchen remodel including cabinet replacement, countertops, backsplash, and flooring. Customer requesting estimate by end of week.</div>
+                </div>
+                <div class="note-footer">
+                    <span>&#129302; AI Summary</span>
+                    <span>&#127908; Recording</span>
+                    <span>&#128100; Mike T.</span>
+                </div>
+            </div>
+
+            <!-- System Note -->
+            <div class="note-item system-note">
+                <div class="note-header">
+                    <div class="note-icon system">&#9881;</div>
+                    <div class="note-meta">
+                        <div class="note-title">Deal Created</div>
+                        <div class="note-time">Feb 13 at 3:00 PM</div>
+                    </div>
+                </div>
+                <div class="note-preview">
+                    <div class="summary-text">Deal "Kitchen Remodel - Phase 2" created and assigned to Mike T.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item"><div class="nav-icon">&#127968;</div><div class="nav-label">Home</div></div>
+            <div class="nav-item"><div class="nav-icon">&#128188;</div><div class="nav-label">Deals</div></div>
+            <div class="nav-item active"><div class="nav-icon">&#128203;</div><div class="nav-label">Jobs</div></div>
+            <div class="nav-item"><div class="nav-icon">&#128197;</div><div class="nav-label">Calendar</div></div>
+            <div class="nav-item"><div class="nav-icon">&#9881;</div><div class="nav-label">More</div></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  SCREEN 2: Call Detail View                    -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="phone-frame" id="screen-detail">
+        <div class="status-bar">
+            <span class="time">9:41</span>
+            <div class="icons">
+                <span>&#9679;&#9679;&#9679;&#9679;&#9675;</span>
+                <span>&#128267;</span>
+            </div>
+        </div>
+        <div class="app-header">
+            <button class="back-btn" onclick="showScreen('notes')">&#8249;</button>
+            <h2>Call Details</h2>
+            <div class="header-actions">
+                <button>&#8943;</button>
+            </div>
+        </div>
+        <div class="scroll-content" style="padding-bottom: 80px;">
+            <div style="padding: 16px;">
+                <!-- Call Card -->
+                <div class="call-card">
+                    <div class="call-card-header">
+                        <div class="call-card-icon">&#128222;</div>
+                        <div class="call-card-title">
+                            <h3>Phone Call with Sarah Mitchell</h3>
+                            <p>Today at 2:15 PM &bull; <span class="badge badge-quo" style="font-size:10px;">Via Quo</span></p>
+                        </div>
+                    </div>
+                    <div class="call-meta-grid">
+                        <div class="call-meta-item">
+                            <div class="label">Direction</div>
+                            <div class="value">&#128228; Outbound</div>
+                        </div>
+                        <div class="call-meta-item">
+                            <div class="label">Duration</div>
+                            <div class="value">8m 34s</div>
+                        </div>
+                        <div class="call-meta-item">
+                            <div class="label">Phone Number</div>
+                            <div class="value">(352) 555-0187</div>
+                        </div>
+                        <div class="call-meta-item">
+                            <div class="label">Called By</div>
+                            <div class="value">Mike Thompson</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recording Player -->
+                <div class="recording-btn" id="recBtn" onclick="togglePlayer()">
+                    <div class="play-icon">&#9654;</div>
+                    <div class="rec-info">
+                        <div class="rec-title">Listen to Recording</div>
+                        <div class="rec-duration">Duration: 8:34</div>
+                    </div>
+                </div>
+
+                <div class="audio-player" id="audioPlayer">
+                    <div class="audio-waveform">
+                        <button class="pause-btn" onclick="togglePlayer()">&#10074;&#10074;</button>
+                        <div class="waveform-bars" id="waveform"></div>
+                    </div>
+                    <div class="audio-time">
+                        <span>2:15</span>
+                        <span>8:34</span>
+                    </div>
+                </div>
+
+                <!-- AI Summary -->
+                <div class="ai-summary-section">
+                    <div class="ai-summary-label">
+                        <span class="sparkle">&#10024;</span>
+                        AI-Generated Call Summary
+                        <span class="badge badge-ai">Quo AI</span>
+                    </div>
+
+                    <div class="ai-summary-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                            <span class="sentiment positive">&#128578; Positive Sentiment</span>
+                            <span style="font-size:11px; color:#9ca3af;">Confidence: 94%</span>
+                        </div>
+
+                        <div class="summary-text">
+                            Mike called Sarah to discuss the cabinet delivery timeline for Phase 2 of her kitchen remodel. Sarah confirmed her preference for white shaker-style cabinets (SKU: WS-3642) over the previously discussed raised panel option. They agreed to schedule the installation for next Tuesday morning at 8:00 AM. Sarah mentioned she'll be working from home that day and can provide access to the kitchen. Mike confirmed the demo crew will arrive first to remove existing upper cabinets.
+                        </div>
+
+                        <div class="key-points-section">
+                            <h4>Key Points</h4>
+                            <div class="key-point"><span class="bullet">&#8226;</span> Cabinet delivery confirmed for Monday, Feb 23</div>
+                            <div class="key-point"><span class="bullet">&#8226;</span> Customer chose white shaker style (changed from raised panel)</div>
+                            <div class="key-point"><span class="bullet">&#8226;</span> Installation scheduled for Tuesday, Feb 24 at 8:00 AM</div>
+                            <div class="key-point"><span class="bullet">&#8226;</span> Demo crew needed before installation begins</div>
+                            <div class="key-point"><span class="bullet">&#8226;</span> Customer will be home (working remotely)</div>
+                        </div>
+
+                        <div class="action-items-section">
+                            <h4>Action Items</h4>
+                            <div class="action-item" onclick="this.querySelector('input').checked = !this.querySelector('input').checked">
+                                <input type="checkbox"> Confirm cabinet delivery for Monday with supplier
+                            </div>
+                            <div class="action-item" onclick="this.querySelector('input').checked = !this.querySelector('input').checked">
+                                <input type="checkbox"> Schedule demo crew for Tuesday 7:00 AM
+                            </div>
+                            <div class="action-item" onclick="this.querySelector('input').checked = !this.querySelector('input').checked">
+                                <input type="checkbox"> Update estimate to reflect white shaker cabinets
+                            </div>
+                            <div class="action-item" onclick="this.querySelector('input').checked = !this.querySelector('input').checked">
+                                <input type="checkbox"> Send confirmation text to Sarah with Tuesday details
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="source-label">
+                    &#128279; Automatically logged via Quo &bull; Call ID: QUO-2026-0218-4829
+                </div>
+
+                <!-- Quick Actions -->
+                <div style="display:flex; gap:8px; margin-top:14px;">
+                    <button class="btn-sm btn-primary" style="flex:1;" onclick="showToast('&#9989; Task created from action items')">Create Tasks</button>
+                    <button class="btn-sm btn-secondary" style="flex:1;" onclick="showToast('&#128203; Note copied to clipboard')">Copy Note</button>
+                    <button class="btn-sm btn-secondary" onclick="showToast('&#128279; Link copied')">&#128279;</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item"><div class="nav-icon">&#127968;</div><div class="nav-label">Home</div></div>
+            <div class="nav-item"><div class="nav-icon">&#128188;</div><div class="nav-label">Deals</div></div>
+            <div class="nav-item active"><div class="nav-icon">&#128203;</div><div class="nav-label">Jobs</div></div>
+            <div class="nav-item"><div class="nav-icon">&#128197;</div><div class="nav-label">Calendar</div></div>
+            <div class="nav-item"><div class="nav-icon">&#9881;</div><div class="nav-label">More</div></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  SCREEN 3: Live Sync / Notification            -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="phone-frame" id="screen-notification">
+        <div class="status-bar">
+            <span class="time">9:41</span>
+            <div class="icons">
+                <span>&#9679;&#9679;&#9679;&#9679;&#9675;</span>
+                <span>&#128267;</span>
+            </div>
+        </div>
+        <div class="app-header">
+            <button class="back-btn">&#8249;</button>
+            <h2>Sarah Mitchell</h2>
+            <div class="header-actions">
+                <button>&#9743;</button>
+                <button>&#8943;</button>
+            </div>
+        </div>
+        <div class="sub-tabs">
+            <button>Details</button>
+            <button>Estimate</button>
+            <button>Invoice</button>
+            <button class="active">Notes</button>
+            <button>Photos</button>
+        </div>
+
+        <!-- Incoming Call Notification -->
+        <div class="call-notification show" id="callNotification">
+            <div class="cn-top">
+                <div class="cn-icon">&#128222;</div>
+                <div class="cn-text">
+                    <h4>Call Completed via Quo</h4>
+                    <p>Saving call note for Sarah Mitchell...</p>
+                </div>
+            </div>
+            <div class="cn-progress">
+                <div class="cn-progress-bar"></div>
+            </div>
+            <div class="cn-message">AI summary will be added automatically</div>
+        </div>
+
+        <div class="scroll-content" style="padding-bottom: 80px; padding-top: 8px;">
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-value">7</div>
+                    <div class="stat-label">Total Calls</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">42m</div>
+                    <div class="stat-label">Talk Time</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">&#128578;</div>
+                    <div class="stat-label">Sentiment</div>
+                </div>
+            </div>
+
+            <!-- Processing note animating in -->
+            <div class="processing-note" style="border-color: #7C3AED; background: #faf8ff;">
+                <div class="processing-spinner"></div>
+                <p style="color: #7C3AED; font-weight: 600;">Generating AI call summary...</p>
+                <p style="font-size:11px; margin-top:4px; color:#b0adc0;">Outbound call &bull; 8m 34s &bull; Just now</p>
+            </div>
+
+            <!-- Existing notes below -->
+            <div class="note-item quo-call">
+                <div class="note-header">
+                    <div class="note-icon call">&#128222;</div>
+                    <div class="note-meta">
+                        <div class="note-title">
+                            Phone Call
+                            <span class="badge badge-quo">Via Quo</span>
+                            <span class="badge badge-inbound">Inbound</span>
+                        </div>
+                        <div class="note-time">Yesterday at 10:42 AM &bull; 3m 15s</div>
+                    </div>
+                </div>
+                <div class="note-preview">
+                    <div class="summary-text">Customer called about countertop material samples. Requesting granite samples in "River White" and "Colonial White".</div>
+                </div>
+                <div class="note-footer">
+                    <span>&#129302; AI Summary</span>
+                    <span>&#127908; Recording</span>
+                </div>
+            </div>
+
+            <div class="note-item manual-note">
+                <div class="note-header">
+                    <div class="note-icon manual">&#9997;</div>
+                    <div class="note-meta">
+                        <div class="note-title">Site Visit Note</div>
+                        <div class="note-time">Feb 16 at 4:30 PM</div>
+                    </div>
+                </div>
+                <div class="note-preview">
+                    <div class="summary-text">Completed measurements for upper cabinets. Ceiling height is 9ft.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item"><div class="nav-icon">&#127968;</div><div class="nav-label">Home</div></div>
+            <div class="nav-item"><div class="nav-icon">&#128188;</div><div class="nav-label">Deals</div></div>
+            <div class="nav-item active"><div class="nav-icon">&#128203;</div><div class="nav-label">Jobs</div></div>
+            <div class="nav-item"><div class="nav-icon">&#128197;</div><div class="nav-label">Calendar</div></div>
+            <div class="nav-item"><div class="nav-icon">&#9881;</div><div class="nav-label">More</div></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  SCREEN 4: Quo Settings                        -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="phone-frame" id="screen-settings">
+        <div class="status-bar">
+            <span class="time">9:41</span>
+            <div class="icons">
+                <span>&#9679;&#9679;&#9679;&#9679;&#9675;</span>
+                <span>&#128267;</span>
+            </div>
+        </div>
+        <div class="app-header">
+            <button class="back-btn">&#8249;</button>
+            <h2>Quo Integration</h2>
+            <div class="header-actions">
+                <button>&#8943;</button>
+            </div>
+        </div>
+        <div class="scroll-content" style="padding-bottom: 80px;">
+            <!-- Connection Status -->
+            <div class="connection-status" id="connectionStatus">
+                <div class="status-dot"></div>
+                <div>
+                    <div class="status-text">Connected to Quo</div>
+                    <div class="status-detail">Last synced: 2 minutes ago</div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <!-- Integration Settings -->
+                <div class="settings-group">
+                    <div class="settings-group-title">Integration</div>
+                    <div class="settings-card">
+                        <div class="setting-row">
+                            <div class="setting-left">
+                                <div class="setting-icon" style="background:#eff6ff; color:#3b82f6;">&#128222;</div>
+                                <div>
+                                    <div class="setting-label">Auto-Save Call Notes</div>
+                                    <div class="setting-desc">Automatically save calls to customer notes</div>
+                                </div>
+                            </div>
+                            <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-left">
+                                <div class="setting-icon" style="background:#f5f3ff; color:#7C3AED;">&#10024;</div>
+                                <div>
+                                    <div class="setting-label">AI Summaries</div>
+                                    <div class="setting-desc">Include AI-generated call summaries</div>
+                                </div>
+                            </div>
+                            <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-left">
+                                <div class="setting-icon" style="background:#ecfdf5; color:#10b981;">&#9745;</div>
+                                <div>
+                                    <div class="setting-label">Extract Action Items</div>
+                                    <div class="setting-desc">Pull action items from call summaries</div>
+                                </div>
+                            </div>
+                            <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-left">
+                                <div class="setting-icon" style="background:#fef3c7; color:#d97706;">&#128276;</div>
+                                <div>
+                                    <div class="setting-label">Unmatched Call Alerts</div>
+                                    <div class="setting-desc">Notify when calls can't be matched</div>
+                                </div>
+                            </div>
+                            <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Call Handling -->
+                <div class="settings-group">
+                    <div class="settings-group-title">Call Handling</div>
+                    <div class="settings-card">
+                        <div class="setting-row">
+                            <div class="setting-left">
+                                <div class="setting-icon" style="background:#fef2f2; color:#dc2626;">&#128683;</div>
+                                <div>
+                                    <div class="setting-label">Log Missed Calls</div>
+                                    <div class="setting-desc">Save missed call records to notes</div>
+                                </div>
+                            </div>
+                            <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-left">
+                                <div class="setting-icon" style="background:#eff6ff; color:#3b82f6;">&#127908;</div>
+                                <div>
+                                    <div class="setting-label">Include Recording Links</div>
+                                    <div class="setting-desc">Add links to call recordings in notes</div>
+                                </div>
+                            </div>
+                            <div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div>
+                        </div>
+                        <div class="setting-row" onclick="showToast('&#9881; Filter settings coming soon')">
+                            <div class="setting-left">
+                                <div class="setting-icon" style="background:#f3f4f6; color:#6B7280;">&#128296;</div>
+                                <div>
+                                    <div class="setting-label">Call Type Filters</div>
+                                    <div class="setting-desc">Choose which call types to log</div>
+                                </div>
+                            </div>
+                            <span class="chevron-right">&#8250;</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account -->
+                <div class="settings-group">
+                    <div class="settings-group-title">Account</div>
+                    <div class="settings-card">
+                        <div class="setting-row">
+                            <div class="setting-left">
+                                <div class="setting-icon" style="background:#f5f3ff; color:#7C3AED;">&#128272;</div>
+                                <div>
+                                    <div class="setting-label">API Configuration</div>
+                                    <div class="setting-desc">Manage Quo API keys and webhooks</div>
+                                </div>
+                            </div>
+                            <span class="chevron-right">&#8250;</span>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-left">
+                                <div class="setting-icon" style="background:#eff6ff; color:#3b82f6;">&#128101;</div>
+                                <div>
+                                    <div class="setting-label">User Mapping</div>
+                                    <div class="setting-desc">Match Quo users to DripJobs accounts</div>
+                                </div>
+                            </div>
+                            <span class="chevron-right">&#8250;</span>
+                        </div>
+                        <div class="setting-row" onclick="showToast('&#128202; Sync log opened')">
+                            <div class="setting-left">
+                                <div class="setting-icon" style="background:#ecfdf5; color:#10b981;">&#128202;</div>
+                                <div>
+                                    <div class="setting-label">Sync History</div>
+                                    <div class="setting-desc">View recent sync activity and errors</div>
+                                </div>
+                            </div>
+                            <span class="chevron-right">&#8250;</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="settings-group">
+                    <div class="settings-group-title" style="color:#dc2626;">Danger Zone</div>
+                    <div class="settings-card" style="border-color:#fecaca;">
+                        <div class="setting-row" onclick="toggleConnection()">
+                            <div class="setting-left">
+                                <div class="setting-icon" style="background:#fef2f2; color:#dc2626;">&#9888;</div>
+                                <div>
+                                    <div class="setting-label" style="color:#dc2626;">Disconnect Quo</div>
+                                    <div class="setting-desc">Stop syncing calls from Quo</div>
+                                </div>
+                            </div>
+                            <span class="chevron-right" style="color:#fecaca;">&#8250;</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item"><div class="nav-icon">&#127968;</div><div class="nav-label">Home</div></div>
+            <div class="nav-item"><div class="nav-icon">&#128188;</div><div class="nav-label">Deals</div></div>
+            <div class="nav-item"><div class="nav-icon">&#128203;</div><div class="nav-label">Jobs</div></div>
+            <div class="nav-item"><div class="nav-icon">&#128197;</div><div class="nav-label">Calendar</div></div>
+            <div class="nav-item active"><div class="nav-icon">&#9881;</div><div class="nav-label">More</div></div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!--  SCREEN 5: Unmatched Calls Admin               -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="phone-frame" id="screen-unmatched">
+        <div class="status-bar">
+            <span class="time">9:41</span>
+            <div class="icons">
+                <span>&#9679;&#9679;&#9679;&#9679;&#9675;</span>
+                <span>&#128267;</span>
+            </div>
+        </div>
+        <div class="app-header">
+            <button class="back-btn" onclick="showScreen('settings')">&#8249;</button>
+            <h2>Unmatched Calls</h2>
+            <div class="header-actions">
+                <button>&#8943;</button>
+            </div>
+        </div>
+
+        <div class="unmatched-header">
+            <h3>Needs Review <span class="unmatched-count">3</span></h3>
+            <p>These Quo calls couldn't be matched to a customer automatically</p>
+        </div>
+
+        <div class="scroll-content" style="padding-bottom: 80px;">
+            <!-- Unmatched Call 1 -->
+            <div class="unmatched-card" id="unmatchedCard1">
+                <div class="uc-top">
+                    <div class="uc-phone">(407) 555-0234</div>
+                    <span class="badge badge-inbound">Inbound</span>
+                </div>
+                <div class="uc-time">Today at 1:45 PM</div>
+                <div class="uc-details">
+                    <span>&#9201; 5m 12s</span>
+                    <span>&#127908; Has Recording</span>
+                    <span>&#128100; Mike T.</span>
+                </div>
+                <div class="uc-actions">
+                    <button class="btn-sm btn-primary" onclick="showMatchModal('unmatchedCard1')">Match to Customer</button>
+                    <button class="btn-sm btn-secondary" onclick="showToast('&#128203; New customer created')">Create Customer</button>
+                    <button class="btn-sm btn-outline-danger" onclick="dismissUnmatched('unmatchedCard1')">Dismiss</button>
+                </div>
+            </div>
+
+            <!-- Unmatched Call 2 -->
+            <div class="unmatched-card" id="unmatchedCard2">
+                <div class="uc-top">
+                    <div class="uc-phone">(813) 555-0891</div>
+                    <span class="badge badge-outbound">Outbound</span>
+                </div>
+                <div class="uc-time">Today at 11:20 AM</div>
+                <div class="uc-details">
+                    <span>&#9201; 2m 45s</span>
+                    <span>&#127908; Has Recording</span>
+                    <span>&#128100; Jessica R.</span>
+                </div>
+                <div class="uc-actions">
+                    <button class="btn-sm btn-primary" onclick="showMatchModal('unmatchedCard2')">Match to Customer</button>
+                    <button class="btn-sm btn-secondary" onclick="showToast('&#128203; New customer created')">Create Customer</button>
+                    <button class="btn-sm btn-outline-danger" onclick="dismissUnmatched('unmatchedCard2')">Dismiss</button>
+                </div>
+            </div>
+
+            <!-- Unmatched Call 3 -->
+            <div class="unmatched-card" id="unmatchedCard3">
+                <div class="uc-top">
+                    <div class="uc-phone">(321) 555-0456</div>
+                    <span class="badge badge-inbound">Inbound</span>
+                </div>
+                <div class="uc-time">Yesterday at 4:30 PM</div>
+                <div class="uc-details">
+                    <span>&#9201; 8m 03s</span>
+                    <span>&#127908; Has Recording</span>
+                    <span>&#128100; Mike T.</span>
+                </div>
+                <div class="uc-actions">
+                    <button class="btn-sm btn-primary" onclick="showMatchModal('unmatchedCard3')">Match to Customer</button>
+                    <button class="btn-sm btn-secondary" onclick="showToast('&#128203; New customer created')">Create Customer</button>
+                    <button class="btn-sm btn-outline-danger" onclick="dismissUnmatched('unmatchedCard3')">Dismiss</button>
+                </div>
+            </div>
+
+            <!-- Resolved section -->
+            <div style="padding: 16px 12px 8px;">
+                <div style="font-size:11px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:0.8px;">
+                    Recently Resolved
+                </div>
+            </div>
+
+            <div class="unmatched-card" style="opacity: 0.6;">
+                <div class="uc-top">
+                    <div class="uc-phone" style="text-decoration:line-through;">(352) 555-0999</div>
+                    <span class="badge" style="background:#ecfdf5; color:#059669;">Matched</span>
+                </div>
+                <div class="uc-time">Feb 16 &bull; Matched to "Robert Johnson" by Mike T.</div>
+            </div>
+
+            <div class="unmatched-card" style="opacity: 0.6;">
+                <div class="uc-top">
+                    <div class="uc-phone" style="text-decoration:line-through;">(904) 555-0333</div>
+                    <span class="badge" style="background:#f3f4f6; color:#6B7280;">Dismissed</span>
+                </div>
+                <div class="uc-time">Feb 15 &bull; Dismissed as spam by Jessica R.</div>
+            </div>
+        </div>
+
+        <!-- Match Modal -->
+        <div class="modal-overlay" id="matchModal" onclick="if(event.target===this)closeMatchModal()">
+            <div class="modal-sheet">
+                <div class="drag-handle"></div>
+                <h3>Match to Customer</h3>
+                <div class="modal-desc">Search for a customer to link this call to</div>
+                <input class="search-input" type="text" placeholder="Search customers..." oninput="filterCustomers(this.value)">
+
+                <div id="customerList">
+                    <div class="customer-match-option" onclick="matchCustomer('Sarah Mitchell')">
+                        <div class="cm-avatar">SM</div>
+                        <div class="cm-info">
+                            <h4>Sarah Mitchell</h4>
+                            <p>(352) 555-0187 &bull; Kitchen Remodel</p>
+                        </div>
+                    </div>
+                    <div class="customer-match-option" onclick="matchCustomer('Robert Johnson')">
+                        <div class="cm-avatar">RJ</div>
+                        <div class="cm-info">
+                            <h4>Robert Johnson</h4>
+                            <p>(352) 555-0294 &bull; Bathroom Renovation</p>
+                        </div>
+                    </div>
+                    <div class="customer-match-option" onclick="matchCustomer('Lisa Chen')">
+                        <div class="cm-avatar">LC</div>
+                        <div class="cm-info">
+                            <h4>Lisa Chen</h4>
+                            <p>(407) 555-0312 &bull; Exterior Painting</p>
+                        </div>
+                    </div>
+                    <div class="customer-match-option" onclick="matchCustomer('David Williams')">
+                        <div class="cm-avatar">DW</div>
+                        <div class="cm-info">
+                            <h4>David Williams</h4>
+                            <p>(813) 555-0478 &bull; Deck Build</p>
+                        </div>
+                    </div>
+                    <div class="customer-match-option" onclick="matchCustomer('Maria Garcia')">
+                        <div class="cm-avatar">MG</div>
+                        <div class="cm-info">
+                            <h4>Maria Garcia</h4>
+                            <p>(321) 555-0567 &bull; Roof Repair</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <div class="nav-item"><div class="nav-icon">&#127968;</div><div class="nav-label">Home</div></div>
+            <div class="nav-item"><div class="nav-icon">&#128188;</div><div class="nav-label">Deals</div></div>
+            <div class="nav-item"><div class="nav-icon">&#128203;</div><div class="nav-label">Jobs</div></div>
+            <div class="nav-item"><div class="nav-icon">&#128197;</div><div class="nav-label">Calendar</div></div>
+            <div class="nav-item active"><div class="nav-icon">&#9881;</div><div class="nav-label">More</div></div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ─── Screen Navigation ───
+        function showScreen(id) {
+            document.querySelectorAll('.phone-frame').forEach(f => f.classList.remove('active'));
+            document.getElementById('screen-' + id).classList.add('active');
+            document.querySelectorAll('.screen-nav button').forEach(b => b.classList.remove('active'));
+            event.target.closest('button')?.classList.add('active') ||
+                document.querySelectorAll('.screen-nav button').forEach(b => {
+                    if (b.textContent.toLowerCase().includes(id.substring(0,4))) b.classList.add('active');
+                });
+        }
+
+        // ─── Audio Player Toggle ───
+        let playerOpen = false;
+        function togglePlayer() {
+            const player = document.getElementById('audioPlayer');
+            const btn = document.getElementById('recBtn');
+            playerOpen = !playerOpen;
+            if (playerOpen) {
+                player.classList.add('active');
+                btn.style.display = 'none';
+                generateWaveform();
+            } else {
+                player.classList.remove('active');
+                btn.style.display = 'flex';
+            }
+        }
+
+        function generateWaveform() {
+            const container = document.getElementById('waveform');
+            if (container.children.length > 0) return;
+            for (let i = 0; i < 50; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'bar' + (i < 15 ? ' played' : '');
+                const h = Math.random() * 18 + 4;
+                bar.style.height = h + 'px';
+                container.appendChild(bar);
+            }
+        }
+
+        // ─── Toast ───
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // ─── Match Modal ───
+        let currentUnmatched = null;
+        function showMatchModal(cardId) {
+            currentUnmatched = cardId;
+            document.getElementById('matchModal').classList.add('active');
+        }
+        function closeMatchModal() {
+            document.getElementById('matchModal').classList.remove('active');
+        }
+        function matchCustomer(name) {
+            closeMatchModal();
+            if (currentUnmatched) {
+                const card = document.getElementById(currentUnmatched);
+                card.style.transition = 'all 0.3s';
+                card.style.opacity = '0.3';
+                card.style.transform = 'translateX(100px)';
+                setTimeout(() => {
+                    card.style.display = 'none';
+                    updateUnmatchedCount();
+                }, 300);
+            }
+            showToast('&#9989; Call matched to ' + name);
+        }
+
+        function dismissUnmatched(cardId) {
+            const card = document.getElementById(cardId);
+            card.style.transition = 'all 0.3s';
+            card.style.opacity = '0';
+            card.style.transform = 'translateX(-100px)';
+            setTimeout(() => {
+                card.style.display = 'none';
+                updateUnmatchedCount();
+            }, 300);
+            showToast('Call dismissed');
+        }
+
+        function updateUnmatchedCount() {
+            const visible = document.querySelectorAll('.unmatched-card:not([style*="display: none"]):not([style*="opacity: 0.6"])');
+            const count = document.querySelector('.unmatched-count');
+            if (count) count.textContent = Math.max(0, visible.length - 1);
+        }
+
+        function filterCustomers(q) {
+            const options = document.querySelectorAll('.customer-match-option');
+            options.forEach(opt => {
+                const text = opt.textContent.toLowerCase();
+                opt.style.display = text.includes(q.toLowerCase()) ? 'flex' : 'none';
+            });
+        }
+
+        // ─── Filter Chips ───
+        function filterCalls(chip) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            showToast('&#128222; Showing Quo calls only');
+        }
+
+        // ─── Connection Toggle ───
+        function toggleConnection() {
+            const status = document.getElementById('connectionStatus');
+            const isConnected = !status.classList.contains('disconnected');
+            if (isConnected) {
+                status.classList.add('disconnected');
+                status.querySelector('.status-text').textContent = 'Disconnected';
+                status.querySelector('.status-detail').textContent = 'Quo integration is disabled';
+                showToast('&#9888; Quo disconnected');
+            } else {
+                status.classList.remove('disconnected');
+                status.querySelector('.status-text').textContent = 'Connected to Quo';
+                status.querySelector('.status-detail').textContent = 'Last synced: just now';
+                showToast('&#9989; Quo reconnected');
+            }
+        }
+
+        // ─── Auto-dismiss notification after animation ───
+        setTimeout(() => {
+            const notif = document.getElementById('callNotification');
+            if (notif) {
+                setTimeout(() => {
+                    notif.style.transition = 'all 0.3s';
+                    notif.style.opacity = '0';
+                    notif.style.transform = 'translateY(-20px)';
+                }, 3500);
+            }
+        }, 100);
+    </script>
+</body>
+</html>
