@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dripjobs Metrics Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F0F2F5; --surface: #FFFFFF; --border: #E4E7EC; --border-strong: #D0D5DD;
+    --text-primary: #101828; --text-secondary: #475467; --text-muted: #98A2B3;
+    --green: #039855; --green-light: #ECFDF3; --green-mid: #D1FADF;
+    --blue: #1570EF; --blue-light: #EFF8FF;
+    --amber: #B54708; --amber-light: #FFFAEB; --amber-mid: #FEF0C7;
+    --red: #B42318; --red-light: #FEF3F2;
+    --purple: #6941C6; --purple-light: #F4F3FF;
+    --warning: #DC6803; --warning-light: #FFFAEB;
+    --shadow-tile: 0 1px 3px rgba(16,24,40,0.08), 0 1px 2px rgba(16,24,40,0.04);
+    --shadow-hover: 0 8px 24px rgba(16,24,40,0.10), 0 2px 8px rgba(16,24,40,0.06);
+    --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text-primary); min-height: 100vh; }
+
+  /* NAV */
+  .nav { height: 56px; background: var(--surface); border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 28px; position: sticky; top: 0; z-index: 50; }
+  .nav-left { display: flex; align-items: center; gap: 24px; justify-content: flex-start; }
+  .nav-center { display: flex; align-items: center; gap: 10px; justify-content: center; }
+  .nav-right { display: flex; align-items: center; gap: 10px; justify-content: flex-end; }
+  .logo { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 17px; letter-spacing: -0.3px; color: var(--blue); }
+  .logo span { color: var(--text-primary); }
+  .date-pill { display: flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 500; color: var(--text-secondary); cursor: pointer; white-space: nowrap; }
+  .period-tabs { display: flex; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 3px; gap: 2px; }
+  .period-tab { padding: 3px 9px; border-radius: 14px; font-size: 11px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.15s; user-select: none; }
+  .period-tab.active { background: var(--surface); color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  .nav-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--blue); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .nav-name { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+
+  /* DATE SUB-BAR — mobile only */
+  .date-subbar { display: none; }
+
+  /* LAYOUT */
+  .layout { display: flex; min-height: calc(100vh - 56px); }
+  .sidebar { width: 192px; background: var(--surface); border-right: 1px solid var(--border); padding: 20px 0; flex-shrink: 0; }
+  .sb-section { margin-bottom: 22px; }
+  .sb-label { font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); padding: 0 16px; margin-bottom: 4px; display: block; }
+  .sb-item { display: flex; align-items: center; gap: 8px; padding: 7px 16px; font-size: 13px; font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all 0.12s; }
+  .sb-item:hover { background: var(--bg); color: var(--text-primary); }
+  .sb-item.active { background: var(--purple); color: white; font-weight: 600; }
+  .logo-dj { display: flex; align-items: center; gap: 8px; }
+  .sb-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.4; flex-shrink: 0; }
+
+  /* MAIN */
+  .main { flex: 1; padding: 28px; min-width: 0; }
+  .overview-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+  .overview-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* BANNER */
+  .banner { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; align-items: start; }
+
+  /* TILE */
+  .tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px 20px; box-shadow: var(--shadow-tile); transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s; position: relative; }
+  .tile.clickable { cursor: pointer; }
+  .tile.clickable:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+  .tile.expanded { border-color: var(--blue); }
+  .tile-header { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .tile-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+  .tile-label { font-size: 10.5px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--purple); flex: 1; }
+  .tile-label-wrap { flex: 1; min-width: 0; }
+  .tile-definition { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); margin-top: 2px; line-height: 1.3; }
+  .tile-chevron { width: 22px; height: 22px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.15s; }
+  .tile.expanded .tile-chevron { background: var(--blue-light); border-color: var(--blue); }
+  .chevron-svg { width: 11px; height: 11px; stroke: var(--text-muted); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.2s, stroke 0.15s; display: block; }
+  .tile.expanded .chevron-svg { transform: rotate(180deg); stroke: var(--blue); }
+  .tile-chevron-spacer { width: 22px; height: 22px; flex-shrink: 0; }
+  .tile-body { height: 72px; overflow: hidden; }
+  .tile-value { font-family: 'DM Sans', sans-serif; font-weight: 700; letter-spacing: -0.5px; color: var(--text-primary); line-height: 1; margin-bottom: 10px; }
+  .tile-value.xl { font-size: 26px; letter-spacing: -1px; }
+  .tile-value.lg { font-size: 22px; letter-spacing: -0.5px; }
+  .tile-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .tile-formula { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); margin-top: 8px; letter-spacing: 0.01em; }
+
+  /* BADGES */
+  .badge { display: inline-flex; align-items: center; gap: 3px; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-green { background: var(--green-light); color: var(--green); border: 1px solid var(--green-mid); }
+  .badge-warning { background: var(--warning-light); color: var(--warning); border: 1px solid #FDD; }
+  .badge-muted { background: var(--bg); color: var(--text-secondary); border: 1px solid var(--border); font-weight: 500; }
+
+  /* BREAKDOWN */
+  .breakdown { display: none; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .breakdown.show { display: block; }
+  .bd-section-label { font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+  .bd-row { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; }
+  .bd-row + .bd-row { border-top: 1px solid var(--bg); }
+  .bd-left { display: flex; align-items: center; gap: 8px; }
+  .bd-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .bd-label { font-size: 12.5px; font-weight: 500; color: var(--text-secondary); }
+  .bd-right { display: flex; align-items: center; gap: 5px; }
+  .bd-value { font-size: 13px; font-weight: 700; color: var(--text-primary); font-family: 'DM Mono', monospace; }
+  .bd-pct { font-size: 11px; color: var(--text-muted); }
+  .bd-divider { height: 1px; background: var(--border); margin: 10px 0 8px; }
+  .bd-total { display: flex; justify-content: space-between; align-items: center; }
+  .bd-total-label { font-size: 12px; font-weight: 700; color: var(--text-primary); }
+  .bd-total-value { font-size: 13px; font-weight: 700; color: var(--text-primary); font-family: 'DM Mono', monospace; }
+
+  /* METRICS SECTIONS */
+  .sections { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; }
+  .section-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .sc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-tile); }
+  .sc-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
+  .sc-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--green-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .sc-icon svg { width: 18px; height: 18px; stroke: var(--green); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .sc-meta { flex: 1; min-width: 0; }
+  .sc-title { font-size: 14px; font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+  .sc-title span { font-weight: 400; color: var(--text-secondary); }
+  .sc-desc { font-size: 12px; color: var(--text-secondary); margin-top: 3px; line-height: 1.5; }
+  .sc-divider { height: 1px; background: var(--border); margin-bottom: 16px; }
+  .sc-body { min-height: 60px; }
+  .sc-bar-row { margin-bottom: 14px; }
+  .sc-bar-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 5px; }
+  .sc-bar-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
+  .sc-bar-value { font-size: 13px; font-weight: 700; color: var(--text-primary); white-space: nowrap; margin-left: 12px; }
+  .sc-bar-pct { font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-left: 4px; }
+  .sc-bar-track { height: 6px; background: #F0F2F5; border-radius: 99px; overflow: hidden; }
+  .sc-bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+  .sc-total { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 6px; }
+  .sc-total-label { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .sc-total-value { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+  .sc-footer { display: flex; justify-content: flex-end; margin-top: 16px; }
+  .sc-pdf-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border: 1px solid #FECDCA; border-radius: 6px; background: #FFF5F5; color: var(--red); font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+  .sc-pdf-btn:hover { background: #FEE4E2; }
+  .sc-pdf-btn svg { width: 13px; height: 13px; fill: var(--red); }
+  .sc-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; color: var(--text-muted); gap: 8px; }
+  .sc-empty svg { width: 36px; height: 36px; stroke: var(--text-muted); fill: none; stroke-width: 1.5; }
+  .sc-empty-text { font-size: 13px; color: var(--text-muted); }
+
+  /* TRANSITION for data updates */
+  .tile-value, .tile-formula, .tile-meta { transition: opacity 0.15s; }
+  .updating .tile-value, .updating .tile-formula, .updating .tile-meta { opacity: 0.4; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .tile { animation: fadeUp 0.3s ease both; }
+  .tile:nth-child(1) { animation-delay: 0.04s; } .tile:nth-child(2) { animation-delay: 0.09s; }
+  .tile:nth-child(3) { animation-delay: 0.14s; } .tile:nth-child(4) { animation-delay: 0.19s; }
+  .tile:nth-child(5) { animation-delay: 0.24s; } .tile:nth-child(6) { animation-delay: 0.29s; }
+
+  /* ═══════════ MOBILE ≤768px ═══════════ */
+  @media (max-width: 768px) {
+    .nav { height: 52px; padding: 0 16px; grid-template-columns: auto 1fr auto; }
+    .nav-center { display: none; }
+    .nav-name { display: none; }
+    .date-subbar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 52px; z-index: 40; flex-wrap: wrap; }
+    .sidebar { display: none; }
+    .layout { min-height: calc(100vh - 52px); }
+    .main { padding: 16px; }
+    .overview-label { font-size: 9px; margin-bottom: 12px; }
+    .banner { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .tile { padding: 12px 14px 14px; }
+    .tile-body { height: 66px; }
+    .tile-label { font-size: 9.5px; }
+    .tile-value.lg { font-size: 20px; }
+    .tile-value.xl { font-size: 24px; }
+    .tile-chevron { width: 28px; height: 28px; }
+    .chevron-svg { width: 12px; height: 12px; }
+    .tile-icon { width: 24px; height: 24px; font-size: 12px; border-radius: 6px; }
+    .badge { font-size: 10px; padding: 2px 6px; }
+    .tile-formula { font-size: 10px; }
+    .sections { margin-top: 24px; gap: 10px; }
+    .section-row { grid-template-columns: 1fr; gap: 10px; }
+    .sc { padding: 16px; }
+    .sc-header { gap: 10px; margin-bottom: 14px; }
+    .sc-icon { width: 32px; height: 32px; }
+    .sc-icon svg { width: 16px; height: 16px; }
+    .sc-title { font-size: 13px; }
+    .sc-desc { font-size: 11.5px; }
+    .sc-bar-label { font-size: 12.5px; }
+    .sc-bar-value { font-size: 12.5px; }
+    .sc-bar-pct { font-size: 11px; }
+    .sc-pdf-btn { padding: 8px 14px; font-size: 12px; }
+    .period-tab { padding: 4px 10px; font-size: 11px; }
+    .date-pill { font-size: 11.5px; padding: 5px 10px; }
+  }
+  @media (max-width: 390px) {
+    .banner { gap: 8px; }
+    .tile { padding: 10px 12px 12px; }
+    .tile-body { height: 60px; }
+    .tile-value.lg { font-size: 18px; }
+    .tile-label { font-size: 9px; letter-spacing: 0.04em; }
+    .main { padding: 12px; }
+    .sections { margin-top: 20px; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-left">
+    <div class="logo-dj">
+      <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 100 100">
+        <polygon fill="#6941C6" points="50,5 59.1,16.2 72.5,11 74.7,25.3 89,27.5 83.8,40.9 95,50 83.8,59.1 89,72.5 74.7,74.7 72.5,89 59.1,83.8 50,95 40.9,83.8 27.5,89 25.3,74.7 11,72.5 16.2,59.1 5,50 16.2,40.9 11,27.5 25.3,25.3 27.5,11 40.9,16.2"/>
+        <circle fill="white" cx="50" cy="50" r="30"/>
+        <rect fill="#6941C6" x="27" y="33" width="46" height="27" rx="6"/>
+        <polygon fill="#6941C6" points="31,60 43,60 35,72"/>
+        <circle fill="white" cx="38" cy="46.5" r="4"/>
+        <circle fill="white" cx="50" cy="46.5" r="4"/>
+        <circle fill="white" cx="62" cy="46.5" r="4"/>
+      </svg>
+      <span style="font-family:'DM Sans',sans-serif;font-weight:700;font-size:17px;letter-spacing:-0.3px;color:#6941C6;">dripjobs</span>
+    </div>
+  </div>
+  <div class="nav-center">
+    <div class="date-pill" id="datePill">📅 02/03/2026 – 03/05/2026</div>
+    <div class="period-tabs" id="periodTabs">
+      <div class="period-tab" data-period="D">D</div>
+      <div class="period-tab" data-period="W">W</div>
+      <div class="period-tab active" data-period="M">M</div>
+      <div class="period-tab" data-period="Y">Y</div>
+      <div class="period-tab" data-period="L">L</div>
+      <div class="period-tab" data-period="T">T</div>
+    </div>
+  </div>
+  <div class="nav-right">
+    <span class="nav-name">Jeremy Harrison</span>
+    <div class="nav-avatar">JH</div>
+  </div>
+</div>
+
+<!-- MOBILE DATE SUB-BAR -->
+<div class="date-subbar">
+  <div class="date-pill" id="datePillMobile">📅 02/03/2026 – 03/05/2026</div>
+  <div class="period-tabs" id="periodTabsMobile">
+    <div class="period-tab" data-period="D">D</div>
+    <div class="period-tab" data-period="W">W</div>
+    <div class="period-tab active" data-period="M">M</div>
+    <div class="period-tab" data-period="Y">Y</div>
+    <div class="period-tab" data-period="L">L</div>
+    <div class="period-tab" data-period="T">T</div>
+  </div>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sb-section">
+      <span class="sb-label">Daily Ops</span>
+      <div class="sb-item"><div class="sb-dot"></div>Appointments</div>
+      <div class="sb-item"><div class="sb-dot"></div>Chat</div>
+      <div class="sb-item"><div class="sb-dot"></div>Tasks</div>
+    </div>
+    <div class="sb-section">
+      <span class="sb-label">Documents</span>
+      <div class="sb-item"><div class="sb-dot"></div>Invoices</div>
+      <div class="sb-item"><div class="sb-dot"></div>Proposals</div>
+    </div>
+    <div class="sb-section">
+      <span class="sb-label">Financials</span>
+      <div class="sb-item"><div class="sb-dot"></div>Job Costing</div>
+      <div class="sb-item"><div class="sb-dot"></div>Production Rates</div>
+    </div>
+    <div class="sb-section">
+      <span class="sb-label">Analytics</span>
+      <div class="sb-item active"><div class="sb-dot"></div>Metrics</div>
+    </div>
+    <div class="sb-section">
+      <span class="sb-label">Marketing</span>
+      <div class="sb-item"><div class="sb-dot"></div>Activity</div>
+      <div class="sb-item"><div class="sb-dot"></div>Blast</div>
+      <div class="sb-item"><div class="sb-dot"></div>Drips</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="overview-label">Overview</div>
+
+    <!-- KPI BANNER -->
+    <div class="banner">
+
+      <!-- 1. TOTAL REVENUE -->
+      <div class="tile clickable" id="tile-revenue" onclick="toggleTile(this,'revenue')">
+        <div class="tile-header">
+          <div class="tile-icon" style="background:#ECFDF3;">💰</div>
+          <div class="tile-label-wrap">
+            <div class="tile-label">Sales</div>
+            <div class="tile-definition">Revenue from pipeline &amp; manual invoices</div>
+          </div>
+          <div class="tile-chevron"><svg class="chevron-svg" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tile-body">
+          <div class="tile-value lg" id="kpi-sales">$45,495</div>
+          <div class="tile-meta">
+            <span class="badge badge-green" id="kpi-sales-pipeline">$39,106 pipeline</span>
+            <span style="font-size:11.5px;color:var(--text-muted);font-weight:500;" id="kpi-sales-manual">· $6,389 manual</span>
+          </div>
+        </div>
+        <div class="breakdown" id="revenue">
+          <div class="bd-row">
+            <div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">Pipeline Revenue</div></div>
+            <div class="bd-right"><div class="bd-value" id="bd-pipeline">$39,106</div><div class="bd-pct" id="bd-pipeline-pct">86%</div></div>
+          </div>
+          <div class="bd-row">
+            <div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Manual Invoices</div></div>
+            <div class="bd-right"><div class="bd-value" id="bd-manual">$6,389</div><div class="bd-pct" id="bd-manual-pct">14%</div></div>
+          </div>
+          <div class="bd-divider"></div>
+          <div class="bd-total"><div class="bd-total-label">Total</div><div class="bd-total-value" id="bd-sales-total">$45,495</div></div>
+        </div>
+      </div>
+
+      <!-- 2. JOBS WON -->
+      <div class="tile clickable" id="tile-jobs" onclick="toggleTile(this,'jobs')">
+        <div class="tile-header">
+          <div class="tile-icon" style="background:#FFFAEB;">🏆</div>
+          <div class="tile-label-wrap">
+            <div class="tile-label">Jobs Won</div>
+            <div class="tile-definition">Proposals accepted as won jobs</div>
+          </div>
+          <div class="tile-chevron"><svg class="chevron-svg" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tile-body">
+          <div class="tile-value lg" id="kpi-jobs">11</div>
+          <div class="tile-meta" id="kpi-jobs-meta">
+            <span class="badge badge-warning">⚠ 2 unsigned</span>
+          </div>
+        </div>
+        <div class="breakdown" id="jobs">
+          <div class="bd-row">
+            <div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">Signed</div></div>
+            <div class="bd-right"><div class="bd-value" id="bd-jobs-signed">8</div><div class="bd-pct" id="bd-jobs-signed-pct">73%</div></div>
+          </div>
+          <div class="bd-row">
+            <div class="bd-left"><div class="bd-dot" style="background:var(--warning)"></div><div class="bd-label">No signature ⚠</div></div>
+            <div class="bd-right"><div class="bd-value" style="color:var(--warning)" id="bd-jobs-unsigned">2</div><div class="bd-pct" id="bd-jobs-unsigned-pct">18%</div></div>
+          </div>
+          <div class="bd-row">
+            <div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Manual Invoice</div></div>
+            <div class="bd-right"><div class="bd-value" id="bd-jobs-manual">1</div><div class="bd-pct" id="bd-jobs-manual-pct">9%</div></div>
+          </div>
+          <div class="bd-divider"></div>
+          <div class="bd-total"><div class="bd-total-label">Total Jobs Won</div><div class="bd-total-value" id="bd-jobs-total">11</div></div>
+        </div>
+      </div>
+
+      <!-- 3. AVG JOB SIZE -->
+      <div class="tile">
+        <div class="tile-header">
+          <div class="tile-icon" style="background:#F4F3FF;">📊</div>
+          <div class="tile-label-wrap">
+            <div class="tile-label">Avg Job Size</div>
+            <div class="tile-definition">Average revenue per job won</div>
+          </div>
+          <div class="tile-chevron-spacer"></div>
+        </div>
+        <div class="tile-body">
+          <div class="tile-value lg" id="kpi-avg">$4,136</div>
+          <div class="tile-formula" id="kpi-avg-formula">$45,495 ÷ 11 jobs</div>
+        </div>
+      </div>
+
+      <!-- 4. CLOSING RATIO -->
+      <div class="tile clickable" id="tile-closing" onclick="toggleTile(this,'closing')">
+        <div class="tile-header">
+          <div class="tile-icon" style="background:#EFF8FF;color:#1570EF;font-weight:700;font-size:12px;">%</div>
+          <div class="tile-label-wrap">
+            <div class="tile-label">Closing Ratio</div>
+            <div class="tile-definition">Jobs won ÷ proposals sent</div>
+          </div>
+          <div class="tile-chevron"><svg class="chevron-svg" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tile-body">
+          <div class="tile-value lg" id="kpi-closing">78.6%</div>
+          <div class="tile-formula" id="kpi-closing-formula">11 accepted ÷ 14 sent</div>
+        </div>
+        <div class="breakdown" id="closing">
+          <div class="bd-section-label">Proposals sent to customers</div>
+          <div class="bd-row">
+            <div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">Accepted (signed)</div></div>
+            <div class="bd-right"><div class="bd-value" id="bd-cr-signed">8</div></div>
+          </div>
+          <div class="bd-row">
+            <div class="bd-left"><div class="bd-dot" style="background:var(--warning)"></div><div class="bd-label">No signature ⚠</div></div>
+            <div class="bd-right"><div class="bd-value" style="color:var(--warning)" id="bd-cr-unsigned">2</div></div>
+          </div>
+          <div class="bd-row">
+            <div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Pending</div></div>
+            <div class="bd-right"><div class="bd-value" id="bd-cr-pending">2</div></div>
+          </div>
+          <div class="bd-row">
+            <div class="bd-left"><div class="bd-dot" style="background:var(--red)"></div><div class="bd-label">Rejected</div></div>
+            <div class="bd-right"><div class="bd-value" id="bd-cr-rejected">2</div></div>
+          </div>
+          <div class="bd-divider"></div>
+          <div class="bd-total"><div class="bd-total-label">Proposals Sent</div><div class="bd-total-value" id="bd-cr-total">14</div></div>
+        </div>
+      </div>
+
+      <!-- 5. SET RATE -->
+      <div class="tile">
+        <div class="tile-header">
+          <div class="tile-icon" style="background:#F0FDF9;">🎯</div>
+          <div class="tile-label-wrap">
+            <div class="tile-label">Set Rate</div>
+            <div class="tile-definition">Appointments booked ÷ total leads</div>
+          </div>
+          <div class="tile-chevron-spacer"></div>
+        </div>
+        <div class="tile-body">
+          <div class="tile-value lg" id="kpi-setrate">38.1%</div>
+          <div class="tile-formula" id="kpi-setrate-formula">16 booked ÷ 42 leads</div>
+        </div>
+      </div>
+
+      <!-- 6. APPOINTMENTS -->
+      <div class="tile clickable" id="tile-appts" onclick="toggleTile(this,'appts')">
+        <div class="tile-header">
+          <div class="tile-icon" style="background:#F4F3FF;">📅</div>
+          <div class="tile-label-wrap">
+            <div class="tile-label">Appointments</div>
+            <div class="tile-definition">Booked estimate appointments</div>
+          </div>
+          <div class="tile-chevron"><svg class="chevron-svg" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+        <div class="tile-body">
+          <div class="tile-value lg" id="kpi-appts">16</div>
+          <div class="tile-meta">
+            <span class="badge badge-muted" id="kpi-appts-badge">12 new · 4 returning</span>
+          </div>
+        </div>
+        <div class="breakdown" id="appts">
+          <div class="bd-row">
+            <div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">New Customers</div></div>
+            <div class="bd-right"><div class="bd-value" id="bd-appts-new">12</div><div class="bd-pct" id="bd-appts-new-pct">75%</div></div>
+          </div>
+          <div class="bd-row">
+            <div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Returning Customers</div></div>
+            <div class="bd-right"><div class="bd-value" id="bd-appts-ret">4</div><div class="bd-pct" id="bd-appts-ret-pct">25%</div></div>
+          </div>
+          <div class="bd-divider"></div>
+          <div class="bd-total"><div class="bd-total-label">Total Booked</div><div class="bd-total-value" id="bd-appts-total">16</div></div>
+        </div>
+      </div>
+
+    </div><!-- /banner -->
+
+    <!-- METRICS SECTIONS (dynamically rendered) -->
+    <div class="sections" id="sections"></div>
+
+    <footer style="text-align:center;padding:32px 0 16px;font-size:12px;color:var(--text-muted);">
+      Copyright © 2026 Dripjobs
+    </footer>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// BAR COLORS
+// ═══════════════════════════════════════════════════════════════
+const COLORS = ['#039855','#1570EF','#F79009','#F63D68','#7A5AF8','#06AED4','#DD2590'];
+
+// ═══════════════════════════════════════════════════════════════
+// TEST DATA — all metrics connected across periods
+// ═══════════════════════════════════════════════════════════════
+const DATA = {
+
+  D: {
+    label: '📅 03/06/2026',
+    kpi: {
+      salesPipeline: 4800, salesManual: 0,
+      jobsSigned: 1, jobsUnsigned: 0, jobsManual: 0,
+      proposalsSent: 2, proposalsPending: 1, proposalsRejected: 0,
+      apptsNew: 2, apptsReturning: 1,
+      leads: 8
+    },
+    salesBySource: [
+      { label: 'Door Knocking', value: 4800 },
+    ],
+    salesBySalesperson: [
+      { label: 'Jeremy Harrison', value: 4800 },
+    ],
+    salesByZip: [
+      { label: '34461', value: 4800 },
+    ],
+    salesByCrew: [],
+    salesByProduct: [
+      { label: 'Exterior Painting', value: 4800 },
+    ],
+    interiorByRate: [],
+    exteriorByRate: [
+      { label: 'Whole House', value: 4800 },
+    ],
+    closingBySource: [
+      { label: 'Door Knocking', won: 1, sent: 1 },
+    ],
+    closingByZip: [
+      { label: '34461', won: 1, sent: 1 },
+    ],
+    closingBySalesperson: [
+      { label: 'Jeremy Harrison', won: 1, sent: 2 },
+    ],
+    leadsBySource: [
+      { label: 'Door Knocking', value: 5 },
+      { label: 'Google', value: 2 },
+      { label: 'Word of Mouth', value: 1 },
+    ],
+    leadsToAppts: [
+      { label: 'Door Knocking', booked: 2, leads: 5 },
+      { label: 'Google', booked: 1, leads: 2 },
+      { label: 'Word of Mouth', booked: 0, leads: 1 },
+    ],
+  },
+
+  W: {
+    label: '📅 03/02/2026 – 03/06/2026',
+    kpi: {
+      salesPipeline: 12400, salesManual: 1200,
+      jobsSigned: 3, jobsUnsigned: 1, jobsManual: 1,
+      proposalsSent: 6, proposalsPending: 1, proposalsRejected: 1,
+      apptsNew: 5, apptsReturning: 2,
+      leads: 18
+    },
+    salesBySource: [
+      { label: 'A Little Bird',        value: 5200 },
+      { label: 'Door Knocking',        value: 4400 },
+      { label: 'Google',               value: 2400 },
+      { label: 'Yard Sign',            value: 1600 },
+    ],
+    salesBySalesperson: [
+      { label: 'Jeremy Harrison', value: 13600 },
+    ],
+    salesByZip: [
+      { label: '34461', value: 5200 },
+      { label: '34428', value: 4400 },
+      { label: '34236', value: 2400 },
+      { label: '34442', value: 1600 },
+    ],
+    salesByCrew: [
+      { label: 'Crew Alpha', value: 8800 },
+      { label: 'Crew Beta',  value: 4800 },
+    ],
+    salesByProduct: [
+      { label: 'Exterior Painting',       value: 7200 },
+      { label: 'Interior Painting - Walls', value: 3200 },
+      { label: 'Pressure Washing',        value: 2400 },
+      { label: 'No Product Selected',     value: 800 },
+    ],
+    interiorByRate: [
+      { label: 'Living Room', value: 2100 },
+      { label: 'Kitchen',     value: 1100 },
+    ],
+    exteriorByRate: [
+      { label: 'Whole House',  value: 5200 },
+      { label: 'Garage Door',  value: 2000 },
+    ],
+    closingBySource: [
+      { label: 'A Little Bird',   won: 2, sent: 3 },
+      { label: 'Door Knocking',   won: 1, sent: 1 },
+      { label: 'Google',          won: 1, sent: 1 },
+      { label: 'Yard Sign',       won: 1, sent: 1 },
+    ],
+    closingByZip: [
+      { label: '34461', won: 2, sent: 3 },
+      { label: '34428', won: 2, sent: 2 },
+      { label: '34236', won: 1, sent: 1 },
+    ],
+    closingBySalesperson: [
+      { label: 'Jeremy Harrison', won: 5, sent: 6 },
+    ],
+    leadsBySource: [
+      { label: 'A Little Bird',   value: 7 },
+      { label: 'Door Knocking',   value: 5 },
+      { label: 'Google',          value: 4 },
+      { label: 'Yard Sign',       value: 2 },
+    ],
+    leadsToAppts: [
+      { label: 'A Little Bird',   booked: 3, leads: 7 },
+      { label: 'Door Knocking',   booked: 2, leads: 5 },
+      { label: 'Google',          booked: 1, leads: 4 },
+      { label: 'Yard Sign',       booked: 1, leads: 2 },
+    ],
+  },
+
+  M: {
+    label: '📅 02/03/2026 – 03/05/2026',
+    kpi: {
+      salesPipeline: 39106, salesManual: 6389,
+      jobsSigned: 8, jobsUnsigned: 2, jobsManual: 1,
+      proposalsSent: 13, proposalsPending: 2, proposalsRejected: 1,
+      apptsNew: 12, apptsReturning: 4,
+      leads: 42
+    },
+    salesBySource: [
+      { label: 'A Little Bird',          value: 6644.83 },
+      { label: 'Door Knocking',          value: 4661.61 },
+      { label: 'Aliens',                 value: 3000.00 },
+      { label: 'Google',                 value: 2300.00 },
+      { label: 'Came to me in a Dream',  value: 1730.42 },
+      { label: 'Word of Mouth',          value: 900.00  },
+      { label: 'Yard Sign',              value: 258.14  },
+    ],
+    salesBySalesperson: [
+      { label: 'Jeremy Harrison', value: 18336.86 },
+      { label: 'Mike Torres',     value: 14580.00 },
+      { label: 'Sara Nguyen',     value: 12578.14 },
+    ],
+    salesByZip: [
+      { label: '34461', value: 6644.83 },
+      { label: '34428', value: 4661.61 },
+      { label: '34236', value: 3000.00 },
+      { label: '60073', value: 2300.00 },
+      { label: '34442', value: 1730.42 },
+      { label: '34461', value: 900.00  },
+    ],
+    salesByCrew: [
+      { label: 'Crew Alpha', value: 18500 },
+      { label: 'Crew Beta',  value: 14200 },
+      { label: 'Crew Gamma', value: 12795 },
+    ],
+    salesByProduct: [
+      { label: 'No Product Selected',       value: 5200.00 },
+      { label: 'Exterior Painting',         value: 5000.00 },
+      { label: 'Interior Painting - Walls', value: 1000.00 },
+      { label: 'Interior Painting - Ceiling',value: 800.00 },
+      { label: 'Interior Painting - Trim',  value: 500.00  },
+      { label: 'Pressure Washing',          value: 0 },
+      { label: '5-Year Warranty',           value: 0 },
+    ],
+    interiorByRate: [
+      { label: 'Kitchen',       value: 644.83 },
+      { label: 'Guest Bedroom', value: 530.42 },
+    ],
+    exteriorByRate: [
+      { label: 'Whole House',               value: 2706.23 },
+      { label: 'Playhouse 2 – Playhouse 1', value: 561.88  },
+      { label: 'Playhouse',                 value: 507.75  },
+      { label: 'Playhouse 1',               value: 507.75  },
+      { label: 'Whole House – Pressure Washing', value: 378.00 },
+    ],
+    closingBySource: [
+      { label: 'Aliens',                value: 1, won: 1, sent: 1 },
+      { label: 'Came to me in a Dream', won: 1, sent: 2 },
+      { label: 'Door Knocking',         won: 1, sent: 1 },
+      { label: 'Google',                won: 1, sent: 3 },
+      { label: 'Word of Mouth',         won: 1, sent: 2 },
+      { label: 'No Lead Source',        won: 0, sent: 2 },
+      { label: 'Yard Sign',             won: 0, sent: 3 },
+    ],
+    closingByZip: [
+      { label: '34428', won: 2, sent: 2 },
+      { label: '34442', won: 1, sent: 6 },
+      { label: '60073', won: 1, sent: 1 },
+      { label: '34236', won: 1, sent: 1 },
+      { label: '34461', won: 1, sent: 1 },
+      { label: '34446', won: 0, sent: 2 },
+      { label: '98290', won: 0, sent: 1 },
+    ],
+    closingBySalesperson: [
+      { label: 'Jeremy Harrison', won: 6,  sent: 13 },
+      { label: 'Mike Torres',     won: 3,  sent: 5  },
+      { label: 'Sara Nguyen',     won: 2,  sent: 4  },
+    ],
+    leadsBySource: [
+      { label: 'Aliens',                value: 1  },
+      { label: 'A Little Bird',         value: 12 },
+      { label: 'Door Knocking',         value: 8  },
+      { label: 'Google',                value: 9  },
+      { label: 'Came to me in a Dream', value: 5  },
+      { label: 'Word of Mouth',         value: 4  },
+      { label: 'Yard Sign',             value: 3  },
+    ],
+    leadsToAppts: [
+      { label: 'Aliens',                booked: 1,  leads: 1  },
+      { label: 'A Little Bird',         booked: 5,  leads: 12 },
+      { label: 'Door Knocking',         booked: 4,  leads: 8  },
+      { label: 'Google',                booked: 3,  leads: 9  },
+      { label: 'Came to me in a Dream', booked: 2,  leads: 5  },
+      { label: 'Word of Mouth',         booked: 1,  leads: 4  },
+      { label: 'Yard Sign',             booked: 0,  leads: 3  },
+    ],
+  },
+
+  Y: {
+    label: '📅 01/01/2026 – 03/06/2026',
+    kpi: {
+      salesPipeline: 148200, salesManual: 22400,
+      jobsSigned: 31, jobsUnsigned: 5, jobsManual: 4,
+      proposalsSent: 52, proposalsPending: 6, proposalsRejected: 6,
+      apptsNew: 44, apptsReturning: 18,
+      leads: 142
+    },
+    salesBySource: [
+      { label: 'A Little Bird',          value: 48200 },
+      { label: 'Door Knocking',          value: 38600 },
+      { label: 'Google',                 value: 26800 },
+      { label: 'Word of Mouth',          value: 22100 },
+      { label: 'Came to me in a Dream',  value: 14900 },
+      { label: 'Yard Sign',              value: 11200 },
+      { label: 'Aliens',                 value: 8800  },
+    ],
+    salesBySalesperson: [
+      { label: 'Jeremy Harrison', value: 72400 },
+      { label: 'Mike Torres',     value: 58600 },
+      { label: 'Sara Nguyen',     value: 39600 },
+    ],
+    salesByZip: [
+      { label: '34461', value: 42100 },
+      { label: '34428', value: 36800 },
+      { label: '34236', value: 28600 },
+      { label: '60073', value: 21400 },
+      { label: '34442', value: 18800 },
+      { label: '98290', value: 12900 },
+      { label: '34446', value: 10000 },
+    ],
+    salesByCrew: [
+      { label: 'Crew Alpha', value: 68400 },
+      { label: 'Crew Beta',  value: 58200 },
+      { label: 'Crew Gamma', value: 44000 },
+    ],
+    salesByProduct: [
+      { label: 'Exterior Painting',          value: 62400 },
+      { label: 'No Product Selected',        value: 38800 },
+      { label: 'Interior Painting - Walls',  value: 22600 },
+      { label: 'Interior Painting - Ceiling',value: 16200 },
+      { label: 'Interior Painting - Trim',   value: 11200 },
+      { label: 'Pressure Washing',           value: 8600  },
+      { label: '5-Year Warranty',            value: 10800 },
+    ],
+    interiorByRate: [
+      { label: 'Kitchen',        value: 18400 },
+      { label: 'Guest Bedroom',  value: 14200 },
+      { label: 'Living Room',    value: 11800 },
+      { label: 'Master Bedroom', value: 6000  },
+    ],
+    exteriorByRate: [
+      { label: 'Whole House',               value: 48200 },
+      { label: 'Whole House – Pressure Washing', value: 18600 },
+      { label: 'Playhouse',                 value: 8400  },
+      { label: 'Playhouse 1',               value: 6600  },
+      { label: 'Playhouse 2 – Playhouse 1', value: 4800  },
+    ],
+    closingBySource: [
+      { label: 'A Little Bird',         won: 14, sent: 18 },
+      { label: 'Door Knocking',         won: 9,  sent: 11 },
+      { label: 'Google',                won: 7,  sent: 10 },
+      { label: 'Word of Mouth',         won: 5,  sent: 7  },
+      { label: 'Came to me in a Dream', won: 3,  sent: 4  },
+      { label: 'Yard Sign',             won: 1,  sent: 4  },
+      { label: 'Aliens',                won: 1,  sent: 2  },
+      { label: 'No Lead Source',        won: 0,  sent: 2  },
+    ],
+    closingByZip: [
+      { label: '34461', won: 12, sent: 15 },
+      { label: '34428', won: 9,  sent: 11 },
+      { label: '34236', won: 7,  sent: 9  },
+      { label: '60073', won: 5,  sent: 6  },
+      { label: '34442', won: 4,  sent: 7  },
+      { label: '98290', won: 2,  sent: 4  },
+      { label: '34446', won: 1,  sent: 4  },
+    ],
+    closingBySalesperson: [
+      { label: 'Jeremy Harrison', won: 20, sent: 32 },
+      { label: 'Mike Torres',     won: 14, sent: 24 },
+      { label: 'Sara Nguyen',     won: 6,  sent: 10 },
+    ],
+    leadsBySource: [
+      { label: 'A Little Bird',         value: 38 },
+      { label: 'Google',                value: 34 },
+      { label: 'Door Knocking',         value: 28 },
+      { label: 'Word of Mouth',         value: 18 },
+      { label: 'Came to me in a Dream', value: 12 },
+      { label: 'Yard Sign',             value: 8  },
+      { label: 'Aliens',                value: 4  },
+    ],
+    leadsToAppts: [
+      { label: 'A Little Bird',         booked: 22, leads: 38 },
+      { label: 'Google',                booked: 18, leads: 34 },
+      { label: 'Door Knocking',         booked: 14, leads: 28 },
+      { label: 'Word of Mouth',         booked: 8,  leads: 18 },
+      { label: 'Came to me in a Dream', booked: 6,  leads: 12 },
+      { label: 'Yard Sign',             booked: 2,  leads: 8  },
+      { label: 'Aliens',                booked: 2,  leads: 4  },
+    ],
+  },
+
+  L: {
+    label: '📅 02/01/2026 – 02/28/2026',
+    kpi: {
+      salesPipeline: 28400, salesManual: 3200,
+      jobsSigned: 7, jobsUnsigned: 1, jobsManual: 1,
+      proposalsSent: 12, proposalsPending: 2, proposalsRejected: 2,
+      apptsNew: 10, apptsReturning: 4,
+      leads: 32
+    },
+    salesBySource: [
+      { label: 'A Little Bird',          value: 9800 },
+      { label: 'Door Knocking',          value: 7400 },
+      { label: 'Google',                 value: 6200 },
+      { label: 'Word of Mouth',          value: 4800 },
+      { label: 'Came to me in a Dream',  value: 3400 },
+    ],
+    salesBySalesperson: [
+      { label: 'Jeremy Harrison', value: 18200 },
+      { label: 'Mike Torres',     value: 13400 },
+    ],
+    salesByZip: [
+      { label: '34461', value: 10400 },
+      { label: '34428', value: 8200  },
+      { label: '34236', value: 6400  },
+      { label: '60073', value: 4200  },
+      { label: '34442', value: 2400  },
+    ],
+    salesByCrew: [
+      { label: 'Crew Alpha', value: 16800 },
+      { label: 'Crew Beta',  value: 14800 },
+    ],
+    salesByProduct: [
+      { label: 'Exterior Painting',          value: 14200 },
+      { label: 'Interior Painting - Walls',  value: 8600  },
+      { label: 'No Product Selected',        value: 5200  },
+      { label: 'Interior Painting - Ceiling',value: 3600  },
+    ],
+    interiorByRate: [
+      { label: 'Kitchen',      value: 4800 },
+      { label: 'Guest Bedroom', value: 3800 },
+    ],
+    exteriorByRate: [
+      { label: 'Whole House',               value: 12200 },
+      { label: 'Playhouse',                 value: 4800  },
+      { label: 'Whole House – Pressure Washing', value: 3400 },
+    ],
+    closingBySource: [
+      { label: 'A Little Bird',         won: 4, sent: 5 },
+      { label: 'Door Knocking',         won: 2, sent: 3 },
+      { label: 'Google',                won: 1, sent: 2 },
+      { label: 'Word of Mouth',         won: 1, sent: 1 },
+      { label: 'Came to me in a Dream', won: 1, sent: 1 },
+    ],
+    closingByZip: [
+      { label: '34461', won: 3, sent: 4 },
+      { label: '34428', won: 3, sent: 4 },
+      { label: '34236', won: 2, sent: 3 },
+      { label: '34442', won: 1, sent: 1 },
+    ],
+    closingBySalesperson: [
+      { label: 'Jeremy Harrison', won: 5, sent: 9  },
+      { label: 'Mike Torres',     won: 4, sent: 6  },
+    ],
+    leadsBySource: [
+      { label: 'A Little Bird',         value: 10 },
+      { label: 'Door Knocking',         value: 8  },
+      { label: 'Google',                value: 7  },
+      { label: 'Word of Mouth',         value: 4  },
+      { label: 'Came to me in a Dream', value: 3  },
+    ],
+    leadsToAppts: [
+      { label: 'A Little Bird',         booked: 5, leads: 10 },
+      { label: 'Door Knocking',         booked: 4, leads: 8  },
+      { label: 'Google',                booked: 3, leads: 7  },
+      { label: 'Word of Mouth',         booked: 1, leads: 4  },
+      { label: 'Came to me in a Dream', booked: 1, leads: 3  },
+    ],
+  },
+
+  T: {
+    label: '📅 All Time',
+    kpi: {
+      salesPipeline: 412600, salesManual: 58400,
+      jobsSigned: 92, jobsUnsigned: 14, jobsManual: 11,
+      proposalsSent: 164, proposalsPending: 8, proposalsRejected: 18,
+      apptsNew: 128, apptsReturning: 64,
+      leads: 422
+    },
+    salesBySource: [
+      { label: 'A Little Bird',         value: 148200 },
+      { label: 'Google',                value: 98600  },
+      { label: 'Door Knocking',         value: 82400  },
+      { label: 'Word of Mouth',         value: 64800  },
+      { label: 'Came to me in a Dream', value: 42200  },
+      { label: 'Yard Sign',             value: 28800  },
+      { label: 'Aliens',                value: 5000   },
+    ],
+    salesBySalesperson: [
+      { label: 'Jeremy Harrison', value: 202400 },
+      { label: 'Mike Torres',     value: 162800 },
+      { label: 'Sara Nguyen',     value: 105800 },
+    ],
+    salesByZip: [
+      { label: '34461', value: 128400 },
+      { label: '34428', value: 104200 },
+      { label: '34236', value: 82600  },
+      { label: '60073', value: 62400  },
+      { label: '34442', value: 48400  },
+      { label: '98290', value: 30200  },
+      { label: '34446', value: 14800  },
+    ],
+    salesByCrew: [
+      { label: 'Crew Alpha', value: 208400 },
+      { label: 'Crew Beta',  value: 164200 },
+      { label: 'Crew Gamma', value: 98400  },
+    ],
+    salesByProduct: [
+      { label: 'Exterior Painting',           value: 198400 },
+      { label: 'No Product Selected',         value: 88200  },
+      { label: 'Interior Painting - Walls',   value: 62400  },
+      { label: 'Interior Painting - Ceiling', value: 44200  },
+      { label: 'Interior Painting - Trim',    value: 32400  },
+      { label: 'Pressure Washing',            value: 28200  },
+      { label: '5-Year Warranty',             value: 17200  },
+    ],
+    interiorByRate: [
+      { label: 'Kitchen',        value: 64200 },
+      { label: 'Guest Bedroom',  value: 48400 },
+      { label: 'Living Room',    value: 36800 },
+      { label: 'Master Bedroom', value: 22600 },
+      { label: 'Dining Room',    value: 14200 },
+    ],
+    exteriorByRate: [
+      { label: 'Whole House',               value: 148400 },
+      { label: 'Whole House – Pressure Washing', value: 58200 },
+      { label: 'Playhouse',                 value: 22400  },
+      { label: 'Playhouse 1',               value: 18600  },
+      { label: 'Playhouse 2 – Playhouse 1', value: 14200  },
+    ],
+    closingBySource: [
+      { label: 'A Little Bird',         won: 38, sent: 48 },
+      { label: 'Google',                won: 22, sent: 32 },
+      { label: 'Door Knocking',         won: 18, sent: 22 },
+      { label: 'Word of Mouth',         won: 14, sent: 18 },
+      { label: 'Came to me in a Dream', won: 9,  sent: 12 },
+      { label: 'Yard Sign',             won: 4,  sent: 10 },
+      { label: 'Aliens',                won: 2,  sent: 4  },
+      { label: 'No Lead Source',        won: 10, sent: 18 },
+    ],
+    closingByZip: [
+      { label: '34461', won: 32, sent: 42 },
+      { label: '34428', won: 26, sent: 34 },
+      { label: '34236', won: 18, sent: 24 },
+      { label: '60073', won: 14, sent: 18 },
+      { label: '34442', won: 12, sent: 16 },
+      { label: '98290', won: 8,  sent: 12 },
+      { label: '34446', won: 7,  sent: 18 },
+    ],
+    closingBySalesperson: [
+      { label: 'Jeremy Harrison', won: 58, sent: 88  },
+      { label: 'Mike Torres',     won: 42, sent: 64  },
+      { label: 'Sara Nguyen',     won: 17, sent: 28  },
+    ],
+    leadsBySource: [
+      { label: 'A Little Bird',         value: 128 },
+      { label: 'Google',                value: 102 },
+      { label: 'Door Knocking',         value: 84  },
+      { label: 'Word of Mouth',         value: 56  },
+      { label: 'Came to me in a Dream', value: 32  },
+      { label: 'Yard Sign',             value: 14  },
+      { label: 'Aliens',                value: 6   },
+    ],
+    leadsToAppts: [
+      { label: 'A Little Bird',         booked: 64,  leads: 128 },
+      { label: 'Google',                booked: 44,  leads: 102 },
+      { label: 'Door Knocking',         booked: 38,  leads: 84  },
+      { label: 'Word of Mouth',         booked: 22,  leads: 56  },
+      { label: 'Came to me in a Dream', booked: 12,  leads: 32  },
+      { label: 'Yard Sign',             booked: 4,   leads: 14  },
+      { label: 'Aliens',                booked: 2,   leads: 6   },
+    ],
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════
+const fmt$ = v => v === 0 ? '$0.00' : '$' + v.toLocaleString('en-US', {minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2});
+const fmtPct = v => v.toFixed(1) + '%';
+const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+
+function barRows(items, valueType) {
+  if (!items || items.length === 0) return emptyState();
+  const maxVal = Math.max(...items.map(i => valueType === '$' ? i.value : (i.won || i.booked || i.value || 0)));
+  if (maxVal === 0) return emptyState();
+  return items.map((item, i) => {
+    let displayVal, pctLabel, fillPct;
+    if (valueType === '$') {
+      const total = items.reduce((s,x) => s + x.value, 0);
+      const pct = total > 0 ? (item.value / total * 100) : 0;
+      displayVal = fmt$(item.value);
+      pctLabel = item.value === 0 ? '(0.00%)' : `(${pct.toFixed(2)}%)`;
+      fillPct = item.value === 0 ? 0 : (item.value / maxVal * 100);
+    } else if (valueType === 'count') {
+      const total = items.reduce((s,x) => s + (x.value || 0), 0);
+      const pct = total > 0 ? (item.value / total * 100) : 0;
+      displayVal = item.value;
+      pctLabel = item.value === 0 ? '(0.00%)' : `(${pct.toFixed(2)}%)`;
+      fillPct = item.value === 0 ? 0 : (item.value / maxVal * 100);
+    } else if (valueType === 'close') {
+      const closeRate = item.sent > 0 ? (item.won / item.sent * 100) : 0;
+      displayVal = item.won;
+      pctLabel = `(${closeRate.toFixed(2)}% close rate)`;
+      fillPct = closeRate;
+    } else if (valueType === 'setrate') {
+      const rate = item.leads > 0 ? (item.booked / item.leads * 100) : 0;
+      displayVal = item.booked;
+      pctLabel = `(${rate.toFixed(0)}% set rate)`;
+      fillPct = rate;
+    }
+    const color = item.value === 0 ? '#D0D5DD' : COLORS[i % COLORS.length];
+    return `<div class="sc-bar-row">
+      <div class="sc-bar-top">
+        <span class="sc-bar-label">${item.label}</span>
+        <span><span class="sc-bar-value">${displayVal}</span><span class="sc-bar-pct">${pctLabel}</span></span>
+      </div>
+      <div class="sc-bar-track"><div class="sc-bar-fill" style="width:${fillPct}%;background:${color};"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function emptyState() {
+  return `<div class="sc-empty">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="17" y="13" width="4" height="8"/></svg>
+    <span class="sc-empty-text">No results found for this period</span>
+  </div>`;
+}
+
+function pdfBtn() {
+  return `<div class="sc-footer"><button class="sc-pdf-btn"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>PDF</button></div>`;
+}
+
+function scIcon(paths) {
+  return `<div class="sc-icon"><svg viewBox="0 0 24 24">${paths}</svg></div>`;
+}
+
+function scCard(iconPaths, title, subtitle, desc, bodyHtml, totalLabel, totalVal) {
+  const totalRow = totalLabel
+    ? `<div class="sc-total"><span class="sc-total-label">${totalLabel}</span><span class="sc-total-value">${totalVal}</span></div>`
+    : '';
+  return `<div class="sc">
+    <div class="sc-header">
+      ${scIcon(iconPaths)}
+      <div class="sc-meta">
+        <div class="sc-title">${title} <span>${subtitle}</span></div>
+        <div class="sc-desc">${desc}</div>
+      </div>
+    </div>
+    <div class="sc-divider"></div>
+    <div class="sc-body">${bodyHtml}</div>
+    ${totalRow}
+    ${pdfBtn()}
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════
+function render(periodKey) {
+  const d = DATA[periodKey];
+  const k = d.kpi;
+
+  // — Derived values —
+  const totalSales    = k.salesPipeline + k.salesManual;
+  const totalJobs     = k.jobsSigned + k.jobsUnsigned + k.jobsManual;
+  const avgJobSize    = totalJobs > 0 ? totalSales / totalJobs : 0;
+  const totalProposalsSent = k.proposalsSent;
+  const closingFromProposals = k.jobsSigned + k.jobsUnsigned;
+  const closingRatio  = totalProposalsSent > 0 ? (closingFromProposals / totalProposalsSent * 100) : 0;
+  const totalAppts    = k.apptsNew + k.apptsReturning;
+  const totalLeads    = d.leadsBySource.reduce((s, x) => s + x.value, 0);
+  const setRate       = totalLeads > 0 ? (totalAppts / totalLeads * 100) : 0;
+  const pipelinePct   = totalSales > 0 ? Math.round(k.salesPipeline / totalSales * 100) : 0;
+  const manualPct     = 100 - pipelinePct;
+  const apptNewPct    = totalAppts > 0 ? Math.round(k.apptsNew / totalAppts * 100) : 0;
+  const apptRetPct    = 100 - apptNewPct;
+  const jobSignedPct  = totalJobs > 0 ? Math.round(k.jobsSigned / totalJobs * 100) : 0;
+  const jobUnsignedPct= totalJobs > 0 ? Math.round(k.jobsUnsigned / totalJobs * 100) : 0;
+  const jobManualPct  = 100 - jobSignedPct - jobUnsignedPct;
+
+  // — Date pill —
+  set('datePill', d.label);
+  set('datePillMobile', d.label);
+
+  // — KPI: Sales —
+  set('kpi-sales', fmt$(totalSales));
+  set('kpi-sales-pipeline', fmt$(k.salesPipeline) + ' pipeline');
+  set('kpi-sales-manual', '· ' + fmt$(k.salesManual) + ' manual');
+  set('bd-pipeline', fmt$(k.salesPipeline));
+  set('bd-pipeline-pct', pipelinePct + '%');
+  set('bd-manual', fmt$(k.salesManual));
+  set('bd-manual-pct', manualPct + '%');
+  set('bd-sales-total', fmt$(totalSales));
+
+  // — KPI: Jobs Won —
+  set('kpi-jobs', totalJobs);
+  const jobsMeta = document.getElementById('kpi-jobs-meta');
+  if (jobsMeta) jobsMeta.innerHTML = k.jobsUnsigned > 0
+    ? `<span class="badge badge-warning">⚠ ${k.jobsUnsigned} unsigned</span>`
+    : `<span class="badge badge-green">All signed</span>`;
+  set('bd-jobs-signed', k.jobsSigned);
+  set('bd-jobs-signed-pct', jobSignedPct + '%');
+  set('bd-jobs-unsigned', k.jobsUnsigned);
+  set('bd-jobs-unsigned-pct', jobUnsignedPct + '%');
+  set('bd-jobs-manual', k.jobsManual);
+  set('bd-jobs-manual-pct', jobManualPct + '%');
+  set('bd-jobs-total', totalJobs);
+
+  // — KPI: Avg Job Size —
+  set('kpi-avg', fmt$(avgJobSize));
+  set('kpi-avg-formula', fmt$(totalSales) + ' ÷ ' + totalJobs + ' jobs');
+
+  // — KPI: Closing Ratio —
+  set('kpi-closing', fmtPct(closingRatio));
+  set('kpi-closing-formula', closingFromProposals + ' accepted ÷ ' + totalProposalsSent + ' sent');
+  set('bd-cr-signed', k.jobsSigned);
+  set('bd-cr-unsigned', k.jobsUnsigned);
+  set('bd-cr-pending', k.proposalsPending);
+  set('bd-cr-rejected', k.proposalsRejected);
+  set('bd-cr-total', totalProposalsSent);
+
+  // — KPI: Set Rate —
+  set('kpi-setrate', fmtPct(setRate));
+  set('kpi-setrate-formula', totalAppts + ' booked ÷ ' + totalLeads + ' leads');
+
+  // — KPI: Appointments —
+  set('kpi-appts', totalAppts);
+  set('kpi-appts-badge', k.apptsNew + ' new · ' + k.apptsReturning + ' returning');
+  set('bd-appts-new', k.apptsNew);
+  set('bd-appts-new-pct', apptNewPct + '%');
+  set('bd-appts-ret', k.apptsReturning);
+  set('bd-appts-ret-pct', apptRetPct + '%');
+  set('bd-appts-total', totalAppts);
+
+  // — Sections —
+  const totalSalesSrc  = d.salesBySource.reduce((s,x) => s+x.value, 0);
+  const totalSalesSP   = d.salesBySalesperson.reduce((s,x) => s+x.value, 0);
+  const totalSalesZip  = d.salesByZip.reduce((s,x) => s+x.value, 0);
+  const totalSalesCrew = d.salesByCrew.reduce((s,x) => s+x.value, 0);
+  const totalSalesProd = d.salesByProduct.reduce((s,x) => s+x.value, 0);
+  const totalIntRate   = d.interiorByRate.reduce((s,x) => s+x.value, 0);
+  const totalExtRate   = d.exteriorByRate.reduce((s,x) => s+x.value, 0);
+  const totalLeadsCount= d.leadsBySource.reduce((s,x) => s+x.value, 0);
+  const totalLeadsAppts= d.leadsToAppts.reduce((s,x) => s+x.booked, 0);
+  const totalWonSrc    = d.closingBySource.reduce((s,x) => s+(x.won||0), 0);
+  const totalWonZip    = d.closingByZip.reduce((s,x) => s+(x.won||0), 0);
+  const totalWonSP     = d.closingBySalesperson.reduce((s,x) => s+(x.won||0), 0);
+
+  document.getElementById('sections').innerHTML = `
+    <div class="section-row">
+      ${scCard(
+        `<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>`,
+        'Leads By Source', `(Total Leads: ${totalLeadsCount})`,
+        'Total new contacts that entered your system during the period with their corresponding lead source',
+        barRows(d.leadsBySource, 'count'), 'Total', totalLeadsCount
+      )}
+      ${scCard(
+        `<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>`,
+        'Leads To Appointments', `(Total Booked: ${totalLeadsAppts})`,
+        'Booked appointments divided by leads for the period for each lead source',
+        barRows(d.leadsToAppts, 'setrate'), 'Total Booked', totalLeadsAppts
+      )}
+    </div>
+    <div class="section-row">
+      ${scCard(
+        `<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>`,
+        'Sales By Source', `(Total: ${fmt$(totalSalesSrc)})`,
+        'Total amount invoiced during the specified time period with the corresponding lead source',
+        barRows(d.salesBySource, '$'), 'Total', fmt$(totalSalesSrc)
+      )}
+      ${scCard(
+        `<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>`,
+        'Closing Ratio by Salesperson', `(Total Jobs Won: ${totalWonSP})`,
+        'Accepted proposals divided by sent proposals for the period for each salesperson',
+        barRows(d.closingBySalesperson, 'close'), 'Total Jobs Won', totalWonSP
+      )}
+    </div>
+    <div class="section-row">
+      ${scCard(
+        `<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>`,
+        'Sales By Salesperson', `(Total: ${fmt$(totalSalesSP)})`,
+        'Total amount of sales for each salesperson assigned to the corresponding deal during the specified time period',
+        barRows(d.salesBySalesperson, '$'), 'Total', fmt$(totalSalesSP)
+      )}
+      ${scCard(
+        `<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>`,
+        'Sales By Zip Code', `(Total: ${fmt$(totalSalesZip)})`,
+        'Total amount of sales during the specified time period associated with a corresponding zip code',
+        barRows(d.salesByZip, '$'), 'Total', fmt$(totalSalesZip)
+      )}
+    </div>
+    <div class="section-row">
+      ${scCard(
+        `<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>`,
+        'Sales By Crew', `(Total: ${fmt$(totalSalesCrew)})`,
+        'Total dollar amount of scheduled projects assigned to each crew. You can specify crew names in Company settings',
+        barRows(d.salesByCrew, '$'),
+        totalSalesCrew > 0 ? 'Total' : null,
+        totalSalesCrew > 0 ? fmt$(totalSalesCrew) : null
+      )}
+      ${scCard(
+        `<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>`,
+        'Sales By Product', `(Total: ${fmt$(totalSalesProd)})`,
+        'Total amount of sales for each product or service specified in the Products / Services tab in settings during the specified time period',
+        barRows(d.salesByProduct, '$'), 'Total', fmt$(totalSalesProd)
+      )}
+    </div>
+    <div class="section-row">
+      ${scCard(
+        `<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>`,
+        'Interior Sales By Production Rates', `(Total: ${fmt$(totalIntRate)})`,
+        'This data represents the sales based on Interior Production Rates',
+        barRows(d.interiorByRate, '$'),
+        totalIntRate > 0 ? 'Total' : null,
+        totalIntRate > 0 ? fmt$(totalIntRate) : null
+      )}
+      ${scCard(
+        `<path d="M17 8h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2v4l-4-4H9a1.994 1.994 0 0 1-1.414-.586m0 0L11 14h4a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2v4l.586-.586z"/>`,
+        'Exterior Sales By Production Rates', `(Total: ${fmt$(totalExtRate)})`,
+        'This data represents the sales based on Exterior Production Rates',
+        barRows(d.exteriorByRate, '$'),
+        totalExtRate > 0 ? 'Total' : null,
+        totalExtRate > 0 ? fmt$(totalExtRate) : null
+      )}
+    </div>
+    <div class="section-row">
+      ${scCard(
+        `<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>`,
+        'Closing Ratio by Source', `(Total Jobs Won: ${totalWonSrc})`,
+        'Accepted proposals divided by sent proposals for the period for each source',
+        barRows(d.closingBySource, 'close'), 'Total Jobs Won', totalWonSrc
+      )}
+      ${scCard(
+        `<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>`,
+        'Closing Ratio by Zip Code', `(Total Jobs Won: ${totalWonZip})`,
+        'Accepted proposals divided by sent proposals for the period for each job zip code',
+        barRows(d.closingByZip, 'close'), 'Total Jobs Won', totalWonZip
+      )}
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PERIOD TAB SWITCHING
+// ═══════════════════════════════════════════════════════════════
+let activePeriod = 'M';
+
+function switchPeriod(period) {
+  if (period === activePeriod) return;
+  activePeriod = period;
+
+  // Update both tab sets (desktop + mobile)
+  ['periodTabs','periodTabsMobile'].forEach(tabsId => {
+    document.getElementById(tabsId).querySelectorAll('.period-tab').forEach(tab => {
+      tab.classList.toggle('active', tab.dataset.period === period);
+    });
+  });
+
+  // Collapse all open breakdowns
+  document.querySelectorAll('.breakdown.show').forEach(bd => bd.classList.remove('show'));
+  document.querySelectorAll('.tile.expanded').forEach(t => t.classList.remove('expanded'));
+
+  // Flash tiles
+  document.querySelectorAll('.tile').forEach(t => {
+    t.classList.add('updating');
+    setTimeout(() => t.classList.remove('updating'), 200);
+  });
+
+  setTimeout(() => render(period), 120);
+}
+
+// Wire up both tab bars
+['periodTabs','periodTabsMobile'].forEach(tabsId => {
+  document.getElementById(tabsId).addEventListener('click', e => {
+    const tab = e.target.closest('.period-tab');
+    if (tab && tab.dataset.period) switchPeriod(tab.dataset.period);
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════
+// ACCORDION TOGGLE
+// ═══════════════════════════════════════════════════════════════
+function toggleTile(tile, id) {
+  const bd = document.getElementById(id);
+  bd.classList.toggle('show');
+  tile.classList.toggle('expanded');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+render('M');
+</script>
+</body>
+</html>
