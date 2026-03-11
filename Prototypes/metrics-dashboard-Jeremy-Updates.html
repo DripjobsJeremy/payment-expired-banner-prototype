@@ -60,7 +60,7 @@
   .banner { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
   .metric-groups { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .metric-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow-tile); }
-  .metric-group-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+  .metric-group-label { font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
   .metric-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
   .metric-tab {
     border: 1px solid var(--border);
@@ -323,7 +323,7 @@
     <div class="banner">
       <div class="metric-groups" id="metricGroups">
         <div class="metric-group">
-          <div class="metric-group-label">Group A: Revenue & Wins</div>
+          <div class="metric-group-label">REVENUE & WINS</div>
           <div class="metric-tabs">
             <button class="metric-tab" data-metric="sales" type="button">
               <div class="metric-tab-name">Sales</div>
@@ -343,12 +343,12 @@
           </div>
         </div>
         <div class="metric-group">
-          <div class="metric-group-label">Group B: Conversion & Volume</div>
+          <div class="metric-group-label">CONVERSIONS & VOLUME</div>
           <div class="metric-tabs">
             <button class="metric-tab" data-metric="closing" type="button">
               <div class="metric-tab-name">Closing Ratio</div>
               <div class="metric-tab-value" id="tab-closing-value">76.9%</div>
-              <div class="metric-tab-def">Same Group Sent Conversion Rate.</div>
+              <div class="metric-tab-def">Accepted Proposals / Proposals Sent</div>
             </button>
             <button class="metric-tab" data-metric="setrate" type="button">
               <div class="metric-tab-name">Set Rate</div>
@@ -1069,7 +1069,7 @@ function render(periodKey) {
         desc: 'Average pipeline revenue per accepted proposal job. Manual invoices are intentionally excluded from this metric.',
         value: fmt$(avgJobSize),
         left: `<div class="tile-formula-label">Formula</div><div class="tile-formula">${fmt$(k.salesPipeline)} ÷ ${proposalJobsWon} proposal jobs</div>`,
-        right: `<div class="tile-formula-label">Scope Note</div><div class="tile-formula">Manual invoice sales are excluded.</div>`
+        right: `<div class="tile-formula-label">Note</div><div class="tile-formula">Manual invoice sales are excluded.</div>`
       },
       closing: {
         title: 'Closing Ratio',
@@ -1079,7 +1079,7 @@ function render(periodKey) {
           <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">Accepted from Same Group</div></div><div class="bd-right"><div class="bd-value">${closingFromProposals}</div></div></div>
           <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Sent in Period</div></div><div class="bd-right"><div class="bd-value">${totalProposalsSent}</div></div></div>
         `,
-        right: `<div class="tile-formula-label">Formula</div><div class="tile-formula">${closingFromProposals} accepted ÷ ${totalProposalsSent} sent</div><div class="tile-formula" style="margin-top:8px;">Same-group metric; may not match Jobs Won.</div>`
+        right: `<div class="tile-formula-label">Formula</div><div class="tile-formula">${closingFromProposals} accepted ÷ ${totalProposalsSent} sent</div><div class="tile-formula-label" style="margin-top:12px;">Note</div><div class="tile-formula">This tracks proposals sent and accepted within the same period. Jobs Won may differ — it counts all accepted proposals regardless of when they were sent.</div>`
       },
       setrate: {
         title: 'Set Rate',
