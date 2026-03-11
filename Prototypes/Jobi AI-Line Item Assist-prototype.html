@@ -780,6 +780,14 @@
     /* Paint – SW Emerald and Caulking & Sealants have no canned description */
   };
 
+  var catalogPrices = {
+    'Interior Painting - Doors': 350,
+    'Exterior Painting': 1200,
+    'General Prep': 175,
+    'Paint \u2013 Sherwin Williams Emerald': 85,
+    'Caulking & Sealants': 120
+  };
+
   /* ── Line Items State ── */
   var lineItems = [
     { id: 1, name: 'Interior Painting - Doors', type: 'Product', qty: 1, price: 250, taxable: false, taxRate: 5, descOnly: false, description: '' }
@@ -1061,6 +1069,12 @@
     if (val) {
       setBadge(m, catalogTypes[val] || 'Product');
       document.getElementById(m+'-name').value = val;
+      var price = catalogPrices[val];
+      if (price !== undefined) {
+        document.getElementById(m+'-price').value = price;
+        originalPrice[m] = price;
+        updateTotal(m);
+      }
       var aiInput = document.getElementById(m+'-ai-input');
       if (aiInput) aiInput.placeholder = 'Describe "' + val + '"...';
       /* Populate canned description if available */
@@ -1076,6 +1090,9 @@
       setBadge(m, 'Product');
       document.getElementById(m+'-name').value = '';
       desc.innerHTML = '';
+      document.getElementById(m+'-price').value = '0';
+      originalPrice[m] = 0;
+      updateTotal(m);
       if (genBtn) genBtn.disabled = true;
     }
   }
