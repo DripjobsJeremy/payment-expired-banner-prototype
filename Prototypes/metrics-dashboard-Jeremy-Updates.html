@@ -150,6 +150,19 @@
   .kpi-drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid var(--border); }
   .kpi-drawer-title { font-size: 14px; font-weight: 800; color: var(--purple); }
   .kpi-drawer-body { padding: 16px 18px; overflow: auto; }
+  .kpi-drawer-footer { display: none; }
+  .kpi-drawer-close-mobile {
+    width: 100%;
+    border: 1px solid #C7D7FE;
+    background: #EEF4FF;
+    color: #1D4ED8;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 14px;
+    cursor: pointer;
+  }
+  .kpi-drawer-close-mobile:active { background: #E0EAFF; }
 
   /* TILE */
   .tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px 20px; box-shadow: var(--shadow-tile); transition: box-shadow 0.2s, transform 0.2s; position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
@@ -315,6 +328,21 @@
     .sc-pdf-btn { padding: 8px 14px; font-size: 12px; }
     .period-tab { min-width: 44px; padding: 8px 10px; font-size: 11px; }
     .date-pill { font-size: 11.5px; padding: 5px 10px; }
+
+    .kpi-drawer-head { padding: 12px 14px; }
+    .kpi-drawer-body { padding: 12px 14px 84px; }
+    .kpi-drawer-title { font-size: 18px; }
+    #kpiDrawerClose { display: none; }
+    .kpi-drawer-footer {
+      display: block;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    }
   }
   @media (max-width: 480px) {
     .tile { grid-template-columns: 1fr; }
@@ -513,6 +541,9 @@
     <button type="button" class="metric-detail-close" id="kpiDrawerClose">Close</button>
   </div>
   <div class="kpi-drawer-body" id="kpiDrawerBody"></div>
+  <div class="kpi-drawer-footer">
+    <button type="button" class="kpi-drawer-close-mobile" id="kpiDrawerCloseMobile" aria-label="Close metric breakdown">Close</button>
+  </div>
 </aside>
 
 <script>
@@ -1615,8 +1646,13 @@ document.getElementById('metricGroups').addEventListener('click', e => {
   if (tab && tab.dataset.metric) switchMetric(tab.dataset.metric);
 });
 
-document.getElementById('kpiDrawerClose').addEventListener('click', closeKpiDrawer);
-document.getElementById('kpiDrawerBackdrop').addEventListener('click', closeKpiDrawer);
+const kpiDrawerCloseBtn = document.getElementById('kpiDrawerClose');
+const kpiDrawerCloseMobileBtn = document.getElementById('kpiDrawerCloseMobile');
+const kpiDrawerBackdropEl = document.getElementById('kpiDrawerBackdrop');
+
+if (kpiDrawerCloseBtn) kpiDrawerCloseBtn.addEventListener('click', closeKpiDrawer);
+if (kpiDrawerCloseMobileBtn) kpiDrawerCloseMobileBtn.addEventListener('click', closeKpiDrawer);
+if (kpiDrawerBackdropEl) kpiDrawerBackdropEl.addEventListener('click', closeKpiDrawer);
 
 window.addEventListener('resize', applyResponsiveMetricDefaults);
 
