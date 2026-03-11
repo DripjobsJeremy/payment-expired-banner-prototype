@@ -210,6 +210,21 @@
   .overlay.show { opacity: 1; pointer-events: all; }
   .dialog { background: white; border-radius: 12px; padding: 26px 28px; max-width: 360px; width: 90%; box-shadow: 0 16px 50px rgba(0,0,0,.22); transform: scale(.96) translateY(6px); transition: transform .2s; }
   .overlay.show .dialog { transform: scale(1) translateY(0); }
+  /* ── AI Preview Dialog ── */
+  .dialog-preview { max-width: 560px; padding: 0; overflow: hidden; }
+  .dialog-preview-header { display: flex; align-items: center; gap: 10px; padding: 18px 22px 14px; border-bottom: 1px solid #ede9ff; }
+  .dialog-preview-header-icon { width: 32px; height: 32px; border-radius: 50%; background: #ede9ff; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #7C3AED; font-size: 15px; }
+  .dialog-preview-title { font-size: 15px; font-weight: 700; color: #111; }
+  .dialog-preview-subtitle { font-size: 12px; color: #9b7de8; font-weight: 500; margin-top: 1px; }
+  .dialog-preview-body { padding: 16px 22px; max-height: 320px; overflow-y: auto; font-size: 13.5px; line-height: 1.65; color: #333; background: #faf9ff; border-bottom: 1px solid #ede9ff; }
+  .dialog-preview-body p { margin-bottom: 6px; }
+  .dialog-preview-body ul, .dialog-preview-body ol { padding-left: 20px; margin: 4px 0 8px; }
+  .dialog-preview-body li { margin-bottom: 2px; }
+  .dialog-preview-footer { display: flex; gap: 10px; justify-content: flex-end; padding: 14px 22px; }
+  .btn-preview-cancel { background: none; border: 1.5px solid #d0d4dd; border-radius: 7px; padding: 8px 16px; font-size: 13px; font-weight: 600; color: #555; cursor: pointer; font-family: inherit; transition: all .15s; }
+  .btn-preview-cancel:hover { border-color: #7C3AED; color: #7C3AED; }
+  .btn-preview-replace { background: #7C3AED; border: none; border-radius: 7px; padding: 8px 18px; font-size: 13px; font-weight: 600; color: white; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 6px; transition: background .15s; }
+  .btn-preview-replace:hover { background: #6d28d9; }
   .dialog-icon-wrap { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
   .icon-warn { background: #fff8e1; }
   .icon-error { background: #fff1f3; }
@@ -695,16 +710,22 @@
 
 
 <!-- ── Dialogs ── -->
-<div class="overlay" id="dlg-replace">
-  <div class="dialog">
-    <div class="dialog-icon-wrap icon-warn">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+<div class="overlay" id="dlg-ai-preview">
+  <div class="dialog dialog-preview">
+    <div class="dialog-preview-header">
+      <div class="dialog-preview-header-icon">&#x2736;</div>
+      <div>
+        <div class="dialog-preview-title">AI-Generated Description</div>
+        <div class="dialog-preview-subtitle">Review before replacing your current description</div>
+      </div>
     </div>
-    <div class="dialog-title">Replace Description?</div>
-    <div class="dialog-body">Jobi AI will replace your current description. Would you like to continue?</div>
-    <div class="dialog-actions">
-      <button class="btn btn-ghost" onclick="closeDialog('dlg-replace')">Cancel</button>
-      <button class="btn btn-primary" onclick="confirmReplace()">Continue</button>
+    <div class="dialog-preview-body" id="dlg-preview-content"></div>
+    <div class="dialog-preview-footer">
+      <button class="btn-preview-cancel" onclick="cancelPreview()">Cancel</button>
+      <button class="btn-preview-replace" onclick="applyPreviewReplace()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Replace Description
+      </button>
     </div>
   </div>
 </div>
@@ -1111,16 +1132,18 @@
   function onDescInput(m) { /* reserved */ }
 
   /* ── Generate ── */
+  var pendingGeneratedHtml = '';
+  var pendingHasExisting = false;
+
   function triggerGenerate(m) {
     var input = document.getElementById(m+'-ai-input').value.trim();
     if (!input) { openDialog('dlg-empty'); return; }
     var desc = document.getElementById(m+'-desc');
     var text = (desc.innerText || desc.textContent || '').replace(/body p/g,'').trim();
     pendingModal = m;
-    if (text.length > 0) { openDialog('dlg-replace'); } else { runGenerate(); }
+    pendingHasExisting = text.length > 0;
+    runGenerate();
   }
-
-  function confirmReplace() { closeDialog('dlg-replace'); runGenerate(); }
 
   function runGenerate() {
     var m = pendingModal;
@@ -1137,9 +1160,8 @@
       loadingOverlay.classList.remove('show');
 
       if (Math.random() > 0.15) {
-        var desc = document.getElementById(m+'-desc');
         var itemName = document.getElementById(m+'-name').value.trim();
-        desc.innerHTML =
+        pendingGeneratedHtml =
           '<p><strong>' + escHtml(itemName) + '</strong></p>' +
           '<p><strong>Preparation:</strong></p>' +
           '<ul>' +
@@ -1155,14 +1177,37 @@
           '<li>Apply two coats for uniform coverage and color</li>' +
           '</ul>' +
           '<p><em>Note: Pricing is based on standard conditions. Additional charges may apply for surfaces requiring extensive prep or specialty coatings.</em></p>';
-        desc.classList.add('ai-flash');
-        setTimeout(function(){ desc.classList.remove('ai-flash'); }, 1400);
-        closeAiPanel(m);
-        showToast('Description generated by Jobi AI', 'success');
+
+        if (pendingHasExisting) {
+          /* Show preview popup — user must confirm before replacing */
+          document.getElementById('dlg-preview-content').innerHTML = pendingGeneratedHtml;
+          openDialog('dlg-ai-preview');
+        } else {
+          /* Empty editor — write directly */
+          applyGenerated();
+        }
       } else {
         openDialog('dlg-ai-error');
       }
     }, 2000);
+  }
+
+  function applyGenerated() {
+    var desc = document.getElementById(pendingModal+'-desc');
+    desc.innerHTML = pendingGeneratedHtml;
+    desc.classList.add('ai-flash');
+    setTimeout(function(){ desc.classList.remove('ai-flash'); }, 1400);
+    closeAiPanel(pendingModal);
+    showToast('Description generated by Jobi AI', 'success');
+  }
+
+  function applyPreviewReplace() {
+    closeDialog('dlg-ai-preview');
+    applyGenerated();
+  }
+
+  function cancelPreview() {
+    closeDialog('dlg-ai-preview');
   }
 
   /* ── Dialog ── */
