@@ -136,6 +136,22 @@
     cursor: pointer;
   }
   .metric-detail-close:hover { background: #EAECF0; }
+  #kpiDrawerClose {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--text-secondary);
+  }
+  #kpiDrawerClose:hover {
+    background: #EAECF0;
+    color: var(--text-primary);
+  }
   .metric-detail-grid { display: grid; grid-template-columns: 1fr; gap: 10px; border-top: 1px solid var(--border); padding-top: 12px; }
   .metric-detail-actions { display: flex; justify-content: flex-end; margin-top: 14px; }
   .metric-group-detail .metric-detail-title { color: var(--purple); }
@@ -538,7 +554,7 @@
 <aside class="kpi-drawer" id="kpiDrawer" aria-hidden="true">
   <div class="kpi-drawer-head">
     <div class="kpi-drawer-title">Metric Breakdown</div>
-    <button type="button" class="metric-detail-close" id="kpiDrawerClose">Close</button>
+    <button type="button" class="metric-detail-close" id="kpiDrawerClose" aria-label="Close metric breakdown" title="Close">&times;</button>
   </div>
   <div class="kpi-drawer-body" id="kpiDrawerBody"></div>
   <div class="kpi-drawer-footer">
