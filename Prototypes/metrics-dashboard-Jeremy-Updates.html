@@ -66,19 +66,19 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     background: #FCFCFD;
-    padding: 14px 12px;
+    padding: 14px 14px 12px;
     cursor: pointer;
     transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    align-items: flex-start;
+    text-align: left;
   }
   .metric-tab:hover { border-color: var(--border-strong); transform: translateY(-1px); }
   .metric-tab.active { border-color: var(--purple); box-shadow: 0 0 0 2px rgba(105,65,198,0.12); background: #FAF8FF; }
-  .metric-tab-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .metric-tab-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; width: 100%; }
   .metric-tab .tile-icon { width: 40px; height: 40px; font-size: 20px; border-radius: 10px; flex-shrink: 0; }
-  .metric-tab-text { display: flex; flex-direction: column; text-align: left; }
+  .metric-tab-text { display: flex; flex-direction: column; }
   .metric-tab-name { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--purple); }
   .metric-tab-value { font-size: 20px; font-weight: 700; color: var(--text-primary); line-height: 1.15; margin-top: 3px; }
   .metric-tab-def { font-size: 11px; color: var(--text-secondary); line-height: 1.35; }
