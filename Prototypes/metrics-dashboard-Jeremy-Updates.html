@@ -57,11 +57,11 @@
   .overview-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
   /* BANNER */
-  .banner { display: flex; flex-direction: column; gap: 12px; align-items: stretch; }
-  .metric-groups { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .banner { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+  .metric-groups { display: flex; flex-direction: column; gap: 12px; }
   .metric-group { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow-tile); }
   .metric-group-label { font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
-  .metric-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+  .metric-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: start; }
   .metric-tab {
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -73,9 +73,25 @@
     flex-direction: column;
     align-items: flex-start;
     text-align: left;
+    position: relative;
+    align-self: start;
   }
   .metric-tab:hover { border-color: var(--border-strong); transform: translateY(-1px); }
-  .metric-tab.active { border-color: var(--purple); box-shadow: 0 0 0 2px rgba(105,65,198,0.12); background: #FAF8FF; }
+  .metric-tab.active {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 2px rgba(105,65,198,0.12);
+    background: #FAF8FF;
+  }
+  .metric-tab.active::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -14px;
+    width: 2px;
+    height: 14px;
+    background: var(--purple);
+    transform: translateX(-50%);
+  }
   .metric-tab-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; width: 100%; }
   .metric-tab .tile-icon { width: 40px; height: 40px; font-size: 20px; border-radius: 10px; flex-shrink: 0; }
   .metric-tab-text { display: flex; flex-direction: column; }
@@ -88,19 +104,21 @@
   .metric-icon-closing { background: #EFF8FF; color: var(--blue); font-weight: 700; font-size: 12px; }
   .metric-icon-setrate { background: #F0FDF9; }
   .metric-icon-appts   { background: #FFF1F3; }
-  .metric-detail {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-tile);
-    padding: 18px 20px;
+  .metric-group-detail {
+    display: none;
+    margin-top: 12px;
+    padding: 16px;
+    border: 1px solid #D6BBFB;
+    border-top: 3px solid var(--purple);
+    border-radius: 14px;
+    background: #FAF8FF;
     animation: fadeUp 0.2s ease;
   }
-  .metric-detail.hidden { display: none; }
+  .metric-group-detail.show { display: block; }
   .metric-detail-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
   .metric-detail-head-right { display: flex; align-items: center; gap: 10px; }
   .metric-detail-title { font-size: 14px; font-weight: 700; color: var(--text-primary); }
-  .metric-detail-desc { font-size: 12px; color: var(--text-secondary); margin-top: 4px; line-height: 1.45; max-width: 760px; }
+  .metric-detail-desc { font-size: 12px; color: var(--text-secondary); margin-top: 4px; line-height: 1.45; }
   .metric-detail-value { font-size: 28px; font-weight: 700; line-height: 1; color: var(--text-primary); letter-spacing: -0.7px; white-space: nowrap; }
   .metric-detail-close {
     border: 1px solid var(--border);
@@ -113,8 +131,11 @@
     cursor: pointer;
   }
   .metric-detail-close:hover { background: #EAECF0; }
-  .metric-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; border-top: 1px solid var(--border); padding-top: 12px; }
+  .metric-detail-grid { display: grid; grid-template-columns: 1fr; gap: 10px; border-top: 1px solid var(--border); padding-top: 12px; }
   .metric-detail-actions { display: flex; justify-content: flex-end; margin-top: 14px; }
+  .metric-group-detail .metric-detail-title { color: var(--purple); }
+  .metric-group-detail .tile-formula-label { color: var(--purple); }
+  .metric-group-detail .bd-label { color: #42307D; }
 
   /* TILE */
   .tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px 20px; box-shadow: var(--shadow-tile); transition: box-shadow 0.2s, transform 0.2s; position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
@@ -209,13 +230,14 @@
     .main { padding: 16px; }
     .overview-label { font-size: 9px; margin-bottom: 12px; }
     .banner { gap: 10px; }
-    .metric-groups { grid-template-columns: 1fr; gap: 10px; }
+    .metric-groups { gap: 10px; }
     .metric-tabs { grid-template-columns: 1fr; gap: 8px; }
     .metric-tab { padding: 14px 12px; align-items: center; text-align: center; }
+    .metric-tab.active::after { display: none; }
     .metric-tab-top { justify-content: center; }
     .metric-tab-text { align-items: center; }
     .metric-tab-value { font-size: 18px; }
-    .metric-detail { padding: 14px 16px; }
+    .metric-group-detail { margin-top: 10px; padding: 14px; }
     .metric-detail-grid { grid-template-columns: 1fr; gap: 10px; }
     .metric-detail-value { font-size: 24px; }
     .tile { padding: 14px 16px 16px; grid-template-columns: 1fr 1fr; }
@@ -368,9 +390,10 @@
                   <div class="metric-tab-value" id="tab-avg-value">$4,136</div>
                 </div>
               </div>
-              <div class="metric-tab-def">Pipeline Revenue Per Accepted Proposal.</div>
+              <div class="metric-tab-def">Total Sales Per Job Won.</div>
             </button>
           </div>
+          <div class="metric-group-detail" id="metricDetailLeft"></div>
         </div>
         <div class="metric-group">
           <div class="metric-group-label">CONVERSIONS & VOLUME</div>
@@ -406,10 +429,9 @@
               <div class="metric-tab-def">Total appointments booked in period.</div>
             </button>
           </div>
+          <div class="metric-group-detail" id="metricDetailRight"></div>
         </div>
       </div>
-
-      <div class="metric-detail hidden" id="metricDetail"></div>
 
     </div><!-- /banner -->
 
@@ -1046,7 +1068,9 @@ function render(periodKey) {
   const totalSales    = k.salesPipeline + k.salesManual;
   const totalJobs     = k.jobsSigned + k.jobsUnsigned + k.jobsManual;
   const proposalJobsWon = k.jobsSigned + k.jobsUnsigned;
-  const avgJobSize    = proposalJobsWon > 0 ? k.salesPipeline / proposalJobsWon : 0;
+  const pipelineAvgJobSize = proposalJobsWon > 0 ? k.salesPipeline / proposalJobsWon : 0;
+  const manualAvgJobSize = k.jobsManual > 0 ? k.salesManual / k.jobsManual : 0;
+  const avgJobSize    = totalJobs > 0 ? totalSales / totalJobs : 0;
   const totalProposalsSent = k.proposalsSent;
   const closingFromProposals = k.closingWonFromSentCohort;
   const closingRatio  = totalProposalsSent > 0 ? (closingFromProposals / totalProposalsSent * 100) : 0;
@@ -1061,9 +1085,21 @@ function render(periodKey) {
   const jobSignedPct  = totalJobs > 0 ? Math.round(k.jobsSigned / totalJobs * 100) : 0;
   const jobUnsignedPct= totalJobs > 0 ? Math.round(k.jobsUnsigned / totalJobs * 100) : 0;
   const jobManualPct  = 100 - jobSignedPct - jobUnsignedPct;
+  const pipelineAvgFormula = proposalJobsWon > 0
+    ? `${fmt$(k.salesPipeline)} ÷ ${proposalJobsWon} = ${fmt$(pipelineAvgJobSize)}`
+    : 'Pipeline Avg: no accepted proposal jobs in this period';
+  const manualAvgFormula = k.jobsManual > 0
+    ? `${fmt$(k.salesManual)} ÷ ${k.jobsManual} = ${fmt$(manualAvgJobSize)}`
+    : 'Manual Avg: no manual invoice jobs in this period';
+  const combinedAvgFormula = totalJobs > 0
+    ? `${fmt$(totalSales)} ÷ ${totalJobs} = ${fmt$(avgJobSize)}`
+    : 'Combined Avg: no jobs won in this period';
 
   document.querySelectorAll('.metric-tab').forEach(tab => {
-    tab.classList.toggle('active', !!activeMetric && tab.dataset.metric === activeMetric);
+    const metric = tab.dataset.metric;
+    const isActive = (LEFT_METRICS.includes(metric) && metric === activeMetricLeft)
+      || (RIGHT_METRICS.includes(metric) && metric === activeMetricRight);
+    tab.classList.toggle('active', isActive);
   });
 
   // — Date pill —
@@ -1078,16 +1114,7 @@ function render(periodKey) {
   set('tab-set-value', fmtPct(setRate));
   set('tab-appts-value', totalAppts);
 
-  const detail = document.getElementById('metricDetail');
-  if (detail) {
-    if (!activeMetric) {
-      detail.classList.add('hidden');
-      detail.innerHTML = '';
-    } else {
-      detail.classList.remove('hidden');
-    }
-
-    const detailMap = {
+  const detailMap = {
       sales: {
         title: 'Sales',
         desc: 'Total invoiced revenue for the period. Includes both proposal pipeline revenue and manual invoices for transparency.',
@@ -1111,10 +1138,14 @@ function render(periodKey) {
       },
       avg: {
         title: 'Average Job Size',
-        desc: 'Average pipeline revenue per accepted proposal job. Manual invoices are intentionally excluded from this metric.',
+        desc: 'Average job size aligned to Sales, using total sales (pipeline + manual invoices) divided by total jobs won.',
         value: fmt$(avgJobSize),
-        left: `<div class="tile-formula-label">Formula</div><div class="tile-formula">${fmt$(k.salesPipeline)} ÷ ${proposalJobsWon} proposal jobs</div>`,
-        right: `<div class="tile-formula-label">Note</div><div class="tile-formula">Manual invoice sales are excluded.</div>`
+        left: `
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">Pipeline Avg</div></div><div class="bd-right"><div class="bd-value">${fmt$(pipelineAvgJobSize)}</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Manual Invoice Avg</div></div><div class="bd-right"><div class="bd-value">${fmt$(manualAvgJobSize)}</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--purple)"></div><div class="bd-label">Combined Avg</div></div><div class="bd-right"><div class="bd-value">${fmt$(avgJobSize)}</div></div></div>
+        `,
+        right: `<div class="tile-formula-label">Calculations</div><div class="tile-formula">Pipeline Avg: ${pipelineAvgFormula}</div><div class="tile-formula">Manual Avg: ${manualAvgFormula}</div><div class="tile-formula">Combined Avg: ${combinedAvgFormula}</div>`
       },
       closing: {
         title: 'Closing Ratio',
@@ -1148,9 +1179,15 @@ function render(periodKey) {
       }
     };
 
-    if (activeMetric) {
-      const metric = detailMap[activeMetric] || detailMap.sales;
-      detail.innerHTML = `
+  function renderMetricDetail(el, metricKey, group) {
+    if (!el) return;
+    if (!metricKey) {
+      el.classList.remove('show');
+      el.innerHTML = '';
+      return;
+    }
+    const metric = detailMap[metricKey] || detailMap.sales;
+    el.innerHTML = `
         <div class="metric-detail-head">
           <div>
             <div class="metric-detail-title">${metric.title}</div>
@@ -1165,11 +1202,14 @@ function render(periodKey) {
           <div>${metric.right}</div>
         </div>
         <div class="metric-detail-actions">
-          <button type="button" class="metric-detail-close" data-action="close-detail">Close</button>
+          <button type="button" class="metric-detail-close" data-action="close-detail" data-group="${group}">Close</button>
         </div>
       `;
-    }
+    el.classList.add('show');
   }
+
+  renderMetricDetail(document.getElementById('metricDetailLeft'), activeMetricLeft, 'left');
+  renderMetricDetail(document.getElementById('metricDetailRight'), activeMetricRight, 'right');
 
   // — Sections —
   const totalSalesSrc  = d.salesBySource.reduce((s,x) => s+x.value, 0);
@@ -1283,16 +1323,26 @@ function render(periodKey) {
 // PERIOD TAB SWITCHING
 // ═══════════════════════════════════════════════════════════════
 let activePeriod = 'M';
-let activeMetric = null;
-let mobileReturnScrollY = null;
+let activeMetricLeft = 'sales';
+let activeMetricRight = 'closing';
+let mobileReturnScrollY = { left: null, right: null };
+let lastIsMobile = null;
+const LEFT_METRICS = ['sales', 'jobs', 'avg'];
+const RIGHT_METRICS = ['closing', 'setrate', 'appts'];
 
 function isMobileLayout() {
   return window.matchMedia('(max-width: 768px)').matches;
 }
 
-function scrollToMetricDetail() {
+function metricGroupFor(metric) {
+  if (LEFT_METRICS.includes(metric)) return 'left';
+  if (RIGHT_METRICS.includes(metric)) return 'right';
+  return null;
+}
+
+function scrollToMetricDetail(group) {
   if (!isMobileLayout()) return;
-  const detail = document.getElementById('metricDetail');
+  const detail = document.getElementById(group === 'left' ? 'metricDetailLeft' : 'metricDetailRight');
   if (!detail || detail.classList.contains('hidden')) return;
   requestAnimationFrame(() => {
     const nav = document.querySelector('.nav');
@@ -1303,44 +1353,51 @@ function scrollToMetricDetail() {
   });
 }
 
-function restoreDashboardScroll() {
+function restoreDashboardScroll(group) {
   if (!isMobileLayout()) {
-    mobileReturnScrollY = null;
+    mobileReturnScrollY.left = null;
+    mobileReturnScrollY.right = null;
     return;
   }
-  if (mobileReturnScrollY === null) return;
-  const targetY = mobileReturnScrollY;
-  mobileReturnScrollY = null;
+  if (mobileReturnScrollY[group] === null) return;
+  const targetY = mobileReturnScrollY[group];
+  mobileReturnScrollY[group] = null;
   window.scrollTo({ top: targetY, behavior: 'smooth' });
 }
 
-function closeMetricDetail() {
-  if (!activeMetric) return;
-  activeMetric = null;
-  document.querySelectorAll('.metric-tab').forEach(tab => tab.classList.remove('active'));
+function closeMetricDetail(group) {
+  if (group === 'left') {
+    if (!activeMetricLeft) return;
+    activeMetricLeft = null;
+  } else {
+    if (!activeMetricRight) return;
+    activeMetricRight = null;
+  }
   render(activePeriod);
-  restoreDashboardScroll();
+  restoreDashboardScroll(group);
 }
 
 function switchMetric(metric) {
   if (!metric) return;
-  const wasClosed = !activeMetric;
+  const group = metricGroupFor(metric);
+  if (!group) return;
+  const currentActive = group === 'left' ? activeMetricLeft : activeMetricRight;
+  const wasClosed = !currentActive;
 
-  if (metric === activeMetric) {
-    closeMetricDetail();
+  if (metric === currentActive) {
+    closeMetricDetail(group);
     return;
   }
 
-  if (isMobileLayout() && wasClosed && mobileReturnScrollY === null) {
-    mobileReturnScrollY = window.scrollY;
+  if (isMobileLayout() && wasClosed && mobileReturnScrollY[group] === null) {
+    mobileReturnScrollY[group] = window.scrollY;
   }
 
-  activeMetric = metric;
-  document.querySelectorAll('.metric-tab').forEach(tab => {
-    tab.classList.toggle('active', tab.dataset.metric === metric);
-  });
+  if (group === 'left') activeMetricLeft = metric;
+  if (group === 'right') activeMetricRight = metric;
+
   render(activePeriod);
-  scrollToMetricDetail();
+  scrollToMetricDetail(group);
 }
 
 function switchPeriod(period) {
@@ -1363,6 +1420,34 @@ function switchPeriod(period) {
   setTimeout(() => render(period), 120);
 }
 
+function applyResponsiveMetricDefaults() {
+  const nowMobile = isMobileLayout();
+
+  if (lastIsMobile === null) {
+    lastIsMobile = nowMobile;
+    if (nowMobile) {
+      activeMetricLeft = null;
+      activeMetricRight = null;
+    }
+    return;
+  }
+
+  if (nowMobile === lastIsMobile) return;
+  lastIsMobile = nowMobile;
+
+  if (nowMobile) {
+    activeMetricLeft = null;
+    activeMetricRight = null;
+    mobileReturnScrollY.left = null;
+    mobileReturnScrollY.right = null;
+  } else {
+    if (!activeMetricLeft) activeMetricLeft = 'sales';
+    if (!activeMetricRight) activeMetricRight = 'closing';
+  }
+
+  render(activePeriod);
+}
+
 // Wire up both tab bars
 ['periodTabs','periodTabsMobile'].forEach(tabsId => {
   document.getElementById(tabsId).addEventListener('click', e => {
@@ -1372,19 +1457,23 @@ function switchPeriod(period) {
 });
 
 document.getElementById('metricGroups').addEventListener('click', e => {
+  const closeBtn = e.target.closest('[data-action="close-detail"]');
+  if (closeBtn) {
+    e.stopPropagation();
+    const group = closeBtn.getAttribute('data-group');
+    if (group === 'left' || group === 'right') closeMetricDetail(group);
+    return;
+  }
   const tab = e.target.closest('.metric-tab');
   if (tab && tab.dataset.metric) switchMetric(tab.dataset.metric);
 });
 
-document.getElementById('metricDetail').addEventListener('click', e => {
-  if (e.target.closest('[data-action="close-detail"]')) {
-    closeMetricDetail();
-  }
-});
+window.addEventListener('resize', applyResponsiveMetricDefaults);
 
 // ═══════════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════════
+applyResponsiveMetricDefaults();
 render('M');
 </script>
 </body>
