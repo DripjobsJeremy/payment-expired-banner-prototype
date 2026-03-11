@@ -121,6 +121,20 @@
   .ai-prompt-textarea.ai-input-error-border { border-color: #e63757; box-shadow: 0 0 0 3px rgba(230,55,87,.12); }
   .ai-input-error { font-size: 12px; color: #e63757; margin-top: 5px; display: none; }
   .ai-input-error.show { display: block; }
+  /* ── Inline preview state inside AI panel ── */
+  .ai-panel-input.hidden { display: none; }
+  .ai-panel-preview { display: none; }
+  .ai-panel-preview.show { display: block; }
+  .ai-preview-notes { font-size: 12px; font-style: italic; color: #9b7de8; margin-bottom: 10px; line-height: 1.45; }
+  .ai-preview-content { background: white; border: 1px solid #c4b5fd; border-radius: 6px; padding: 10px 12px; max-height: 220px; overflow-y: auto; font-size: 13px; line-height: 1.65; color: #333; margin-bottom: 10px; }
+  .ai-preview-content p { margin-bottom: 5px; }
+  .ai-preview-content ul, .ai-preview-content ol { padding-left: 18px; margin: 3px 0 6px; }
+  .ai-preview-content li { margin-bottom: 2px; }
+  .ai-preview-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .ai-back-btn { background: none; border: none; color: #9b7de8; font-size: 13px; font-weight: 500; cursor: pointer; padding: 6px 4px; font-family: inherit; transition: color .15s; display: inline-flex; align-items: center; gap: 5px; }
+  .ai-back-btn:hover { color: #7C3AED; }
+  .ai-use-btn { flex-shrink: 0; padding: 9px 16px; background: #7C3AED; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-family: inherit; transition: background .18s; }
+  .ai-use-btn:hover { background: #6d28d9; }
   .ai-prompt-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
   .ai-cancel-btn { background: none; border: none; color: #9b7de8; font-size: 13px; font-weight: 500; cursor: pointer; padding: 6px 4px; font-family: inherit; transition: color .15s; }
   .ai-cancel-btn:hover { color: #7C3AED; }
@@ -469,17 +483,31 @@
         <button class="btn-generate-with-ai" id="edit-gen-desc-btn" disabled title="Enter an item name first to enable AI generation" onclick="openAiPanel('edit')">&#x2736; Generate with AI</button>
       </div>
       <div class="ai-prompt-panel" id="edit-ai-panel">
-        <div class="ai-prompt-header"><span>&#x2736;</span> Describe This Line Item</div>
-        <div class="ai-prompt-hint">The more detail you provide, the better your AI description will be. Example: Interior walls, living room, two coats, customer-supplied Sherwin Williams Emerald Satin.</div>
-        <textarea class="ai-prompt-textarea" id="edit-ai-input" placeholder='Describe this item...' oninput="clearAiError('edit')"></textarea>
-        <div class="ai-input-error" id="edit-ai-error">Please describe this item before generating.</div>
-        <div class="ai-prompt-actions">
-          <button class="ai-cancel-btn" onclick="closeAiPanel('edit')">&#x2715; Cancel</button>
-          <button class="ai-generate-btn" id="edit-gen-btn" onclick="triggerGenerate('edit')">
-            <svg class="gen-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2"/><path d="M15 16v-2"/><path d="M8 9h2"/><path d="M20 9h2"/><path d="M17.8 11.8 19 13"/><path d="M15 9h.01"/><path d="M17.8 6.2 19 5"/><path d="m3 21 9-9"/><path d="M12.2 6.2 11 5"/></svg>
-            <div class="spin-ring"></div>
-            <span class="gen-label">&#x2736; Generate</span>
-          </button>
+        <div class="ai-panel-input" id="edit-ai-input-view">
+          <div class="ai-prompt-header"><span>&#x2736;</span> Describe This Line Item</div>
+          <div class="ai-prompt-hint">The more detail you provide, the better your AI description will be. Example: Interior walls, living room, two coats, customer-supplied Sherwin Williams Emerald Satin.</div>
+          <textarea class="ai-prompt-textarea" id="edit-ai-input" placeholder='Describe this item...' oninput="clearAiError('edit')"></textarea>
+          <div class="ai-input-error" id="edit-ai-error">Please describe this item before generating.</div>
+          <div class="ai-prompt-actions">
+            <button type="button" class="ai-cancel-btn" onclick="closeAiPanel('edit')">&#x2715; Cancel</button>
+            <button type="button" class="ai-generate-btn" id="edit-gen-btn" onclick="triggerGenerate('edit')">
+              <svg class="gen-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2"/><path d="M15 16v-2"/><path d="M8 9h2"/><path d="M20 9h2"/><path d="M17.8 11.8 19 13"/><path d="M15 9h.01"/><path d="M17.8 6.2 19 5"/><path d="m3 21 9-9"/><path d="M12.2 6.2 11 5"/></svg>
+              <div class="spin-ring"></div>
+              <span class="gen-label">&#x2736; Generate</span>
+            </button>
+          </div>
+        </div>
+        <div class="ai-panel-preview" id="edit-ai-preview-view">
+          <div class="ai-prompt-header"><span>&#x2736;</span> AI-Generated Description</div>
+          <div class="ai-preview-notes" id="edit-preview-notes"></div>
+          <div class="ai-preview-content" id="edit-preview-body"></div>
+          <div class="ai-preview-actions">
+            <button type="button" class="ai-back-btn" onclick="showAiInput('edit')">&#8592; Back</button>
+            <button type="button" class="ai-use-btn" onclick="applyPreviewReplace()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Use This Description
+            </button>
+          </div>
         </div>
       </div>
       <div class="desc-toolbar">
@@ -644,17 +672,31 @@
         <button class="btn-generate-with-ai" id="add-gen-desc-btn" disabled title="Enter an item name first to enable AI generation" onclick="openAiPanel('add')">&#x2736; Generate with AI</button>
       </div>
       <div class="ai-prompt-panel" id="add-ai-panel">
-        <div class="ai-prompt-header"><span>&#x2736;</span> Describe This Line Item</div>
-        <div class="ai-prompt-hint">The more detail you provide, the better your AI description will be. Example: Interior walls, living room, two coats, customer-supplied Sherwin Williams Emerald Satin.</div>
-        <textarea class="ai-prompt-textarea" id="add-ai-input" placeholder="Describe this item..." oninput="clearAiError('add')"></textarea>
-        <div class="ai-input-error" id="add-ai-error">Please describe this item before generating.</div>
-        <div class="ai-prompt-actions">
-          <button class="ai-cancel-btn" onclick="closeAiPanel('add')">&#x2715; Cancel</button>
-          <button class="ai-generate-btn" id="add-gen-btn" onclick="triggerGenerate('add')">
-            <svg class="gen-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2"/><path d="M15 16v-2"/><path d="M8 9h2"/><path d="M20 9h2"/><path d="M17.8 11.8 19 13"/><path d="M15 9h.01"/><path d="M17.8 6.2 19 5"/><path d="m3 21 9-9"/><path d="M12.2 6.2 11 5"/></svg>
-            <div class="spin-ring"></div>
-            <span class="gen-label">&#x2736; Generate</span>
-          </button>
+        <div class="ai-panel-input" id="add-ai-input-view">
+          <div class="ai-prompt-header"><span>&#x2736;</span> Describe This Line Item</div>
+          <div class="ai-prompt-hint">The more detail you provide, the better your AI description will be. Example: Interior walls, living room, two coats, customer-supplied Sherwin Williams Emerald Satin.</div>
+          <textarea class="ai-prompt-textarea" id="add-ai-input" placeholder="Describe this item..." oninput="clearAiError('add')"></textarea>
+          <div class="ai-input-error" id="add-ai-error">Please describe this item before generating.</div>
+          <div class="ai-prompt-actions">
+            <button type="button" class="ai-cancel-btn" onclick="closeAiPanel('add')">&#x2715; Cancel</button>
+            <button type="button" class="ai-generate-btn" id="add-gen-btn" onclick="triggerGenerate('add')">
+              <svg class="gen-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4V2"/><path d="M15 16v-2"/><path d="M8 9h2"/><path d="M20 9h2"/><path d="M17.8 11.8 19 13"/><path d="M15 9h.01"/><path d="M17.8 6.2 19 5"/><path d="m3 21 9-9"/><path d="M12.2 6.2 11 5"/></svg>
+              <div class="spin-ring"></div>
+              <span class="gen-label">&#x2736; Generate</span>
+            </button>
+          </div>
+        </div>
+        <div class="ai-panel-preview" id="add-ai-preview-view">
+          <div class="ai-prompt-header"><span>&#x2736;</span> AI-Generated Description</div>
+          <div class="ai-preview-notes" id="add-preview-notes"></div>
+          <div class="ai-preview-content" id="add-preview-body"></div>
+          <div class="ai-preview-actions">
+            <button type="button" class="ai-back-btn" onclick="showAiInput('add')">&#8592; Back</button>
+            <button type="button" class="ai-use-btn" onclick="applyPreviewReplace()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Use This Description
+            </button>
+          </div>
         </div>
       </div>
       <div class="desc-toolbar">
@@ -723,27 +765,6 @@
 
 
 <!-- ── Dialogs ── -->
-<div class="overlay" id="dlg-ai-preview">
-  <div class="dialog dialog-preview">
-    <div class="dialog-preview-header">
-      <div class="dialog-preview-header-icon">&#x2736;</div>
-      <div>
-        <div class="dialog-preview-title">AI-Generated Description</div>
-        <div class="dialog-preview-subtitle">Review before replacing your current description</div>
-      </div>
-    </div>
-    <div class="dialog-preview-body" id="dlg-preview-content"></div>
-    <div class="dialog-preview-footer">
-      <button class="btn-preview-cancel" onclick="cancelPreview()">Cancel</button>
-      <button class="btn-preview-replace" onclick="applyPreviewReplace()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-        Replace Description
-      </button>
-    </div>
-  </div>
-</div>
-
-
 <div class="overlay" id="dlg-ai-error">
   <div class="dialog">
     <div class="dialog-icon-wrap icon-error">
@@ -1168,6 +1189,11 @@
 
   function closeAiPanel(m) {
     document.getElementById(m+'-ai-panel').classList.remove('open');
+    /* Reset to input view for next open */
+    var previewView = document.getElementById(m+'-ai-preview-view');
+    var inputView = document.getElementById(m+'-ai-input-view');
+    if (previewView) previewView.classList.remove('show');
+    if (inputView) inputView.classList.remove('hidden');
   }
 
   function onDescInput(m) { /* reserved */ }
@@ -1246,10 +1272,9 @@
         pendingGeneratedHtml = bodyHtml;
 
         if (pendingHasExisting) {
-          /* Show preview popup — user must confirm before replacing */
-          document.getElementById('dlg-preview-content').innerHTML =
-            '<p><em style="color:#7C3AED;font-size:12px;">Based on your notes: ' + escHtml(userPrompt) + '</em></p>' + bodyHtml;
-          openDialog('dlg-ai-preview');
+          /* Show inline preview — user must confirm before replacing */
+          var notesHtml = userPrompt ? '<em>Based on your notes: ' + escHtml(userPrompt) + '</em>' : '';
+          showAiPreview(m, notesHtml, bodyHtml);
         } else {
           /* Empty editor — write directly */
           applyGenerated();
@@ -1269,13 +1294,24 @@
     showToast('Description generated by Jobi AI', 'success');
   }
 
+  function showAiPreview(m, notesHtml, bodyHtml) {
+    document.getElementById(m+'-preview-notes').innerHTML = notesHtml;
+    document.getElementById(m+'-preview-body').innerHTML = bodyHtml;
+    document.getElementById(m+'-ai-input-view').classList.add('hidden');
+    document.getElementById(m+'-ai-preview-view').classList.add('show');
+  }
+
+  function showAiInput(m) {
+    document.getElementById(m+'-ai-preview-view').classList.remove('show');
+    document.getElementById(m+'-ai-input-view').classList.remove('hidden');
+  }
+
   function applyPreviewReplace() {
-    closeDialog('dlg-ai-preview');
     applyGenerated();
   }
 
   function cancelPreview() {
-    closeDialog('dlg-ai-preview');
+    showAiInput(pendingModal);
   }
 
   /* ── Dialog ── */
