@@ -75,6 +75,12 @@
   .metric-tab-name { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--purple); }
   .metric-tab-value { font-size: 20px; font-weight: 700; color: var(--text-primary); line-height: 1.1; margin: 8px 0 6px; }
   .metric-tab-def { font-size: 11px; color: var(--text-secondary); line-height: 1.35; }
+  .metric-icon-sales   { background: #ECFDF3; }
+  .metric-icon-jobs    { background: #FFFAEB; }
+  .metric-icon-avg     { background: #F4F3FF; }
+  .metric-icon-closing { background: #EFF8FF; color: var(--blue); font-weight: 700; font-size: 12px; }
+  .metric-icon-setrate { background: #F0FDF9; }
+  .metric-icon-appts   { background: #FFF1F3; }
   .metric-detail {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -326,16 +332,19 @@
           <div class="metric-group-label">REVENUE & WINS</div>
           <div class="metric-tabs">
             <button class="metric-tab" data-metric="sales" type="button">
+              <div class="tile-icon metric-icon-sales">💰</div>
               <div class="metric-tab-name">Sales</div>
               <div class="metric-tab-value" id="tab-sales-value">$45,495</div>
               <div class="metric-tab-def">Pipeline + Manual Invoice Revenue.</div>
             </button>
             <button class="metric-tab" data-metric="jobs" type="button">
+              <div class="tile-icon metric-icon-jobs">🏆</div>
               <div class="metric-tab-name">Jobs Won</div>
               <div class="metric-tab-value" id="tab-jobs-value">11</div>
               <div class="metric-tab-def">Accepted Proposals + Manual Invoices.</div>
             </button>
             <button class="metric-tab" data-metric="avg" type="button">
+              <div class="tile-icon metric-icon-avg">📊</div>
               <div class="metric-tab-name">Avg Job Size</div>
               <div class="metric-tab-value" id="tab-avg-value">$4,136</div>
               <div class="metric-tab-def">Pipeline Revenue Per Accepted Proposal.</div>
@@ -346,16 +355,19 @@
           <div class="metric-group-label">CONVERSIONS & VOLUME</div>
           <div class="metric-tabs">
             <button class="metric-tab" data-metric="closing" type="button">
+              <div class="tile-icon metric-icon-closing">%</div>
               <div class="metric-tab-name">Closing Ratio</div>
               <div class="metric-tab-value" id="tab-closing-value">76.9%</div>
               <div class="metric-tab-def">Accepted Proposals / Proposals Sent</div>
             </button>
             <button class="metric-tab" data-metric="setrate" type="button">
+              <div class="tile-icon metric-icon-setrate">🎯</div>
               <div class="metric-tab-name">Set Rate</div>
               <div class="metric-tab-value" id="tab-set-value">45.2%</div>
               <div class="metric-tab-def">Contacts Created To Booked Rate.</div>
             </button>
             <button class="metric-tab" data-metric="appts" type="button">
+              <div class="tile-icon metric-icon-appts">📅</div>
               <div class="metric-tab-name">Appointments</div>
               <div class="metric-tab-value" id="tab-appts-value">16</div>
               <div class="metric-tab-def">Total appointments booked in period.</div>
