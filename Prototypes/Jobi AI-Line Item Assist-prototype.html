@@ -1226,9 +1226,8 @@
         var finish = /semi.?gloss/.test(promptLower) ? 'semi-gloss' : /satin/.test(promptLower) ? 'satin' : /flat/.test(promptLower) ? 'flat' : /eggshell/.test(promptLower) ? 'eggshell' : null;
         var roller = /spray/.test(promptLower) ? 'airless sprayer (back-rolled for penetration)' : '3/8&quot; nap roller for full coverage';
         var finishNote = finish ? ' using ' + finish + ' finish' : '';
-        pendingGeneratedHtml =
+        var bodyHtml =
           '<p><strong>' + escHtml(itemName) + '</strong></p>' +
-          '<p><em style="color:#7C3AED;font-size:12.5px;">Based on your notes: ' + escHtml(userPrompt) + '</em></p>' +
           '<p><strong>Preparation:</strong></p>' +
           '<ul>' +
           '<li>Move furniture to center of room and cover with protective drop cloths</li>' +
@@ -1243,10 +1242,13 @@
           '<li>Apply ' + coatCount + ' coats for uniform coverage and color</li>' +
           '</ul>' +
           '<p><em>Note: Pricing is based on standard conditions. Additional charges may apply for surfaces requiring extensive prep or specialty coatings.</em></p>';
+        /* Clean HTML goes into the editor; preview gets the "Based on your notes" context line */
+        pendingGeneratedHtml = bodyHtml;
 
         if (pendingHasExisting) {
           /* Show preview popup — user must confirm before replacing */
-          document.getElementById('dlg-preview-content').innerHTML = pendingGeneratedHtml;
+          document.getElementById('dlg-preview-content').innerHTML =
+            '<p><em style="color:#7C3AED;font-size:12px;">Based on your notes: ' + escHtml(userPrompt) + '</em></p>' + bodyHtml;
           openDialog('dlg-ai-preview');
         } else {
           /* Empty editor — write directly */
