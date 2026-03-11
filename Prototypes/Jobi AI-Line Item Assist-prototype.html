@@ -71,6 +71,7 @@
   .li-footer { display: flex; gap: 8px; padding-top: 16px; flex-wrap: wrap; }
   .li-add-btn { padding: 8px 16px; border: 1.5px solid #7C3AED; background: white; color: #7C3AED; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; font-family: inherit; }
   .li-add-btn:hover { background: #f3eeff; }
+  .li-add-btn[disabled] { opacity: .45; cursor: not-allowed; border-color: #d0d4dd; color: #aaa; background: white; }
 
   /* ── Modal Overlay ── */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.48); z-index: 100; display: none; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto; }
@@ -110,12 +111,16 @@
   select.form-control { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; cursor: pointer; }
 
   /* ── AI Prompt Panel ── */
-  .ai-prompt-panel { background: #f0ebff; border: 1.5px solid #c4b5fd; border-radius: 8px; padding: 14px 16px; margin-top: 10px; }
+  .ai-prompt-panel { background: #f0ebff; border: 1.5px solid #c4b5fd; border-radius: 8px; padding: 14px 16px; margin-top: 10px; max-height: 0; overflow: hidden; opacity: 0; padding-top: 0; padding-bottom: 0; border-width: 0; transition: max-height .24s ease, opacity .2s ease, padding .2s ease, border-width .2s ease; }
+  .ai-prompt-panel.open { max-height: 500px; opacity: 1; padding: 14px 16px; border-width: 1.5px; }
   .ai-prompt-header { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: #7C3AED; margin-bottom: 8px; }
   .ai-prompt-hint { font-size: 12.5px; font-style: italic; color: #7C3AED; line-height: 1.5; margin-bottom: 12px; opacity: .85; }
   .ai-prompt-textarea { width: 100%; padding: 10px 12px; border: 1.5px solid #c4b5fd; border-radius: 6px; font-size: 13px; color: #111; outline: none; font-family: inherit; background: white; transition: border-color .15s; resize: vertical; min-height: 72px; line-height: 1.55; display: block; }
   .ai-prompt-textarea:focus { border-color: #7C3AED; box-shadow: 0 0 0 3px rgba(124,58,237,.12); }
   .ai-prompt-textarea::placeholder { color: #a98fe0; }
+  .ai-prompt-textarea.ai-input-error-border { border-color: #e63757; box-shadow: 0 0 0 3px rgba(230,55,87,.12); }
+  .ai-input-error { font-size: 12px; color: #e63757; margin-top: 5px; display: none; }
+  .ai-input-error.show { display: block; }
   .ai-prompt-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
   .ai-cancel-btn { background: none; border: none; color: #9b7de8; font-size: 13px; font-weight: 500; cursor: pointer; padding: 6px 4px; font-family: inherit; transition: color .15s; }
   .ai-cancel-btn:hover { color: #7C3AED; }
@@ -139,6 +144,7 @@
   .qty-input { width: 88px; padding: 9px 10px; border: 1px solid #d0d4dd; border-radius: 6px 0 0 6px; font-size: 14px; outline: none; font-family: inherit; }
   .qty-input:focus { border-color: #7C3AED; }
   .qty-unit { padding: 9px 10px; border: 1px solid #d0d4dd; border-left: none; border-radius: 0 6px 6px 0; background: #f5f5f8; font-size: 13px; color: #666; display: flex; align-items: center; }
+  .qty-unit-sel { padding: 9px 8px; border: 1px solid #d0d4dd; border-left: none; border-radius: 0 6px 6px 0; background: #f5f5f8; font-size: 12.5px; color: #555; cursor: pointer; outline: none; font-family: inherit; height: 100%; }
   .price-field-wrap { flex: 1; }
   .price-field-wrap .price-inner { position: relative; }
   .price-currency { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #888; font-size: 14px; pointer-events: none; }
@@ -191,6 +197,11 @@
   .save-new-product-label input { position: absolute; opacity: 0; pointer-events: none; }
   .save-new-product-label input:checked + .save-new-product-toggle { background: #7C3AED; border-color: #7C3AED; }
   .save-new-product-label input:checked + .save-new-product-toggle::after { transform: translateX(16px); }
+  .save-confirm-hint { font-size: 12px; color: #7C3AED; margin-top: 6px; display: none; font-style: italic; }
+  .save-confirm-hint.show { display: block; }
+  .optional-badge { display: none; background: #ede9ff; color: #7C3AED; font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; padding: 2px 8px; border-radius: 10px; border: 1px solid #c4b5fd; margin-left: 4px; }
+  .optional-badge.show { display: inline-block; }
+  .desc-info-icon { cursor: help; display: inline-flex; align-items: center; }
 
   /* ── Footer ── */
   .modal-footer { padding: 12px 20px; border-top: 1px solid #e8eaf0; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
@@ -358,8 +369,8 @@
     </table>
     <div class="li-footer">
       <button class="li-add-btn" onclick="openAddModal()">+ Add Item</button>
-      <button class="li-add-btn" onclick="showToast('Add Multiple Items — coming soon','success')">+ Add Multiple Items</button>
-      <button class="li-add-btn" onclick="showToast('Add Optional Item — coming soon','success')">+ Add Optional Item</button>
+      <button class="li-add-btn" disabled title="Coming soon">+ Add Multiple Items</button>
+      <button class="li-add-btn" disabled title="Coming soon">+ Add Optional Item</button>
     </div>
   </div>
 
@@ -383,15 +394,16 @@
         <div class="section-header">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
           <span id="edit-type-badge">Product</span>
+          <span class="optional-badge" id="edit-optional-badge">Optional</span>
         </div>
         <div class="toggle-group">
-          <div class="toggle-item">
+          <div class="toggle-item" title="Hides price fields — use for section headers, notes, or description-only line items">
             <span>Description Only</span>
             <div class="toggle-switch" id="edit-desc-only-toggle" onclick="toggleDescOnly('edit', this)"></div>
           </div>
-          <div class="toggle-item">
+          <div class="toggle-item" title="Marks this item as customer-selectable on the proposal — they can choose to include or exclude it">
             <span>Optional</span>
-            <div class="toggle-switch" onclick="this.classList.toggle('on')"></div>
+            <div class="toggle-switch" id="edit-optional-toggle" onclick="this.classList.toggle('on'); toggleOptionalBadge('edit', this)"></div>
           </div>
         </div>
       </div>
@@ -433,7 +445,7 @@
           <label class="form-label">Quantity</label>
           <div class="qty-wrap">
             <input type="number" class="qty-input" id="edit-qty-input" value="1.00">
-            <span class="qty-unit">Ea</span>
+            <select class="qty-unit-sel" id="edit-unit-sel"><option value="Each">Each</option><option value="Hour">Hour</option><option value="Sq Ft">Sq Ft</option><option value="Linear Ft">Linear Ft</option><option value="Gallon">Gallon</option><option value="Room">Room</option><option value="Door">Door</option><option value="Window">Window</option><option value="Day">Day</option><option value="Job">Job</option></select>
           </div>
         </div>
         <div class="price-field-wrap">
@@ -452,14 +464,15 @@
         <div class="section-header">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
           Description
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span class="desc-info-icon" title="This description appears on your customer-facing proposal. Use AI to generate a professional description, or type your own."><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
         </div>
-        <button class="btn-generate-with-ai" id="edit-gen-desc-btn" disabled onclick="openAiPanel('edit')">&#x2736; Generate with AI</button>
+        <button class="btn-generate-with-ai" id="edit-gen-desc-btn" disabled title="Enter an item name first to enable AI generation" onclick="openAiPanel('edit')">&#x2736; Generate with AI</button>
       </div>
-      <div class="ai-prompt-panel" id="edit-ai-panel" style="display:none">
+      <div class="ai-prompt-panel" id="edit-ai-panel">
         <div class="ai-prompt-header"><span>&#x2736;</span> Describe This Line Item</div>
         <div class="ai-prompt-hint">The more detail you provide, the better your AI description will be. Example: Interior walls, living room, two coats, customer-supplied Sherwin Williams Emerald Satin.</div>
-        <textarea class="ai-prompt-textarea" id="edit-ai-input" placeholder='Describe this item...'></textarea>
+        <textarea class="ai-prompt-textarea" id="edit-ai-input" placeholder='Describe this item...' oninput="clearAiError('edit')"></textarea>
+        <div class="ai-input-error" id="edit-ai-error">Please describe this item before generating.</div>
         <div class="ai-prompt-actions">
           <button class="ai-cancel-btn" onclick="closeAiPanel('edit')">&#x2715; Cancel</button>
           <button class="ai-generate-btn" id="edit-gen-btn" onclick="triggerGenerate('edit')">
@@ -471,8 +484,6 @@
       </div>
       <div class="desc-toolbar">
         <select class="toolbar-sel"><option>Styles</option><option>H1</option><option>H2</option><option>Normal</option></select>
-        <select class="toolbar-sel"><option>Font</option></select>
-        <select class="toolbar-sel"><option>Size</option></select>
         <div class="t-sep"></div>
         <button class="t-btn" style="font-weight:bold">B</button>
         <button class="t-btn" style="font-style:italic">I</button>
@@ -502,7 +513,7 @@
         </div>
         <div class="tax-rate-area">
           <span>Rate</span>
-          <input type="number" class="tax-input" id="edit-tax-rate" value="5.000" oninput="updateTotal('edit')">
+          <input type="number" class="tax-input" id="edit-tax-rate" value="5.00" oninput="updateTotal('edit')">
           <span>%</span>
           <span>Taxable</span>
           <div class="toggle-switch" id="edit-taxable-toggle" onclick="toggleTaxable('edit', this)"></div>
@@ -518,11 +529,12 @@
     <div class="help-text">Need help? <a href="#" onclick="return false">Click here</a> to add / edit your products and services</div>
     <div class="save-new-product-row">
       <label class="save-new-product-label">
-        <input type="checkbox" id="edit-save-new-product">
+        <input type="checkbox" id="edit-save-new-product" onchange="toggleSaveConfirm('edit', this)">
         <span class="save-new-product-toggle"></span>
         Save as new product/service
       </label>
     </div>
+    <div class="save-confirm-hint" id="edit-save-confirm">This item will also be added to your Products &amp; Services catalog.</div>
   </div>
   <div class="modal-footer">
     <div>
@@ -532,7 +544,7 @@
       </button>
     </div>
     <div class="footer-right">
-      <button class="btn btn-ghost" onclick="closeModal('edit')">Close</button>
+      <button class="btn btn-ghost" onclick="closeModal('edit')">Cancel</button>
       <button class="btn btn-primary" onclick="handleLineItemSave('edit')">Save</button>
     </div>
   </div>
@@ -557,15 +569,16 @@
         <div class="section-header">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
           <span id="add-type-badge">Product</span>
+          <span class="optional-badge" id="add-optional-badge">Optional</span>
         </div>
         <div class="toggle-group">
-          <div class="toggle-item">
+          <div class="toggle-item" title="Hides price fields — use for section headers, notes, or description-only line items">
             <span>Description Only</span>
             <div class="toggle-switch" id="add-desc-only-toggle" onclick="toggleDescOnly('add', this)"></div>
           </div>
-          <div class="toggle-item">
+          <div class="toggle-item" title="Marks this item as customer-selectable on the proposal — they can choose to include or exclude it">
             <span>Optional</span>
-            <div class="toggle-switch" onclick="this.classList.toggle('on')"></div>
+            <div class="toggle-switch" id="add-optional-toggle" onclick="this.classList.toggle('on'); toggleOptionalBadge('add', this)"></div>
           </div>
         </div>
       </div>
@@ -607,7 +620,7 @@
           <label class="form-label">Quantity</label>
           <div class="qty-wrap">
             <input type="number" class="qty-input" id="add-qty-input" value="1">
-            <span class="qty-unit">Ea</span>
+            <select class="qty-unit-sel" id="add-unit-sel"><option value="Each">Each</option><option value="Hour">Hour</option><option value="Sq Ft">Sq Ft</option><option value="Linear Ft">Linear Ft</option><option value="Gallon">Gallon</option><option value="Room">Room</option><option value="Door">Door</option><option value="Window">Window</option><option value="Day">Day</option><option value="Job">Job</option></select>
           </div>
         </div>
         <div class="price-field-wrap">
@@ -626,14 +639,15 @@
         <div class="section-header">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round"><line x1="17" y1="10" x2="3" y2="10"/><line x1="21" y1="6" x2="3" y2="6"/><line x1="21" y1="14" x2="3" y2="14"/><line x1="17" y1="18" x2="3" y2="18"/></svg>
           Description
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span class="desc-info-icon" title="This description appears on your customer-facing proposal. Use AI to generate a professional description, or type your own."><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
         </div>
-        <button class="btn-generate-with-ai" id="add-gen-desc-btn" disabled onclick="openAiPanel('add')">&#x2736; Generate with AI</button>
+        <button class="btn-generate-with-ai" id="add-gen-desc-btn" disabled title="Enter an item name first to enable AI generation" onclick="openAiPanel('add')">&#x2736; Generate with AI</button>
       </div>
-      <div class="ai-prompt-panel" id="add-ai-panel" style="display:none">
+      <div class="ai-prompt-panel" id="add-ai-panel">
         <div class="ai-prompt-header"><span>&#x2736;</span> Describe This Line Item</div>
         <div class="ai-prompt-hint">The more detail you provide, the better your AI description will be. Example: Interior walls, living room, two coats, customer-supplied Sherwin Williams Emerald Satin.</div>
-        <textarea class="ai-prompt-textarea" id="add-ai-input" placeholder="Describe this item..."></textarea>
+        <textarea class="ai-prompt-textarea" id="add-ai-input" placeholder="Describe this item..." oninput="clearAiError('add')"></textarea>
+        <div class="ai-input-error" id="add-ai-error">Please describe this item before generating.</div>
         <div class="ai-prompt-actions">
           <button class="ai-cancel-btn" onclick="closeAiPanel('add')">&#x2715; Cancel</button>
           <button class="ai-generate-btn" id="add-gen-btn" onclick="triggerGenerate('add')">
@@ -645,8 +659,6 @@
       </div>
       <div class="desc-toolbar">
         <select class="toolbar-sel"><option>Styles</option><option>H1</option><option>H2</option><option>Normal</option></select>
-        <select class="toolbar-sel"><option>Font</option></select>
-        <select class="toolbar-sel"><option>Size</option></select>
         <div class="t-sep"></div>
         <button class="t-btn" style="font-weight:bold">B</button>
         <button class="t-btn" style="font-style:italic">I</button>
@@ -676,7 +688,7 @@
         </div>
         <div class="tax-rate-area">
           <span>Rate</span>
-          <input type="number" class="tax-input" id="add-tax-rate" value="5.000" oninput="updateTotal('add')">
+          <input type="number" class="tax-input" id="add-tax-rate" value="5.00" oninput="updateTotal('add')">
           <span>%</span>
           <span>Taxable</span>
           <div class="toggle-switch on" id="add-taxable-toggle" onclick="toggleTaxable('add', this)"></div>
@@ -692,16 +704,17 @@
     <div class="help-text">Need help? <a href="#" onclick="return false">Click here</a> to add / edit your products and services</div>
     <div class="save-new-product-row">
       <label class="save-new-product-label">
-        <input type="checkbox" id="add-save-new-product">
+        <input type="checkbox" id="add-save-new-product" onchange="toggleSaveConfirm('add', this)">
         <span class="save-new-product-toggle"></span>
         Save as new product/service
       </label>
     </div>
+    <div class="save-confirm-hint" id="add-save-confirm">This item will also be added to your Products &amp; Services catalog.</div>
   </div>
   <div class="modal-footer">
     <div></div>
     <div class="footer-right">
-      <button class="btn btn-ghost" onclick="closeModal('add')">Close</button>
+      <button class="btn btn-ghost" onclick="closeModal('add')">Cancel</button>
       <button class="btn btn-primary" onclick="handleLineItemSave('add')">Save</button>
     </div>
   </div>
@@ -730,18 +743,6 @@
   </div>
 </div>
 
-<div class="overlay" id="dlg-empty">
-  <div class="dialog">
-    <div class="dialog-icon-wrap icon-error">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#e63757" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    </div>
-    <div class="dialog-title">Input Required</div>
-    <div class="dialog-body">Please describe the service before generating.</div>
-    <div class="dialog-actions">
-      <button class="btn btn-primary" onclick="closeDialog('dlg-empty')">OK</button>
-    </div>
-  </div>
-</div>
 
 <div class="overlay" id="dlg-ai-error">
   <div class="dialog">
@@ -790,7 +791,7 @@
 
   /* ── Line Items State ── */
   var lineItems = [
-    { id: 1, name: 'Interior Painting - Doors', type: 'Product', qty: 1, price: 250, taxable: false, taxRate: 5, descOnly: false, description: '' }
+    { id: 1, name: 'Interior Painting - Doors', type: 'Product', qty: 1, price: 250, taxable: false, taxRate: 5, descOnly: false, unit: 'Each', description: '' }
   ];
   var nextId = 2;
   var editingIndex = -1;
@@ -848,9 +849,9 @@
           '</button>' +
         '</div></td>' +
         '<td>' + item.qty.toFixed(2) + '</td>' +
-        '<td>' + (item.descOnly ? '—' : ('$' + item.price.toFixed(2) + ' / Ea')) + '</td>' +
+        '<td>' + (item.descOnly ? '—' : ('$' + item.price.toFixed(2) + ' / ' + (item.unit || 'Each'))) + '</td>' +
         '<td>' + (item.descOnly ? '—' : ('$' + sub.toFixed(2))) + '</td>' +
-        '<td>$' + tax.toFixed(2) + '</td>' +
+        '<td>' + ((!item.taxable || item.descOnly) ? '<span title="Tax exempt" style="color:#bbb">$0.00 &times;</span>' : '$' + tax.toFixed(2)) + '</td>' +
         '<td>$' + tot.toFixed(2) + '</td>';
 
       (function(i){ tr.addEventListener('click', function() { openEditModal(i); }); })(idx);
@@ -893,6 +894,10 @@
     document.getElementById('add-desc').innerHTML = '';
     document.getElementById('add-ai-input').value = '';
     document.getElementById('add-save-new-product').checked = false;
+    document.getElementById('add-save-confirm').classList.remove('show');
+    var addOptToggle = document.getElementById('add-optional-toggle');
+    if (addOptToggle) { addOptToggle.classList.remove('on'); }
+    document.getElementById('add-optional-badge').classList.remove('show');
     closeAiPanel('add');
     document.getElementById('add-gen-desc-btn').disabled = true;
     updateTotal('add');
@@ -945,6 +950,8 @@
     }
 
     document.getElementById('edit-qty-input').value = item.qty;
+    var editUnitSel = document.getElementById('edit-unit-sel');
+    if (editUnitSel) editUnitSel.value = item.unit || 'Each';
     document.getElementById('edit-price').value = item.price;
     originalPrice['edit'] = item.price;
     document.getElementById('edit-tax-rate').value = item.taxRate;
@@ -956,6 +963,10 @@
     document.getElementById('edit-desc').innerHTML = item.description || '';
     document.getElementById('edit-ai-input').value = '';
     document.getElementById('edit-save-new-product').checked = false;
+    document.getElementById('edit-save-confirm').classList.remove('show');
+    var editOptToggle = document.getElementById('edit-optional-toggle');
+    if (editOptToggle) { editOptToggle.classList.remove('on'); }
+    document.getElementById('edit-optional-badge').classList.remove('show');
     closeAiPanel('edit');
     document.getElementById('edit-gen-desc-btn').disabled = !document.getElementById('edit-name').value.trim();
     updateTotal('edit');
@@ -988,10 +999,12 @@
     var price = parseFloat(document.getElementById(m+'-price').value) || 0;
     var taxRate = parseFloat(document.getElementById(m+'-tax-rate').value) || 0;
     var desc = (document.getElementById(m+'-desc').innerHTML || '').trim();
+    var unitSel = document.getElementById(m+'-unit-sel');
+    var unit = unitSel ? unitSel.value : 'Each';
 
     var itemData = {
       id: m === 'edit' ? lineItems[editingIndex].id : nextId++,
-      name: name, type: type, qty: qty, price: price,
+      name: name, type: type, qty: qty, price: price, unit: unit,
       taxable: taxableOn[m], taxRate: taxRate, descOnly: descOnlyOn[m],
       description: desc
     };
@@ -1001,12 +1014,13 @@
       productsAndServicesEntries.push({ name: name, type: type, price: price });
     }
 
+    var savedToNew = saveAsNew && saveAsNew.checked;
     if (m === 'edit') {
       lineItems[editingIndex] = itemData;
-      showToast('Line item updated', 'success');
+      showToast(savedToNew ? 'Line item updated and saved to your catalog' : 'Line item updated', 'success');
     } else {
       lineItems.push(itemData);
-      showToast('Line item added to proposal', 'success');
+      showToast(savedToNew ? 'Item added to proposal and saved to your catalog' : 'Line item added to proposal', 'success');
     }
 
     renderLineItems();
@@ -1132,29 +1146,56 @@
     document.getElementById(m+'-type-service').classList.remove('active');
   }
 
+  function toggleSaveConfirm(m, cb) {
+    var hint = document.getElementById(m+'-save-confirm');
+    if (hint) hint.classList.toggle('show', cb.checked);
+  }
+
+  function toggleOptionalBadge(m, el) {
+    var badge = document.getElementById(m+'-optional-badge');
+    if (badge) badge.classList.toggle('show', el.classList.contains('on'));
+  }
+
   /* ── AI Panel ── */
   function openAiPanel(m) {
     var panel = document.getElementById(m+'-ai-panel');
     var nameVal = document.getElementById(m+'-name').value.trim();
     var input = document.getElementById(m+'-ai-input');
     input.placeholder = nameVal ? 'Describe "' + nameVal + '"...' : 'Describe this item...';
-    panel.style.display = 'block';
-    setTimeout(function(){ input.focus(); }, 50);
+    panel.classList.add('open');
+    setTimeout(function(){ input.focus(); }, 80);
   }
 
   function closeAiPanel(m) {
-    document.getElementById(m+'-ai-panel').style.display = 'none';
+    document.getElementById(m+'-ai-panel').classList.remove('open');
   }
 
   function onDescInput(m) { /* reserved */ }
+
+  function clearAiError(m) {
+    var inputEl = document.getElementById(m+'-ai-input');
+    inputEl.classList.remove('ai-input-error-border');
+    var errorEl = document.getElementById(m+'-ai-error');
+    if (errorEl) errorEl.classList.remove('show');
+  }
 
   /* ── Generate ── */
   var pendingGeneratedHtml = '';
   var pendingHasExisting = false;
 
   function triggerGenerate(m) {
-    var input = document.getElementById(m+'-ai-input').value.trim();
-    if (!input) { openDialog('dlg-empty'); return; }
+    var inputEl = document.getElementById(m+'-ai-input');
+    var input = inputEl.value.trim();
+    var errorEl = document.getElementById(m+'-ai-error');
+    if (!input) {
+      inputEl.classList.add('ai-input-error-border');
+      if (errorEl) { errorEl.classList.add('show'); }
+      inputEl.focus();
+      return;
+    }
+    /* Clear any prior error state */
+    inputEl.classList.remove('ai-input-error-border');
+    if (errorEl) { errorEl.classList.remove('show'); }
     var desc = document.getElementById(m+'-desc');
     var text = (desc.innerText || desc.textContent || '').replace(/body p/g,'').trim();
     pendingModal = m;
@@ -1164,6 +1205,7 @@
 
   function runGenerate() {
     var m = pendingModal;
+    var userPrompt = document.getElementById(m+'-ai-input').value.trim();
     var btn = document.getElementById(m+'-gen-btn');
     var loadingOverlay = document.getElementById(m+'-desc-loading');
     btn.classList.add('gen-loading'); btn.disabled = true;
@@ -1178,8 +1220,15 @@
 
       if (Math.random() > 0.15) {
         var itemName = document.getElementById(m+'-name').value.trim();
+        /* Detect keywords from user prompt to personalize the output */
+        var promptLower = userPrompt.toLowerCase();
+        var coatCount = /three coat|3 coat/.test(promptLower) ? 'three' : 'two';
+        var finish = /semi.?gloss/.test(promptLower) ? 'semi-gloss' : /satin/.test(promptLower) ? 'satin' : /flat/.test(promptLower) ? 'flat' : /eggshell/.test(promptLower) ? 'eggshell' : null;
+        var roller = /spray/.test(promptLower) ? 'airless sprayer (back-rolled for penetration)' : '3/8&quot; nap roller for full coverage';
+        var finishNote = finish ? ' using ' + finish + ' finish' : '';
         pendingGeneratedHtml =
           '<p><strong>' + escHtml(itemName) + '</strong></p>' +
+          '<p><em style="color:#7C3AED;font-size:12.5px;">Based on your notes: ' + escHtml(userPrompt) + '</em></p>' +
           '<p><strong>Preparation:</strong></p>' +
           '<ul>' +
           '<li>Move furniture to center of room and cover with protective drop cloths</li>' +
@@ -1189,9 +1238,9 @@
           '</ul>' +
           '<p><strong>Application:</strong></p>' +
           '<ul>' +
-          '<li>Cut in edges and corners with brush</li>' +
-          '<li>Roll walls using 3/8&quot; nap roller for full coverage</li>' +
-          '<li>Apply two coats for uniform coverage and color</li>' +
+          '<li>Cut in edges and corners with brush' + finishNote + '</li>' +
+          '<li>Roll walls using ' + roller + '</li>' +
+          '<li>Apply ' + coatCount + ' coats for uniform coverage and color</li>' +
           '</ul>' +
           '<p><em>Note: Pricing is based on standard conditions. Additional charges may apply for surfaces requiring extensive prep or specialty coatings.</em></p>';
 
