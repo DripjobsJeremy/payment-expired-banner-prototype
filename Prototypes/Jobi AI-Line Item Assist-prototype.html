@@ -10,127 +10,94 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
     background: #f0f2f5;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 30px 20px 80px;
+    padding: 28px 16px 80px;
     color: #1a1a2e;
   }
 
-  /* ── Demo Controls ── */
-  .demo-controls {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
-    max-width: 544px;
-  }
-  .demo-label {
-    width: 100%;
-    text-align: center;
-    font-size: 11px;
-    color: #999;
-    font-weight: 600;
-    letter-spacing: .6px;
-    text-transform: uppercase;
-  }
-  .demo-btn {
-    padding: 10px 22px;
-    border-radius: 8px;
-    border: 2px solid #7C3AED;
-    background: white;
-    color: #7C3AED;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all .18s;
-  }
-  .demo-btn:hover, .demo-btn.active {
-    background: #7C3AED;
-    color: white;
-  }
+  /* ── Proposal Page ── */
+  .proposal-page { max-width: 1050px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 2px 20px rgba(0,0,0,.1); overflow: hidden; }
+
+  /* Header */
+  .proposal-header { display: grid; grid-template-columns: 220px 1fr 230px; gap: 16px; padding: 18px 24px; border-bottom: 1px solid #e8eaf0; align-items: start; }
+  .ph-left { display: flex; flex-direction: column; gap: 5px; }
+  .cust-name { color: #4f46e5; font-weight: 700; font-size: 14px; cursor: pointer; }
+  .cust-detail { font-size: 12.5px; color: #444; display: flex; align-items: center; gap: 5px; }
+  .cust-detail a { color: #4f46e5; text-decoration: none; }
+  .cust-detail a:hover { text-decoration: underline; }
+  .icon-sm-btn { background: none; border: none; color: #ccc; cursor: pointer; padding: 1px 3px; font-size: 11px; transition: color .12s; display: inline-flex; align-items: center; }
+  .icon-sm-btn:hover { color: #7C3AED; }
+  .btn-send-msg { margin-top: 4px; display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; background: white; border: 1.5px solid #d0d4dd; border-radius: 6px; font-size: 12px; font-weight: 600; color: #444; cursor: pointer; width: fit-content; font-family: inherit; transition: all .15s; }
+  .btn-send-msg:hover { border-color: #7C3AED; color: #7C3AED; }
+  .proj-sel-wrap { display: inline-flex; align-items: center; gap: 4px; border: 1.5px solid #d0d4dd; border-radius: 6px; padding: 4px 8px; background: white; margin-top: 2px; font-size: 12px; color: #555; cursor: pointer; width: fit-content; }
+  .proj-sel-wrap select { border: none; background: none; font-size: 12px; color: #555; outline: none; cursor: pointer; font-family: inherit; }
+
+  .ph-center { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .proposal-title { display: flex; align-items: center; gap: 8px; font-size: 18px; font-weight: 700; color: #111; }
+  .btn-dl { background: white; border: 1.5px solid #d0d4dd; border-radius: 5px; padding: 4px 6px; color: #555; cursor: pointer; display: flex; align-items: center; transition: all .15s; }
+  .btn-dl:hover { border-color: #7C3AED; color: #7C3AED; }
+  .badge-pending { background: #fefce8; border: 1.5px solid #fcd34d; color: #92400e; font-size: 12.5px; font-weight: 700; padding: 6px 20px; border-radius: 20px; display: flex; align-items: center; gap: 5px; }
+  .action-bar { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .action-btn { padding: 7px 13px; border: 1.5px solid #d0d4dd; border-radius: 6px; background: white; color: #444; font-size: 12.5px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; transition: all .15s; font-family: inherit; }
+  .action-btn:hover { border-color: #7C3AED; color: #7C3AED; }
+
+  .ph-right { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; text-align: right; }
+  .ph-meta { font-size: 12px; color: #444; }
+  .ph-meta strong { font-weight: 600; color: #222; }
+  .ph-meta a { color: #4f46e5; text-decoration: none; font-weight: 500; }
+  .ph-meta a:hover { text-decoration: underline; }
+  .financing-badge { display: inline-block; background: #374151; color: white; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; letter-spacing: .3px; }
+
+  /* Line Items Table */
+  .line-items-section { padding: 20px 24px 28px; }
+  .li-heading { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 14px; }
+  .li-table { width: 100%; border-collapse: collapse; }
+  .li-table thead tr { border-bottom: 1.5px solid #e8eaf0; }
+  .li-table th { font-size: 12px; font-weight: 500; color: #888; text-align: right; padding: 7px 10px 8px; white-space: nowrap; }
+  .li-table th:nth-child(1) { width: 28px; padding-left: 0; padding-right: 0; text-align: center; }
+  .li-table th:nth-child(2) { text-align: left; }
+  .li-row { border-bottom: 1px solid #f0f2f5; cursor: pointer; transition: background .12s; }
+  .li-row:hover { background: #faf9ff; }
+  .li-table td { padding: 10px 10px; font-size: 13.5px; color: #222; text-align: right; vertical-align: middle; }
+  .li-table td:nth-child(1) { text-align: center; color: #ccc; font-size: 16px; padding-left: 0; cursor: grab; }
+  .li-table td:nth-child(2) { text-align: left; }
+  .li-name-cell { display: flex; align-items: center; gap: 7px; }
+  .li-name-text { font-weight: 500; color: #4f46e5; }
+  .li-row-icon { background: none; border: none; cursor: pointer; color: #ccc; padding: 2px 3px; font-size: 13px; transition: color .12s; line-height: 1; display: inline-flex; align-items: center; }
+  .li-row-icon:hover { color: #7C3AED; }
+  .li-empty { text-align: center; padding: 32px 20px; font-size: 13.5px; color: #aaa; }
+  .li-total-row td { padding: 11px 10px; font-weight: 700; font-size: 13.5px; border-top: 2px solid #e8eaf0; }
+  .li-total-row td:nth-child(1) { padding-left: 0; }
+  .li-total-row td:last-child { background: #2d3748; color: white; border-radius: 4px; }
+  .li-footer { display: flex; gap: 8px; padding-top: 16px; flex-wrap: wrap; }
+  .li-add-btn { padding: 8px 16px; border: 1.5px solid #7C3AED; background: white; color: #7C3AED; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all .15s; font-family: inherit; }
+  .li-add-btn:hover { background: #f3eeff; }
+
+  /* ── Modal Overlay ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.48); z-index: 100; display: none; align-items: flex-start; justify-content: center; padding: 40px 16px; overflow-y: auto; }
+  .modal-overlay.show { display: flex; }
+  .modal-overlay .modal-shell { margin: auto 0; }
 
   /* ── Modal Shell ── */
-  .modal-shell {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 8px 40px rgba(0,0,0,.14);
-    width: 100%;
-    max-width: 544px;
-    overflow: hidden;
-  }
-
-  .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 20px 14px;
-    border-bottom: 1px solid #e8eaf0;
-  }
+  .modal-shell { background: white; border-radius: 12px; box-shadow: 0 8px 40px rgba(0,0,0,.18); width: 100%; max-width: 544px; overflow: hidden; }
+  .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 14px; border-bottom: 1px solid #e8eaf0; }
   .modal-title { font-size: 16px; font-weight: 700; color: #111; }
-  .modal-close {
-    background: none; border: none; cursor: pointer;
-    color: #888; font-size: 20px; line-height: 1;
-    padding: 2px 6px; border-radius: 4px;
-  }
+  .modal-close { background: none; border: none; cursor: pointer; color: #888; font-size: 20px; line-height: 1; padding: 2px 6px; border-radius: 4px; }
   .modal-close:hover { color: #333; background: #f0f0f3; }
 
-  /* ── Body ── */
-  .modal-body {
-    padding: 16px 20px;
-    max-height: 82vh;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
+  .modal-body { padding: 16px 20px; max-height: 80vh; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
 
   /* ── Section Cards ── */
-  .section-card {
-    border: 1px solid #e8eaf0;
-    border-radius: 8px;
-    padding: 14px 16px;
-  }
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .8px;
-    text-transform: uppercase;
-    color: #7C3AED;
-    margin-bottom: 12px;
-  }
-  .section-toprow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
+  .section-card { border: 1px solid #e8eaf0; border-radius: 8px; padding: 14px 16px; }
+  .section-header { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: #7C3AED; margin-bottom: 12px; }
+  .section-toprow { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
   .section-toprow .section-header { margin-bottom: 0; }
 
   /* ── Toggles ── */
   .toggle-group { display: flex; align-items: center; gap: 14px; }
   .toggle-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #555; }
-  .toggle-switch {
-    width: 36px; height: 20px; border-radius: 10px;
-    background: #ddd; position: relative; cursor: pointer;
-    transition: background .2s; flex-shrink: 0;
-  }
+  .toggle-switch { width: 36px; height: 20px; border-radius: 10px; background: #ddd; position: relative; cursor: pointer; transition: background .2s; flex-shrink: 0; }
   .toggle-switch.on { background: #7C3AED; }
-  .toggle-switch::after {
-    content: ''; position: absolute;
-    width: 16px; height: 16px;
-    background: white; border-radius: 50%;
-    top: 2px; left: 2px;
-    transition: left .2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,.25);
-  }
+  .toggle-switch::after { content: ''; position: absolute; width: 16px; height: 16px; background: white; border-radius: 50%; top: 2px; left: 2px; transition: left .2s; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
   .toggle-switch.on::after { left: 18px; }
 
   /* ── Form ── */
@@ -138,388 +105,97 @@
   .form-group:last-child { margin-bottom: 0; }
   .form-label { font-size: 12px; font-weight: 600; color: #444; margin-bottom: 5px; display: block; }
   .req { color: #e63757; margin-left: 2px; }
-  .form-control {
-    width: 100%; padding: 9px 12px;
-    border: 1px solid #d0d4dd; border-radius: 6px;
-    font-size: 14px; color: #111; outline: none;
-    transition: border-color .15s; background: white;
-    font-family: inherit;
-  }
+  .form-control { width: 100%; padding: 9px 12px; border: 1px solid #d0d4dd; border-radius: 6px; font-size: 14px; color: #111; outline: none; transition: border-color .15s; background: white; font-family: inherit; }
   .form-control:focus { border-color: #7C3AED; box-shadow: 0 0 0 3px rgba(124,58,237,.12); }
-  select.form-control {
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    padding-right: 30px;
-    cursor: pointer;
-  }
-
-  /* ── Name + AI button row ── */
-  .name-ai-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .name-ai-row .form-control {
-    flex: 1;
-    min-width: 0;
-  }
-  .btn-ai {
-    flex-shrink: 0;
-    padding: 9px 14px;
-    background: #7C3AED;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-    transition: background .18s;
-    font-family: inherit;
-    height: 38px;
-  }
-  .btn-ai:hover { background: #6d28d9; }
+  select.form-control { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; cursor: pointer; }
 
   /* ── AI Prompt Panel ── */
-  .ai-prompt-panel {
-    background: #f0ebff;
-    border: 1.5px solid #c4b5fd;
-    border-radius: 8px;
-    padding: 14px 16px;
-    margin-top: 10px;
-    display: none;
-  }
-  .ai-prompt-panel.open { display: block; }
-  .ai-prompt-header {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .8px;
-    text-transform: uppercase;
-    color: #7C3AED;
-    margin-bottom: 8px;
-  }
-  .ai-prompt-hint {
-    font-size: 12.5px;
-    font-style: italic;
-    color: #7C3AED;
-    line-height: 1.5;
-    margin-bottom: 12px;
-    opacity: .85;
-  }
-  .ai-prompt-textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1.5px solid #c4b5fd;
-    border-radius: 6px;
-    font-size: 13px;
-    color: #111;
-    outline: none;
-    font-family: inherit;
-    background: white;
-    transition: border-color .15s;
-    resize: vertical;
-    min-height: 72px;
-    line-height: 1.55;
-    display: block;
-  }
+  .ai-prompt-panel { background: #f0ebff; border: 1.5px solid #c4b5fd; border-radius: 8px; padding: 14px 16px; margin-top: 10px; }
+  .ai-prompt-header { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: #7C3AED; margin-bottom: 8px; }
+  .ai-prompt-hint { font-size: 12.5px; font-style: italic; color: #7C3AED; line-height: 1.5; margin-bottom: 12px; opacity: .85; }
+  .ai-prompt-textarea { width: 100%; padding: 10px 12px; border: 1.5px solid #c4b5fd; border-radius: 6px; font-size: 13px; color: #111; outline: none; font-family: inherit; background: white; transition: border-color .15s; resize: vertical; min-height: 72px; line-height: 1.55; display: block; }
   .ai-prompt-textarea:focus { border-color: #7C3AED; box-shadow: 0 0 0 3px rgba(124,58,237,.12); }
   .ai-prompt-textarea::placeholder { color: #a98fe0; }
-  .ai-prompt-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    margin-top: 8px;
-  }
-  .ai-cancel-btn {
-    background: none;
-    border: none;
-    color: #9b7de8;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    padding: 6px 4px;
-    font-family: inherit;
-    transition: color .15s;
-  }
+  .ai-prompt-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 8px; }
+  .ai-cancel-btn { background: none; border: none; color: #9b7de8; font-size: 13px; font-weight: 500; cursor: pointer; padding: 6px 4px; font-family: inherit; transition: color .15s; }
   .ai-cancel-btn:hover { color: #7C3AED; }
-  .ai-generate-btn {
-    flex-shrink: 0;
-    padding: 9px 16px;
-    background: #7C3AED;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    white-space: nowrap;
-    font-family: inherit;
-    transition: background .18s;
-    height: 38px;
-  }
+  .ai-generate-btn { flex-shrink: 0; padding: 9px 16px; background: #7C3AED; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font-family: inherit; transition: background .18s; height: 38px; }
   .ai-generate-btn:hover:not([disabled]) { background: #6d28d9; }
   .ai-generate-btn[disabled] { opacity: .6; cursor: not-allowed; }
-  .ai-dismiss-btn {
-    flex-shrink: 0;
-    width: 30px; height: 30px;
-    border: none; background: transparent;
-    color: #9b7de8; cursor: pointer;
-    font-size: 16px; border-radius: 4px;
-    display: flex; align-items: center; justify-content: center;
-    transition: background .15s, color .15s;
-  }
-  .ai-dismiss-btn:hover { background: #e6d9ff; color: #7C3AED; }
-
-  /* Spinner for generate button */
-  .spin-ring {
-    width: 14px; height: 14px;
-    border: 2px solid rgba(255,255,255,.35);
-    border-top-color: white;
-    border-radius: 50%;
-    display: none;
-    animation: spin .65s linear infinite;
-    flex-shrink: 0;
-  }
+  .spin-ring { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.35); border-top-color: white; border-radius: 50%; display: none; animation: spin .65s linear infinite; flex-shrink: 0; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .gen-loading .spin-ring { display: inline-block; }
   .gen-loading .gen-icon { display: none; }
 
+  /* ── Name + AI button row ── */
+  .name-ai-row { display: flex; gap: 8px; align-items: center; }
+  .name-ai-row .form-control { flex: 1; min-width: 0; }
+  .btn-ai { flex-shrink: 0; padding: 9px 14px; background: #7C3AED; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; transition: background .18s; font-family: inherit; height: 38px; }
+  .btn-ai:hover { background: #6d28d9; }
+
   /* ── Pricing ── */
   .pricing-row { display: flex; gap: 10px; align-items: flex-end; }
   .qty-wrap { display: flex; flex-shrink: 0; }
-  .qty-input {
-    width: 88px; padding: 9px 10px;
-    border: 1px solid #d0d4dd;
-    border-radius: 6px 0 0 6px;
-    font-size: 14px; outline: none; font-family: inherit;
-  }
+  .qty-input { width: 88px; padding: 9px 10px; border: 1px solid #d0d4dd; border-radius: 6px 0 0 6px; font-size: 14px; outline: none; font-family: inherit; }
   .qty-input:focus { border-color: #7C3AED; }
-  .qty-unit {
-    padding: 9px 10px; border: 1px solid #d0d4dd;
-    border-left: none; border-radius: 0 6px 6px 0;
-    background: #f5f5f8; font-size: 13px; color: #666;
-    display: flex; align-items: center;
-  }
+  .qty-unit { padding: 9px 10px; border: 1px solid #d0d4dd; border-left: none; border-radius: 0 6px 6px 0; background: #f5f5f8; font-size: 13px; color: #666; display: flex; align-items: center; }
   .price-field-wrap { flex: 1; }
   .price-field-wrap .price-inner { position: relative; }
-  .price-currency {
-    position: absolute; left: 11px; top: 50%;
-    transform: translateY(-50%); color: #888; font-size: 14px;
-    pointer-events: none;
-  }
+  .price-currency { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: #888; font-size: 14px; pointer-events: none; }
   .price-field-wrap .form-control { padding-left: 24px; }
 
   /* ── Description ── */
-  .desc-section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-    gap: 8px;
-  }
+  .desc-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 8px; }
   .desc-section-header .section-header { margin-bottom: 0; flex: 1; }
-  .btn-generate-with-ai {
-    flex-shrink: 0;
-    padding: 5px 11px;
-    background: #7C3AED;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 11.5px;
-    font-weight: 600;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    white-space: nowrap;
-    font-family: inherit;
-    transition: background .18s;
-  }
-  .btn-generate-with-ai:hover { background: #6d28d9; }
-
-  .desc-toolbar {
-    border: 1px solid #d0d4dd; border-bottom: none;
-    border-radius: 6px 6px 0 0; padding: 5px 8px;
-    display: flex; gap: 3px; align-items: center;
-    background: #fafafa; flex-wrap: wrap;
-  }
-  .toolbar-sel {
-    border: 1px solid #d0d4dd; border-radius: 4px;
-    font-size: 12px; padding: 3px 5px; background: white;
-    color: #444; cursor: pointer; font-family: inherit;
-  }
-  .t-btn {
-    width: 25px; height: 25px;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 4px; border: none; background: transparent;
-    color: #555; font-size: 12px; cursor: pointer;
-    transition: background .12s;
-  }
+  .btn-generate-with-ai { flex-shrink: 0; padding: 5px 11px; background: #7C3AED; color: white; border: none; border-radius: 5px; font-size: 11.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; font-family: inherit; transition: background .18s; }
+  .btn-generate-with-ai:hover:not([disabled]) { background: #6d28d9; }
+  .btn-generate-with-ai[disabled] { opacity: .42; cursor: not-allowed; }
+  .desc-toolbar { border: 1px solid #d0d4dd; border-bottom: none; border-radius: 6px 6px 0 0; padding: 5px 8px; display: flex; gap: 3px; align-items: center; background: #fafafa; flex-wrap: wrap; }
+  .toolbar-sel { border: 1px solid #d0d4dd; border-radius: 4px; font-size: 12px; padding: 3px 5px; background: white; color: #444; cursor: pointer; font-family: inherit; }
+  .t-btn { width: 25px; height: 25px; display: flex; align-items: center; justify-content: center; border-radius: 4px; border: none; background: transparent; color: #555; font-size: 12px; cursor: pointer; transition: background .12s; }
   .t-btn:hover { background: #ede9ff; color: #7C3AED; }
   .t-sep { width: 1px; height: 18px; background: #e0e0e8; margin: 0 2px; }
-
-  /* ── Description editor container ── */
-  .desc-editor-wrap {
-    position: relative;
-  }
-  .desc-editor {
-    border: 1px solid #d0d4dd; border-radius: 0 0 6px 6px;
-    min-height: 130px; padding: 10px 12px;
-    font-size: 13.5px; line-height: 1.65; color: #333;
-    outline: none; transition: border-color .15s, background .3s;
-    background: white;
-  }
+  .desc-editor-wrap { position: relative; }
+  .desc-editor { border: 1px solid #d0d4dd; border-radius: 0 0 6px 6px; min-height: 130px; padding: 10px 12px; font-size: 13.5px; line-height: 1.65; color: #333; outline: none; transition: border-color .15s, background .3s; background: white; }
   .desc-editor:focus { border-color: #7C3AED; box-shadow: 0 0 0 3px rgba(124,58,237,.12); }
   .desc-editor.ai-flash { background: #f3eeff; border-color: #7C3AED; }
   .desc-editor ul, .desc-editor ol { padding-left: 22px; margin: 4px 0; }
   .desc-editor li { margin-bottom: 2px; }
   .body-hint { font-size: 11px; color: #bbb; display: block; margin-top: 6px; }
-
-  /* Description loading overlay */
-  .desc-loading-overlay {
-    position: absolute;
-    inset: 0;
-    border-radius: 0 0 6px 6px;
-    background: rgba(248, 245, 255, 0.94);
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    border: 1px solid #c4b5fd;
-    z-index: 10;
-  }
+  .desc-loading-overlay { position: absolute; inset: 0; border-radius: 0 0 6px 6px; background: rgba(248,245,255,.94); display: none; flex-direction: column; align-items: center; justify-content: center; gap: 10px; border: 1px solid #c4b5fd; z-index: 10; }
   .desc-loading-overlay.show { display: flex; }
-  .desc-spinner-ring {
-    width: 26px; height: 26px;
-    border: 3px solid rgba(124,58,237,.2);
-    border-top-color: #7C3AED;
-    border-radius: 50%;
-    animation: spin .7s linear infinite;
-  }
-  .desc-loading-label {
-    font-size: 13px;
-    font-weight: 600;
-    color: #7C3AED;
-    letter-spacing: .3px;
-  }
+  .desc-spinner-ring { width: 26px; height: 26px; border: 3px solid rgba(124,58,237,.2); border-top-color: #7C3AED; border-radius: 50%; animation: spin .7s linear infinite; }
+  .desc-loading-label { font-size: 13px; font-weight: 600; color: #7C3AED; letter-spacing: .3px; }
 
   /* ── Tax ── */
-  .tax-row {
-    display: flex; align-items: center; gap: 10px;
-  }
-  .tax-lbl {
-    font-size: 11px; font-weight: 700; letter-spacing: .7px;
-    text-transform: uppercase; color: #7C3AED;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .tax-rate-area {
-    margin-left: auto; display: flex;
-    align-items: center; gap: 8px;
-  }
+  .tax-row { display: flex; align-items: center; gap: 10px; }
+  .tax-lbl { font-size: 11px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; color: #7C3AED; display: flex; align-items: center; gap: 6px; }
+  .tax-rate-area { margin-left: auto; display: flex; align-items: center; gap: 8px; }
   .tax-rate-area span { font-size: 13px; color: #555; }
-  .tax-input {
-    width: 72px; padding: 7px 8px;
-    border: 1px solid #d0d4dd; border-radius: 6px;
-    font-size: 13px; text-align: right; outline: none;
-    font-family: inherit;
-  }
+  .tax-input { width: 72px; padding: 7px 8px; border: 1px solid #d0d4dd; border-radius: 6px; font-size: 13px; text-align: right; outline: none; font-family: inherit; }
   .tax-input:focus { border-color: #7C3AED; }
 
   /* ── Total ── */
-  .total-bar {
-    background: linear-gradient(135deg, #f3eeff, #e9e0ff);
-    border-radius: 8px; padding: 14px 18px; text-align: center;
-  }
-  .total-bar .t-lbl {
-    font-size: 11px; color: #7C3AED; font-weight: 700;
-    text-transform: uppercase; letter-spacing: .5px; margin-bottom: 3px;
-  }
+  .total-bar { background: linear-gradient(135deg, #f3eeff, #e9e0ff); border-radius: 8px; padding: 14px 18px; text-align: center; }
+  .total-bar .t-lbl { font-size: 11px; color: #7C3AED; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 3px; }
   .total-bar .t-amt { font-size: 22px; font-weight: 800; color: #7C3AED; }
 
-  .help-text {
-    text-align: center; font-size: 12.5px; color: #666; padding: 2px 0;
-  }
+  .help-text { text-align: center; font-size: 12.5px; color: #666; padding: 2px 0; }
   .help-text a { color: #7C3AED; font-weight: 600; text-decoration: none; }
   .help-text a:hover { text-decoration: underline; }
 
-  .save-new-product-row {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 8px;
-  }
-  .save-new-product-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    color: #444;
-    font-weight: 600;
-    cursor: pointer;
-    user-select: none;
-  }
-  .save-new-product-toggle {
-    width: 36px;
-    height: 20px;
-    border-radius: 999px;
-    border: 1px solid #cfd3dd;
-    background: #eceff5;
-    position: relative;
-    transition: all .18s;
-    flex-shrink: 0;
-  }
-  .save-new-product-toggle::after {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: white;
-    box-shadow: 0 1px 2px rgba(0,0,0,.2);
-    transition: transform .18s;
-  }
-  .save-new-product-label input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
-  .save-new-product-label input:checked + .save-new-product-toggle {
-    background: #7C3AED;
-    border-color: #7C3AED;
-  }
-  .save-new-product-label input:checked + .save-new-product-toggle::after {
-    transform: translateX(16px);
-  }
+  .save-new-product-row { display: flex; justify-content: flex-end; margin-top: 8px; }
+  .save-new-product-label { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: #444; font-weight: 600; cursor: pointer; user-select: none; }
+  .save-new-product-toggle { width: 36px; height: 20px; border-radius: 999px; border: 1px solid #cfd3dd; background: #eceff5; position: relative; transition: all .18s; flex-shrink: 0; }
+  .save-new-product-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: white; box-shadow: 0 1px 2px rgba(0,0,0,.2); transition: transform .18s; }
+  .save-new-product-label input { position: absolute; opacity: 0; pointer-events: none; }
+  .save-new-product-label input:checked + .save-new-product-toggle { background: #7C3AED; border-color: #7C3AED; }
+  .save-new-product-label input:checked + .save-new-product-toggle::after { transform: translateX(16px); }
 
   /* ── Footer ── */
-  .modal-footer {
-    padding: 12px 20px; border-top: 1px solid #e8eaf0;
-    display: flex; align-items: center;
-    justify-content: space-between; gap: 8px; flex-wrap: wrap;
-  }
+  .modal-footer { padding: 12px 20px; border-top: 1px solid #e8eaf0; display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
   .footer-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-
-  .btn {
-    padding: 10px 18px; border-radius: 7px;
-    font-size: 14px; font-weight: 600; cursor: pointer;
-    border: none; display: inline-flex; align-items: center;
-    gap: 6px; transition: all .18s; font-family: inherit;
-    white-space: nowrap;
-  }
+  .btn { padding: 10px 18px; border-radius: 7px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 6px; transition: all .18s; font-family: inherit; white-space: nowrap; }
   .btn-primary { background: #7C3AED; color: white; }
   .btn-primary:hover { background: #6d28d9; }
   .btn-outline { background: white; color: #7C3AED; border: 1.5px solid #7C3AED; font-size: 13px; padding: 10px 14px; }
@@ -530,27 +206,11 @@
   .btn-danger:hover { background: #fff5f7; }
 
   /* ── Overlay / Dialog ── */
-  .overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,.45);
-    z-index: 200; display: flex;
-    align-items: center; justify-content: center;
-    opacity: 0; pointer-events: none; transition: opacity .2s;
-  }
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
   .overlay.show { opacity: 1; pointer-events: all; }
-  .dialog {
-    background: white; border-radius: 12px;
-    padding: 26px 28px; max-width: 360px; width: 90%;
-    box-shadow: 0 16px 50px rgba(0,0,0,.22);
-    transform: scale(.96) translateY(6px);
-    transition: transform .2s;
-  }
+  .dialog { background: white; border-radius: 12px; padding: 26px 28px; max-width: 360px; width: 90%; box-shadow: 0 16px 50px rgba(0,0,0,.22); transform: scale(.96) translateY(6px); transition: transform .2s; }
   .overlay.show .dialog { transform: scale(1) translateY(0); }
-  .dialog-icon-wrap {
-    width: 44px; height: 44px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 14px;
-  }
+  .dialog-icon-wrap { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
   .icon-warn { background: #fff8e1; }
   .icon-error { background: #fff1f3; }
   .dialog-title { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 8px; }
@@ -558,87 +218,148 @@
   .dialog-actions { display: flex; gap: 10px; justify-content: flex-end; }
 
   /* ── Toast ── */
-  .toast {
-    position: fixed; top: 20px; right: 20px;
-    transform: translateY(-8px);
-    background: #16a34a; color: white;
-    padding: 12px 20px; border-radius: 8px;
-    font-size: 14px; font-weight: 500;
-    display: flex; align-items: center; gap: 10px;
-    opacity: 0; pointer-events: none;
-    transition: all .3s; z-index: 300;
-    box-shadow: 0 4px 20px rgba(0,0,0,.18);
-    white-space: nowrap;
-  }
+  .toast { position: fixed; top: 20px; right: 20px; transform: translateY(-8px); background: #16a34a; color: white; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 10px; opacity: 0; pointer-events: none; transition: all .3s; z-index: 300; box-shadow: 0 4px 20px rgba(0,0,0,.18); white-space: nowrap; }
   .toast.show { opacity: 1; transform: translateY(0); }
   .toast.error { background: #dc2626; }
-  .toast-dot {
-    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-    background: rgba(255,255,255,.6);
-  }
+  .toast-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: rgba(255,255,255,.6); }
 
   /* ── Item Type Selector ── */
-  .item-type-selector {
-    margin-top: 10px;
-    padding: 10px 12px;
-    background: #f8f5ff;
-    border: 1.5px solid #e4d9ff;
-    border-radius: 6px;
-  }
-  .item-type-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .item-type-label {
-    font-size: 12px;
-    font-weight: 600;
-    color: #444;
-    white-space: nowrap;
-  }
+  .item-type-selector { margin-top: 10px; padding: 10px 12px; background: #f8f5ff; border: 1.5px solid #e4d9ff; border-radius: 6px; }
+  .item-type-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .item-type-label { font-size: 12px; font-weight: 600; color: #444; white-space: nowrap; }
   .type-pill-group { display: flex; gap: 6px; }
-  .type-pill {
-    padding: 6px 18px;
-    border: 1.5px solid #d0d4dd;
-    border-radius: 20px;
-    background: white;
-    color: #555;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: all .15s;
-  }
+  .type-pill { padding: 6px 18px; border: 1.5px solid #d0d4dd; border-radius: 20px; background: white; color: #555; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all .15s; }
   .type-pill:hover { border-color: #7C3AED; color: #7C3AED; }
   .type-pill.active { background: #7C3AED; border-color: #7C3AED; color: white; }
-  .type-required-hint {
-    font-size: 11px;
-    color: #e63757;
-    margin-top: 6px;
-    display: none;
-  }
+  .type-required-hint { font-size: 11px; color: #e63757; margin-top: 6px; display: none; }
   .type-required-hint.show { display: block; }
 </style>
 </head>
 <body>
 
-<!-- ── Demo Toggle ── -->
-<div class="demo-controls">
-  <div class="demo-label">Select modal to preview</div>
-  <button class="demo-btn active" onclick="switchModal('edit', this)">&#9998; Edit Line Item</button>
-  <button class="demo-btn" onclick="switchModal('add', this)">&#43; Add Item</button>
-</div>
+<!-- ══════════════════════════════
+     PROPOSAL BUILDER PAGE
+══════════════════════════════ -->
+<div class="proposal-page">
 
-<!-- ══════════════════════
-     EDIT LINE ITEM MODAL
-══════════════════════ -->
-<div class="modal-shell" id="modal-edit">
-  <div class="modal-header">
-    <span class="modal-title">Edit Line Item</span>
-    <button class="modal-close" onclick="showToast('Modal closed', 'success')">&#x2715;</button>
+  <!-- Header -->
+  <div class="proposal-header">
+
+    <!-- Left: Customer info -->
+    <div class="ph-left">
+      <span class="cust-name">Adam Smith</span>
+      <div class="cust-detail">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <a href="#" onclick="return false">1234 Main St, Sarasota, FL, 34238</a>
+        <button class="icon-sm-btn" title="Copy address">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+      <div class="cust-detail">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <a href="#" onclick="return false">AdamSmith@djtest.com</a>
+      </div>
+      <div class="cust-detail">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.58 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91A16 16 0 0 0 12 14.91l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 20 16z"/></svg>
+        (456) 555-7907
+      </div>
+      <button class="btn-send-msg" onclick="showToast('Message panel opening…','success')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Send Message
+      </button>
+      <div class="proj-sel-wrap">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <select><option>[ Select a project ]</option><option>Exterior Repaint 2026</option></select>
+      </div>
+    </div>
+
+    <!-- Center: Proposal # + status + actions -->
+    <div class="ph-center">
+      <div class="proposal-title">
+        Proposal #2569437
+        <button class="btn-dl" title="Download">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </div>
+      <div class="badge-pending">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        PENDING
+      </div>
+      <div class="action-bar">
+        <button class="action-btn" onclick="showToast('Opening deal…','success')">View Deal</button>
+        <button class="action-btn" onclick="showToast('Work Order menu…','success')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M16.24 7.76a6 6 0 0 1 0 8.49M6.34 17.66a6 6 0 0 1 0-8.49M3.51 20.49a10 10 0 0 1 0-14.14"/></svg>
+          Work Order
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <button class="action-btn" onclick="showToast('Customer view…','success')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Customer View
+        </button>
+        <button class="action-btn" style="padding:7px 9px" title="Copy link" onclick="showToast('Link copied','success')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right: Meta -->
+    <div class="ph-right">
+      <div class="ph-meta"><strong>Created On:</strong> 3/10/2026</div>
+      <div class="ph-meta"><strong>Display Name:</strong> <a href="#" onclick="return false">Proposal #2569437</a></div>
+      <div class="ph-meta"><strong>Exp. Date:</strong> <a href="#" onclick="return false">Not Set</a></div>
+      <div class="ph-meta"><strong>Salesperson:</strong> <a href="#" onclick="return false">Jeremy Harrison</a></div>
+      <div class="ph-meta"><strong>Financing Status:</strong> <span class="financing-badge">NOT INITIATED</span></div>
+    </div>
+
+  </div><!-- /proposal-header -->
+
+  <!-- Line Items -->
+  <div class="line-items-section">
+    <div class="li-heading">Line Items</div>
+    <table class="li-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Product / Service</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Subtotal</th>
+          <th>Tax</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody id="li-tbody"></tbody>
+      <tfoot>
+        <tr class="li-total-row">
+          <td></td>
+          <td><strong>Total</strong></td>
+          <td></td>
+          <td></td>
+          <td id="li-total-sub">$0.00</td>
+          <td id="li-total-tax">$0.00</td>
+          <td id="li-grand-total">$0.00</td>
+        </tr>
+      </tfoot>
+    </table>
+    <div class="li-footer">
+      <button class="li-add-btn" onclick="openAddModal()">+ Add Item</button>
+      <button class="li-add-btn" onclick="showToast('Add Multiple Items — coming soon','success')">+ Add Multiple Items</button>
+      <button class="li-add-btn" onclick="showToast('Add Optional Item — coming soon','success')">+ Add Optional Item</button>
+    </div>
   </div>
 
+</div><!-- /proposal-page -->
+
+
+<!-- ══════════════════════════════
+     EDIT LINE ITEM MODAL
+══════════════════════════════ -->
+<div class="modal-overlay" id="overlay-edit">
+<div class="modal-shell">
+  <div class="modal-header">
+    <span class="modal-title">Edit Line Item</span>
+    <button class="modal-close" onclick="closeModal('edit')">&#x2715;</button>
+  </div>
   <div class="modal-body">
 
     <!-- PRODUCT -->
@@ -662,14 +383,17 @@
       <div class="form-group">
         <label class="form-label">Product or Service</label>
         <select class="form-control" id="edit-catalog-select" onchange="onCatalogChange('edit')">
+          <option value="">— Custom item —</option>
           <option value="Interior Painting - Doors">Interior Painting - Doors</option>
           <option value="Exterior Painting">Exterior Painting</option>
           <option value="General Prep">General Prep</option>
+          <option value="Paint – Sherwin Williams Emerald">Paint – Sherwin Williams Emerald</option>
+          <option value="Caulking & Sealants">Caulking &amp; Sealants</option>
         </select>
       </div>
       <div class="form-group" style="margin-bottom:0">
         <label class="form-label">Name <span class="req">*</span></label>
-        <input type="text" class="form-control" id="edit-name" value="Interior Painting - Doors" oninput="onNameInput('edit')">
+        <input type="text" class="form-control" id="edit-name" oninput="onNameInput('edit')">
         <div class="item-type-selector" id="edit-type-selector" style="display:none">
           <div class="item-type-row">
             <span class="item-type-label">Item Type <span class="req">*</span></span>
@@ -693,7 +417,7 @@
         <div>
           <label class="form-label">Quantity</label>
           <div class="qty-wrap">
-            <input type="number" class="qty-input" value="1.00">
+            <input type="number" class="qty-input" id="edit-qty-input" value="1.00">
             <span class="qty-unit">Ea</span>
           </div>
         </div>
@@ -715,17 +439,12 @@
           Description
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
-        <button class="btn-generate-with-ai" id="edit-gen-with-ai-btn" onclick="openAiPanel('edit')">
-          &#x2736; Generate with AI
-        </button>
+        <button class="btn-generate-with-ai" id="edit-gen-desc-btn" disabled onclick="openAiPanel('edit')">&#x2736; Generate with AI</button>
       </div>
-      <!-- AI Prompt Panel -->
       <div class="ai-prompt-panel" id="edit-ai-panel" style="display:none">
-        <div class="ai-prompt-header">
-          <span>&#x2736;</span> Describe This Line Item
-        </div>
+        <div class="ai-prompt-header"><span>&#x2736;</span> Describe This Line Item</div>
         <div class="ai-prompt-hint">The more detail you provide, the better your AI description will be. Example: Interior walls, living room, two coats, customer-supplied Sherwin Williams Emerald Satin.</div>
-        <textarea class="ai-prompt-textarea" id="edit-ai-input" placeholder='Describe "Interior Painting - Doors"...'></textarea>
+        <textarea class="ai-prompt-textarea" id="edit-ai-input" placeholder='Describe this item...'></textarea>
         <div class="ai-prompt-actions">
           <button class="ai-cancel-btn" onclick="closeAiPanel('edit')">&#x2715; Cancel</button>
           <button class="ai-generate-btn" id="edit-gen-btn" onclick="triggerGenerate('edit')">
@@ -751,16 +470,7 @@
         <button class="t-btn">&#8594;</button>
       </div>
       <div class="desc-editor-wrap">
-        <div class="desc-editor" id="edit-desc" contenteditable="true" oninput="onDescInput('edit')">
-          <p>Preparation:</p>
-          <p>Remove Doors</p>
-          <p>Remove Handles &amp; Hinges</p>
-          <p>Sand Down Inconsistencies</p>
-          <p>Rack Doors</p>
-          <p>Spray Doors</p>
-          <br>
-          <p>Note: Removing, Racking &amp; Spraying is dependent on varying factors relating to spray area. If no spray area is available, we will brush &amp; roll the doors. Pricing includes the interior portion of exterior entry doors only.</p>
-        </div>
+        <div class="desc-editor" id="edit-desc" contenteditable="true" oninput="onDescInput('edit')"></div>
         <div class="desc-loading-overlay" id="edit-desc-loading">
           <div class="desc-spinner-ring"></div>
           <span class="desc-loading-label">Generating description...</span>
@@ -798,33 +508,32 @@
         Save as new product/service
       </label>
     </div>
-
   </div>
-
   <div class="modal-footer">
     <div>
-      <button class="btn btn-danger" onclick="showToast('Line item deleted','error')">
+      <button class="btn btn-danger" onclick="deleteLineItem()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
         Delete
       </button>
     </div>
     <div class="footer-right">
-      <button class="btn btn-ghost" onclick="showToast('Modal closed','success')">Close</button>
+      <button class="btn btn-ghost" onclick="closeModal('edit')">Close</button>
       <button class="btn btn-primary" onclick="handleLineItemSave('edit')">Save</button>
     </div>
   </div>
 </div>
+</div><!-- /overlay-edit -->
 
 
-<!-- ══════════════════════
+<!-- ══════════════════════════════
      ADD ITEM MODAL
-══════════════════════ -->
-<div class="modal-shell" id="modal-add" style="display:none">
+══════════════════════════════ -->
+<div class="modal-overlay" id="overlay-add">
+<div class="modal-shell">
   <div class="modal-header">
     <span class="modal-title">Add Item</span>
-    <button class="modal-close" onclick="showToast('Modal closed','success')">&#x2715;</button>
+    <button class="modal-close" onclick="closeModal('add')">&#x2715;</button>
   </div>
-
   <div class="modal-body">
 
     <!-- PRODUCT -->
@@ -852,6 +561,8 @@
           <option value="General Prep">General Prep</option>
           <option value="Interior Painting - Doors">Interior Painting - Doors</option>
           <option value="Exterior Painting">Exterior Painting</option>
+          <option value="Paint – Sherwin Williams Emerald">Paint – Sherwin Williams Emerald</option>
+          <option value="Caulking & Sealants">Caulking &amp; Sealants</option>
         </select>
       </div>
       <div class="form-group" style="margin-bottom:0">
@@ -880,7 +591,7 @@
         <div>
           <label class="form-label">Quantity</label>
           <div class="qty-wrap">
-            <input type="number" class="qty-input" value="0">
+            <input type="number" class="qty-input" id="add-qty-input" value="1">
             <span class="qty-unit">Ea</span>
           </div>
         </div>
@@ -902,15 +613,10 @@
           Description
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
-        <button class="btn-generate-with-ai" id="add-gen-with-ai-btn" onclick="openAiPanel('add')">
-          &#x2736; Generate with AI
-        </button>
+        <button class="btn-generate-with-ai" id="add-gen-desc-btn" disabled onclick="openAiPanel('add')">&#x2736; Generate with AI</button>
       </div>
-      <!-- AI Prompt Panel -->
       <div class="ai-prompt-panel" id="add-ai-panel" style="display:none">
-        <div class="ai-prompt-header">
-          <span>&#x2736;</span> Describe This Line Item
-        </div>
+        <div class="ai-prompt-header"><span>&#x2736;</span> Describe This Line Item</div>
         <div class="ai-prompt-hint">The more detail you provide, the better your AI description will be. Example: Interior walls, living room, two coats, customer-supplied Sherwin Williams Emerald Satin.</div>
         <textarea class="ai-prompt-textarea" id="add-ai-input" placeholder="Describe this item..."></textarea>
         <div class="ai-prompt-actions">
@@ -938,9 +644,7 @@
         <button class="t-btn">&#8594;</button>
       </div>
       <div class="desc-editor-wrap">
-        <div class="desc-editor" id="add-desc" contenteditable="true" style="min-height:110px" oninput="onDescInput('add')">
-          <span class="body-hint">body p</span>
-        </div>
+        <div class="desc-editor" id="add-desc" contenteditable="true" style="min-height:110px" oninput="onDescInput('add')"></div>
         <div class="desc-loading-overlay" id="add-desc-loading">
           <div class="desc-spinner-ring"></div>
           <span class="desc-loading-label">Generating description...</span>
@@ -978,24 +682,19 @@
         Save as new product/service
       </label>
     </div>
-
   </div>
-
   <div class="modal-footer">
     <div></div>
     <div class="footer-right">
-      <button class="btn btn-ghost" onclick="showToast('Modal closed','success')">Close</button>
+      <button class="btn btn-ghost" onclick="closeModal('add')">Close</button>
       <button class="btn btn-primary" onclick="handleLineItemSave('add')">Save</button>
     </div>
   </div>
 </div>
+</div><!-- /overlay-add -->
 
 
-<!-- ══════════════
-     DIALOGS
-══════════════ -->
-
-<!-- Replace warning -->
+<!-- ── Dialogs ── -->
 <div class="overlay" id="dlg-replace">
   <div class="dialog">
     <div class="dialog-icon-wrap icon-warn">
@@ -1010,7 +709,6 @@
   </div>
 </div>
 
-<!-- Empty generate -->
 <div class="overlay" id="dlg-empty">
   <div class="dialog">
     <div class="dialog-icon-wrap icon-error">
@@ -1024,7 +722,6 @@
   </div>
 </div>
 
-<!-- AI error -->
 <div class="overlay" id="dlg-ai-error">
   <div class="dialog">
     <div class="dialog-icon-wrap icon-error">
@@ -1040,51 +737,265 @@
 
 <!-- Toast -->
 <div class="toast" id="toastEl">
-  <div class="toast-dot success" id="toast-dot"></div>
+  <div class="toast-dot" id="toast-dot"></div>
   <span id="toast-msg"></span>
 </div>
 
 
 <script>
-  var pendingModal = null;
-
-  /* catalog item → type mapping */
+  /* ── Catalog ── */
   var catalogTypes = {
-    'Interior Painting - Doors': 'Product',
-    'Exterior Painting': 'Product',
-    'General Prep': 'Service'
+    'Interior Painting - Doors': 'Service',
+    'Exterior Painting': 'Service',
+    'General Prep': 'Service',
+    'Paint \u2013 Sherwin Williams Emerald': 'Product',
+    'Caulking & Sealants': 'Product'
   };
 
-  /* per-modal state */
+  var catalogDescriptions = {
+    'Interior Painting - Doors': '<p><strong>Interior Painting \u2013 Doors</strong></p><p><strong>Preparation:</strong></p><ul><li>Remove door hardware including hinges, knobs, and striker plates</li><li>Lightly sand all surfaces to promote adhesion; wipe clean of dust</li><li>Fill dings, nail holes, and wood imperfections with wood filler; sand smooth</li><li>Apply painter\u2019s tape to protect adjacent trim and walls</li></ul><p><strong>Application:</strong></p><ul><li>Apply one coat of primer to bare or repaired surfaces as needed</li><li>Brush-apply two finish coats using a high-quality trim brush for a smooth, even result</li><li>Allow proper dry time between coats per manufacturer specifications</li></ul><p><em>Note: Pricing assumes standard 6-panel or flat door. Double doors or specialty doors may be quoted separately.</em></p>',
+    'Exterior Painting': '<p><strong>Exterior Painting</strong></p><p><strong>Preparation:</strong></p><ul><li>Pressure wash all exterior surfaces; allow to dry fully before painting</li><li>Scrape, sand, and feather any peeling or loose paint</li><li>Caulk gaps around windows, doors, and trim; allow to cure</li><li>Apply primer to bare wood and all heavily repaired areas</li></ul><p><strong>Application:</strong></p><ul><li>Brush and roll all siding surfaces for uniform coverage</li><li>Apply two finish coats of exterior-grade paint</li><li>Back-brush any sprayed sections to ensure full surface penetration</li></ul><p><em>Note: Pricing based on standard single-story height. Additional charges may apply for multi-story access, extensive wood repair, or specialty coatings.</em></p>',
+    'General Prep': '<p><strong>General Preparation</strong></p><p><strong>Surface Prep:</strong></p><ul><li>Move and protect furniture, fixtures, and flooring with drop cloths</li><li>Remove outlet covers, switch plates, light fixtures, and hardware as needed</li><li>Fill nail holes, cracks, and surface imperfections with spackle or caulk</li><li>Sand repaired areas smooth and feather into surrounding surfaces</li></ul><p><strong>Masking:</strong></p><ul><li>Apply painter\u2019s tape to all trim, windows, doors, and adjacent surfaces</li><li>Mask ceilings and baseboards wherever wall painting will occur</li></ul><p><em>Note: Prep scope may vary based on surface conditions found on-site. Significant repairs beyond standard prep will be quoted separately.</em></p>'
+    /* Paint – SW Emerald and Caulking & Sealants have no canned description */
+  };
+
+  /* ── Line Items State ── */
+  var lineItems = [
+    { id: 1, name: 'Interior Painting - Doors', type: 'Product', qty: 1, price: 250, taxable: false, taxRate: 5, descOnly: false, description: '' }
+  ];
+  var nextId = 2;
+  var editingIndex = -1;
+
+  /* ── Per-modal State ── */
   var nameTypedDirectly = { edit: false, add: false };
   var selectedItemType  = { edit: null,  add: null  };
+  var descOnlyOn        = { edit: false, add: false };
+  var taxableOn         = { edit: false, add: true  };
+  var originalPrice     = { edit: 250,   add: 0     };
+  var pendingModal      = null;
+  var productsAndServicesEntries = [];
 
-  /* per-modal toggle state */
-  var descOnlyOn    = { edit: false, add: false };
-  var taxableOn     = { edit: false, add: true  }; /* add starts taxable=on */
-  var originalPrice = { edit: 250.00, add: 0    };
-
+  /* ── Init ── */
   window.addEventListener('DOMContentLoaded', function() {
-    /* Edit modal: initialize badge from pre-selected catalog item */
-    var sel = document.getElementById('edit-catalog-select');
-    if (sel && sel.value) setBadge('edit', catalogTypes[sel.value] || 'Product');
-    /* Initialize totals so tax is applied where toggle starts ON */
+    renderLineItems();
     updateTotal('edit');
     updateTotal('add');
   });
 
-  function switchModal(type, btn) {
-    document.getElementById('modal-edit').style.display = (type === 'edit') ? 'block' : 'none';
-    document.getElementById('modal-add').style.display  = (type === 'add')  ? 'block' : 'none';
-    document.querySelectorAll('.demo-btn').forEach(function(b){ b.classList.remove('active'); });
-    btn.classList.add('active');
-  }
+  /* ── Render Line Items Table ── */
+  function renderLineItems() {
+    var tbody = document.getElementById('li-tbody');
+    tbody.innerHTML = '';
 
-  function updateTotal(m) {
-    if (descOnlyOn[m]) {
-      document.getElementById(m+'-total').textContent = '$0.00';
+    if (lineItems.length === 0) {
+      var empty = document.createElement('tr');
+      empty.innerHTML = '<td colspan="7" class="li-empty">No line items yet. Click <strong>+ Add Item</strong> below to get started.</td>';
+      tbody.appendChild(empty);
+      document.getElementById('li-total-sub').textContent = '$0.00';
+      document.getElementById('li-total-tax').textContent = '$0.00';
+      document.getElementById('li-grand-total').textContent = '$0.00';
       return;
     }
+
+    var totalSub = 0, totalTax = 0;
+    lineItems.forEach(function(item, idx) {
+      var sub = item.descOnly ? 0 : (item.qty * item.price);
+      var tax = (item.taxable && !item.descOnly) ? sub * item.taxRate / 100 : 0;
+      var tot = sub + tax;
+      totalSub += sub;
+      totalTax += tax;
+
+      var tr = document.createElement('tr');
+      tr.className = 'li-row';
+      tr.innerHTML =
+        '<td>&#9776;</td>' +
+        '<td><div class="li-name-cell">' +
+          '<span class="li-name-text">' + escHtml(item.name) + '</span>' +
+          '<button class="li-row-icon" title="Copy" onclick="event.stopPropagation();showToast(\'Copied\',\'success\')">' +
+            '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
+          '</button>' +
+          '<button class="li-row-icon" title="Attach" onclick="event.stopPropagation();showToast(\'Attachment panel\',\'success\')">' +
+            '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>' +
+          '</button>' +
+        '</div></td>' +
+        '<td>' + item.qty.toFixed(2) + '</td>' +
+        '<td>' + (item.descOnly ? '—' : ('$' + item.price.toFixed(2) + ' / Ea')) + '</td>' +
+        '<td>' + (item.descOnly ? '—' : ('$' + sub.toFixed(2))) + '</td>' +
+        '<td>$' + tax.toFixed(2) + '</td>' +
+        '<td>$' + tot.toFixed(2) + '</td>';
+
+      (function(i){ tr.addEventListener('click', function() { openEditModal(i); }); })(idx);
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('li-total-sub').textContent = '$' + totalSub.toFixed(2);
+    document.getElementById('li-total-tax').textContent = '$' + totalTax.toFixed(2);
+    document.getElementById('li-grand-total').textContent = '$' + (totalSub + totalTax).toFixed(2);
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  /* ── Open / Close Modals ── */
+  function openAddModal() {
+    /* Reset all add modal state */
+    var descToggle = document.getElementById('add-desc-only-toggle');
+    var taxToggle  = document.getElementById('add-taxable-toggle');
+
+    descOnlyOn['add'] = false;
+    descToggle.classList.remove('on');
+    document.getElementById('add-pricing-section').style.display = '';
+
+    taxableOn['add'] = true;
+    taxToggle.classList.add('on');
+
+    document.getElementById('add-catalog-select').value = '';
+    document.getElementById('add-name').value = '';
+    document.getElementById('add-price').value = '0';
+    document.getElementById('add-tax-rate').value = '5.000';
+    originalPrice['add'] = 0;
+    nameTypedDirectly['add'] = false;
+    selectedItemType['add'] = null;
+    clearTypePills('add');
+    setBadge('add', 'Product');
+    document.getElementById('add-type-selector').style.display = 'none';
+    document.getElementById('add-type-required').classList.remove('show');
+    document.getElementById('add-desc').innerHTML = '';
+    document.getElementById('add-ai-input').value = '';
+    document.getElementById('add-save-new-product').checked = false;
+    closeAiPanel('add');
+    document.getElementById('add-gen-desc-btn').disabled = true;
+    updateTotal('add');
+
+    document.getElementById('overlay-add').style.display = 'flex';
+    setTimeout(function(){ document.getElementById('overlay-add').classList.add('show'); }, 10);
+  }
+
+  function openEditModal(idx) {
+    editingIndex = idx;
+    var item = lineItems[idx];
+
+    /* Reset toggles cleanly */
+    var descToggle = document.getElementById('edit-desc-only-toggle');
+    var taxToggle  = document.getElementById('edit-taxable-toggle');
+
+    descOnlyOn['edit'] = false;
+    descToggle.classList.remove('on');
+    document.getElementById('edit-pricing-section').style.display = '';
+
+    taxableOn['edit'] = item.taxable;
+    taxToggle.classList.toggle('on', item.taxable);
+
+    /* Catalog / name */
+    var sel = document.getElementById('edit-catalog-select');
+    nameTypedDirectly['edit'] = false;
+    selectedItemType['edit'] = null;
+    clearTypePills('edit');
+    document.getElementById('edit-type-selector').style.display = 'none';
+    document.getElementById('edit-type-required').classList.remove('show');
+
+    if (catalogTypes[item.name] !== undefined) {
+      sel.value = item.name;
+      document.getElementById('edit-name').value = item.name;
+      setBadge('edit', catalogTypes[item.name] || 'Product');
+    } else {
+      sel.value = '';
+      document.getElementById('edit-name').value = item.name;
+      if (item.name) {
+        nameTypedDirectly['edit'] = true;
+        document.getElementById('edit-type-selector').style.display = 'block';
+        selectedItemType['edit'] = (item.type !== 'Item') ? item.type : null;
+        if (selectedItemType['edit']) {
+          document.getElementById('edit-type-' + item.type.toLowerCase()).classList.add('active');
+          setBadge('edit', item.type);
+        } else {
+          setBadge('edit', 'Item');
+        }
+      }
+    }
+
+    document.getElementById('edit-qty-input').value = item.qty;
+    document.getElementById('edit-price').value = item.price;
+    originalPrice['edit'] = item.price;
+    document.getElementById('edit-tax-rate').value = item.taxRate;
+
+    /* Apply descOnly if item was saved that way */
+    if (item.descOnly) toggleDescOnly('edit', descToggle);
+
+    /* Description */
+    document.getElementById('edit-desc').innerHTML = item.description || '';
+    document.getElementById('edit-ai-input').value = '';
+    document.getElementById('edit-save-new-product').checked = false;
+    closeAiPanel('edit');
+    document.getElementById('edit-gen-desc-btn').disabled = !document.getElementById('edit-name').value.trim();
+    updateTotal('edit');
+
+    document.getElementById('overlay-edit').style.display = 'flex';
+    setTimeout(function(){ document.getElementById('overlay-edit').classList.add('show'); }, 10);
+  }
+
+  function closeModal(m) {
+    var overlay = document.getElementById('overlay-' + m);
+    overlay.classList.remove('show');
+    setTimeout(function(){ overlay.style.display = 'none'; }, 200);
+  }
+
+  /* ── Save ── */
+  function handleLineItemSave(m) {
+    var typeSelector = document.getElementById(m+'-type-selector');
+    if (typeSelector.style.display !== 'none' && !selectedItemType[m]) {
+      document.getElementById(m+'-type-required').classList.add('show');
+      typeSelector.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      return;
+    }
+
+    var name = document.getElementById(m+'-name').value.trim();
+    if (!name) { showToast('Please enter an item name', 'error'); return; }
+
+    var catalogSel = document.getElementById(m+'-catalog-select');
+    var type = selectedItemType[m] || (catalogSel && catalogTypes[catalogSel.value]) || 'Product';
+    var qty  = parseFloat(document.getElementById(m+'-qty-input').value) || 1;
+    var price = parseFloat(document.getElementById(m+'-price').value) || 0;
+    var taxRate = parseFloat(document.getElementById(m+'-tax-rate').value) || 0;
+    var desc = (document.getElementById(m+'-desc').innerHTML || '').trim();
+
+    var itemData = {
+      id: m === 'edit' ? lineItems[editingIndex].id : nextId++,
+      name: name, type: type, qty: qty, price: price,
+      taxable: taxableOn[m], taxRate: taxRate, descOnly: descOnlyOn[m],
+      description: desc
+    };
+
+    var saveAsNew = document.getElementById(m+'-save-new-product');
+    if (saveAsNew && saveAsNew.checked) {
+      productsAndServicesEntries.push({ name: name, type: type, price: price });
+    }
+
+    if (m === 'edit') {
+      lineItems[editingIndex] = itemData;
+      showToast('Line item updated', 'success');
+    } else {
+      lineItems.push(itemData);
+      showToast('Line item added to proposal', 'success');
+    }
+
+    renderLineItems();
+    closeModal(m);
+  }
+
+  function deleteLineItem() {
+    if (editingIndex >= 0 && editingIndex < lineItems.length) {
+      lineItems.splice(editingIndex, 1);
+      renderLineItems();
+      closeModal('edit');
+      showToast('Line item deleted', 'error');
+    }
+  }
+
+  /* ── Toggle helpers ── */
+  function updateTotal(m) {
+    if (descOnlyOn[m]) { document.getElementById(m+'-total').textContent = '$0.00'; return; }
     var price = parseFloat(document.getElementById(m+'-price').value) || 0;
     var total = price;
     if (taxableOn[m]) {
@@ -1114,56 +1025,62 @@
     updateTotal(m);
   }
 
-  /* ── Badge ── */
   function setBadge(m, type) {
     document.getElementById(m+'-type-badge').textContent = type || 'Product';
   }
 
-  /* ── Catalog dropdown ── */
   function onCatalogChange(m) {
     var val = document.getElementById(m+'-catalog-select').value;
-    /* Hide type selector — catalog item has a known classification */
     document.getElementById(m+'-type-selector').style.display = 'none';
     nameTypedDirectly[m] = false;
-    selectedItemType[m]  = null;
+    selectedItemType[m] = null;
     clearTypePills(m);
+    var genBtn = document.getElementById(m+'-gen-desc-btn');
+    var desc = document.getElementById(m+'-desc');
     if (val) {
       setBadge(m, catalogTypes[val] || 'Product');
-      /* Auto-fill name from catalog selection (no oninput fires) */
       document.getElementById(m+'-name').value = val;
-      /* Update AI placeholder silently */
       var aiInput = document.getElementById(m+'-ai-input');
       if (aiInput) aiInput.placeholder = 'Describe "' + val + '"...';
+      /* Populate canned description if available */
+      if (catalogDescriptions[val]) {
+        desc.innerHTML = catalogDescriptions[val];
+        desc.classList.add('ai-flash');
+        setTimeout(function(){ desc.classList.remove('ai-flash'); }, 1000);
+      } else {
+        desc.innerHTML = '';
+      }
+      if (genBtn) genBtn.disabled = false;
     } else {
       setBadge(m, 'Product');
       document.getElementById(m+'-name').value = '';
+      desc.innerHTML = '';
+      if (genBtn) genBtn.disabled = true;
     }
   }
 
-  /* ── Name field (user typing) ── */
   function onNameInput(m) {
     var nameVal = document.getElementById(m+'-name').value.trim();
-    /* Update AI panel placeholder */
     var aiInput = document.getElementById(m+'-ai-input');
     if (aiInput) aiInput.placeholder = nameVal ? 'Describe "' + nameVal + '"...' : 'Describe this item...';
-
+    var genBtn = document.getElementById(m+'-gen-desc-btn');
     if (nameVal) {
       nameTypedDirectly[m] = true;
       document.getElementById(m+'-type-selector').style.display = 'block';
       if (!selectedItemType[m]) setBadge(m, 'Item');
+      if (genBtn) genBtn.disabled = false;
     } else {
-      /* Name cleared — reset */
       nameTypedDirectly[m] = false;
-      selectedItemType[m]  = null;
+      selectedItemType[m] = null;
       clearTypePills(m);
       document.getElementById(m+'-type-selector').style.display = 'none';
       document.getElementById(m+'-type-required').classList.remove('show');
       var sel = document.getElementById(m+'-catalog-select');
       setBadge(m, (sel && sel.value) ? (catalogTypes[sel.value] || 'Product') : 'Product');
+      if (genBtn) genBtn.disabled = true;
     }
   }
 
-  /* ── Type pill selection ── */
   function selectType(m, type) {
     selectedItemType[m] = type;
     setBadge(m, type);
@@ -1179,9 +1096,9 @@
 
   /* ── AI Panel ── */
   function openAiPanel(m) {
-    var panel   = document.getElementById(m+'-ai-panel');
+    var panel = document.getElementById(m+'-ai-panel');
     var nameVal = document.getElementById(m+'-name').value.trim();
-    var input   = document.getElementById(m+'-ai-input');
+    var input = document.getElementById(m+'-ai-input');
     input.placeholder = nameVal ? 'Describe "' + nameVal + '"...' : 'Describe this item...';
     panel.style.display = 'block';
     setTimeout(function(){ input.focus(); }, 50);
@@ -1191,75 +1108,55 @@
     document.getElementById(m+'-ai-panel').style.display = 'none';
   }
 
-  function onDescInput(m) { /* reserved for future use */ }
+  function onDescInput(m) { /* reserved */ }
 
   /* ── Generate ── */
   function triggerGenerate(m) {
     var input = document.getElementById(m+'-ai-input').value.trim();
     if (!input) { openDialog('dlg-empty'); return; }
-
     var desc = document.getElementById(m+'-desc');
     var text = (desc.innerText || desc.textContent || '').replace(/body p/g,'').trim();
-    var hasContent = text.length > 0;
-
     pendingModal = m;
-    if (hasContent) {
-      openDialog('dlg-replace');
-    } else {
-      runGenerate();
-    }
+    if (text.length > 0) { openDialog('dlg-replace'); } else { runGenerate(); }
   }
 
-  function confirmReplace() {
-    closeDialog('dlg-replace');
-    runGenerate();
-  }
+  function confirmReplace() { closeDialog('dlg-replace'); runGenerate(); }
 
   function runGenerate() {
     var m = pendingModal;
     var btn = document.getElementById(m+'-gen-btn');
     var loadingOverlay = document.getElementById(m+'-desc-loading');
-
-    /* Button loading state */
-    btn.classList.add('gen-loading');
-    btn.disabled = true;
+    btn.classList.add('gen-loading'); btn.disabled = true;
     var label = btn.querySelector('.gen-label');
     if (label) label.textContent = 'Generating...';
-
-    /* Description loading state */
     loadingOverlay.classList.add('show');
 
     setTimeout(function() {
-      btn.classList.remove('gen-loading');
-      btn.disabled = false;
+      btn.classList.remove('gen-loading'); btn.disabled = false;
       if (label) label.textContent = '\u2736 Generate';
       loadingOverlay.classList.remove('show');
 
-      var succeed = Math.random() > 0.15;
-      if (succeed) {
+      if (Math.random() > 0.15) {
         var desc = document.getElementById(m+'-desc');
-        var input = document.getElementById(m+'-ai-input').value.trim();
-        var itemName = document.getElementById(m+'-name').value.trim() || input.substring(0,40);
+        var itemName = document.getElementById(m+'-name').value.trim();
         desc.innerHTML =
-          '<p><strong>' + itemName + '</strong></p>' +
+          '<p><strong>' + escHtml(itemName) + '</strong></p>' +
           '<p><strong>Preparation:</strong></p>' +
           '<ul>' +
           '<li>Move furniture to center of room and cover with protective drop cloths</li>' +
           '<li>Remove switch plates, outlet covers, and hardware</li>' +
           '<li>Protect floors with canvas drop cloths or plastic sheeting</li>' +
-          '<li>Mask trim, baseboards, and ceiling edges as needed</li>' +
           '<li>Fill nail holes and minor imperfections with spackle; sand smooth</li>' +
           '</ul>' +
           '<p><strong>Application:</strong></p>' +
           '<ul>' +
           '<li>Cut in edges and corners with brush</li>' +
-          '<li>Roll walls using 3/8&quot; nap roller</li>' +
+          '<li>Roll walls using 3/8&quot; nap roller for full coverage</li>' +
           '<li>Apply two coats for uniform coverage and color</li>' +
           '</ul>' +
           '<p><em>Note: Pricing is based on standard conditions. Additional charges may apply for surfaces requiring extensive prep or specialty coatings.</em></p>';
         desc.classList.add('ai-flash');
         setTimeout(function(){ desc.classList.remove('ai-flash'); }, 1400);
-        onDescInput(m);
         closeAiPanel(m);
         showToast('Description generated by Jobi AI', 'success');
       } else {
@@ -1268,44 +1165,15 @@
     }, 2000);
   }
 
-  var productsAndServicesEntries = [];
-
-  function handleLineItemSave(m) {
-    /* Validate: type selector visible but no type chosen */
-    var typeSelector = document.getElementById(m+'-type-selector');
-    if (typeSelector.style.display !== 'none' && !selectedItemType[m]) {
-      document.getElementById(m+'-type-required').classList.add('show');
-      typeSelector.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      return;
-    }
-
-    var saveAsNewToggle = document.getElementById(m+'-save-new-product');
-    if (saveAsNewToggle && saveAsNewToggle.checked) {
-      var catalogSel = document.getElementById(m+'-catalog-select');
-      var resolvedType = selectedItemType[m] ||
-                         (catalogSel && catalogTypes[catalogSel.value]) ||
-                         'Product';
-      productsAndServicesEntries.push({
-        name:        (document.getElementById(m+'-name').value || '').trim(),
-        type:        resolvedType,
-        price:       parseFloat(document.getElementById(m+'-price').value) || 0,
-        description: (document.getElementById(m+'-desc').innerText || '').trim()
-      });
-      showToast(resolvedType + ' added to proposal and Products & Services', 'success');
-      return;
-    }
-
-    showToast('Line item added to proposal', 'success');
-  }
-
+  /* ── Dialog ── */
   function openDialog(id) { document.getElementById(id).classList.add('show'); }
   function closeDialog(id) { document.getElementById(id).classList.remove('show'); }
 
+  /* ── Toast ── */
   var toastTimer;
   function showToast(msg, type) {
     var el = document.getElementById('toastEl');
-    var dot = document.getElementById('toast-dot');
-    dot.className = 'toast-dot ' + (type || 'success');
+    el.className = 'toast' + (type === 'error' ? ' error' : '');
     document.getElementById('toast-msg').textContent = msg;
     el.classList.add('show');
     clearTimeout(toastTimer);
