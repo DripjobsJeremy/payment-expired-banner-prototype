@@ -31,8 +31,8 @@
   .logo span { color: var(--text-primary); }
   .dj-wordmark { font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 17px; letter-spacing: -0.3px; color: #6941C6; }
   .date-pill { display: flex; align-items: center; gap: 6px; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 500; color: var(--text-secondary); cursor: pointer; white-space: nowrap; }
-  .period-tabs { display: flex; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 3px; gap: 2px; }
-  .period-tab { padding: 3px 9px; border-radius: 14px; font-size: 11px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.15s; -webkit-user-select: none; user-select: none; }
+  .period-tabs { display: flex; background: var(--bg); border: 1px solid var(--border); border-radius: 22px; padding: 3px; gap: 4px; }
+  .period-tab { min-width: 44px; padding: 7px 10px; border-radius: 16px; font-size: 11px; font-weight: 600; color: var(--text-muted); cursor: pointer; transition: all 0.15s; -webkit-user-select: none; user-select: none; text-align: center; }
   .period-tab.active { background: var(--surface); color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
   .nav-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--blue); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
   .nav-name { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
@@ -66,7 +66,7 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     background: #FCFCFD;
-    padding: 14px 14px 12px;
+    padding: 8px 8px 7px;
     cursor: pointer;
     transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
     display: flex;
@@ -82,22 +82,26 @@
     box-shadow: 0 0 0 2px rgba(105,65,198,0.12);
     background: #FAF8FF;
   }
-  .metric-tab.active::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: -14px;
-    width: 2px;
-    height: 14px;
-    background: var(--purple);
-    transform: translateX(-50%);
-  }
-  .metric-tab-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; width: 100%; }
-  .metric-tab .tile-icon { width: 40px; height: 40px; font-size: 20px; border-radius: 10px; flex-shrink: 0; }
+  .metric-tab-top { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; width: 100%; }
+  .metric-tab .tile-icon { width: 28px; height: 28px; font-size: 14px; border-radius: 7px; flex-shrink: 0; }
   .metric-tab-text { display: flex; flex-direction: column; }
   .metric-tab-name { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--purple); }
-  .metric-tab-value { font-size: 20px; font-weight: 700; color: var(--text-primary); line-height: 1.15; margin-top: 3px; }
-  .metric-tab-def { font-size: 11px; color: var(--text-secondary); line-height: 1.35; }
+  .metric-tab-value { font-size: 16px; font-weight: 700; color: var(--text-primary); line-height: 1.05; margin-top: 1px; }
+  .metric-tab-def { font-size: 10px; color: var(--text-secondary); line-height: 1.25; }
+  .metric-subnote { margin-top: 3px; font-size: 9.5px; color: #667085; line-height: 1.2; }
+  .metric-affordance {
+    margin-top: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 6px;
+    border: 1px solid #D6BBFB;
+    border-radius: 999px;
+    font-size: 10px;
+    color: var(--purple);
+    font-weight: 700;
+    background: #F4F3FF;
+  }
   .metric-icon-sales   { background: #ECFDF3; }
   .metric-icon-jobs    { background: #FFFAEB; }
   .metric-icon-avg     { background: #F4F3FF; }
@@ -115,6 +119,7 @@
     animation: fadeUp 0.2s ease;
   }
   .metric-group-detail.show { display: block; }
+  .metric-group-detail { display: none !important; }
   .metric-detail-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
   .metric-detail-head-right { display: flex; align-items: center; gap: 10px; }
   .metric-detail-title { font-size: 14px; font-weight: 700; color: var(--text-primary); }
@@ -136,6 +141,15 @@
   .metric-group-detail .metric-detail-title { color: var(--purple); }
   .metric-group-detail .tile-formula-label { color: var(--purple); }
   .metric-group-detail .bd-label { color: #42307D; }
+  .info-tip { margin-left: 6px; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; background: #EEF4FF; color: var(--blue); font-size: 11px; font-weight: 700; cursor: help; }
+
+  .kpi-drawer-backdrop { position: fixed; inset: 0; background: rgba(16,24,40,0.22); opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 90; }
+  .kpi-drawer-backdrop.show { opacity: 1; pointer-events: auto; }
+  .kpi-drawer { position: fixed; top: 0; right: 0; width: min(560px, 92vw); height: 100vh; background: var(--surface); border-left: 1px solid var(--border); box-shadow: -16px 0 40px rgba(16,24,40,0.14); transform: translateX(100%); transition: transform 0.22s ease; z-index: 100; display: flex; flex-direction: column; }
+  .kpi-drawer.show { transform: translateX(0); }
+  .kpi-drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid var(--border); }
+  .kpi-drawer-title { font-size: 14px; font-weight: 800; color: var(--purple); }
+  .kpi-drawer-body { padding: 16px 18px; overflow: auto; }
 
   /* TILE */
   .tile { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px 20px; box-shadow: var(--shadow-tile); transition: box-shadow 0.2s, transform 0.2s; position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
@@ -178,6 +192,34 @@
 
   /* METRICS SECTIONS */
   .sections { display: flex; flex-direction: column; gap: 16px; margin-top: 32px; }
+  .insights { margin-top: 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-tile); padding: 18px 20px; }
+  .insights-title { font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--purple); margin-bottom: 10px; }
+  .insights-list { display: flex; flex-direction: column; gap: 8px; }
+  .insight-item { font-size: 13px; color: var(--text-secondary); }
+  .insights { margin-top: 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-tile); padding: 18px 20px; }
+  .insights-title { font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--purple); margin-bottom: 10px; }
+  .insights-list { display: flex; flex-direction: column; gap: 8px; }
+  .insight-item { font-size: 13px; color: var(--text-secondary); }
+  .info-tip { margin-left: 6px; display: inline-flex; align-items: center; justify-content: center; width: 16px; height: 16px; border-radius: 50%; background: #EEF4FF; color: var(--blue); font-size: 11px; font-weight: 700; cursor: help; }
+
+  .kpi-drawer-backdrop { position: fixed; inset: 0; background: rgba(16,24,40,0.22); opacity: 0; pointer-events: none; transition: opacity 0.2s ease; z-index: 90; }
+  .kpi-drawer-backdrop.show { opacity: 1; pointer-events: auto; }
+  .kpi-drawer { position: fixed; top: 0; right: 0; width: min(560px, 92vw); height: 100vh; background: var(--surface); border-left: 1px solid var(--border); box-shadow: -16px 0 40px rgba(16,24,40,0.14); transform: translateX(100%); transition: transform 0.22s ease; z-index: 100; display: flex; flex-direction: column; }
+  .kpi-drawer.show { transform: translateX(0); }
+  .kpi-drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid var(--border); }
+  .kpi-drawer-title { font-size: 14px; font-weight: 800; color: var(--purple); }
+  .kpi-drawer-body { padding: 16px 18px; overflow: auto; }
+
+  .is-loading .metric-tab, .is-loading .sc { position: relative; overflow: hidden; }
+  .is-loading .metric-tab::before, .is-loading .sc::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.65) 50%, rgba(255,255,255,0) 100%);
+    transform: translateX(-100%);
+    animation: shimmer 0.9s linear infinite;
+  }
+  @keyframes shimmer { to { transform: translateX(100%); } }
   .section-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .sc { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow-tile); }
   .sc-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
@@ -196,6 +238,8 @@
   .sc-bar-pct { font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-left: 4px; }
   .sc-bar-track { height: 6px; background: #F0F2F5; border-radius: 99px; overflow: hidden; }
   .sc-bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+  .meta-row .sc-bar-label { color: #667085; font-style: italic; }
+  .meta-row .sc-bar-fill { opacity: 0.75; }
   .sc-total { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 6px; }
   .sc-total-label { font-size: 13px; font-weight: 700; color: var(--text-primary); }
   .sc-total-value { font-size: 13px; font-weight: 700; color: var(--text-primary); }
@@ -207,6 +251,17 @@
   .sc-empty svg { width: 36px; height: 36px; stroke: var(--text-muted); fill: none; stroke-width: 1.5; }
   .sc-empty-text { font-size: 13px; color: var(--text-muted); }
   .page-footer { text-align: center; padding: 32px 0 16px; font-size: 12px; color: var(--text-muted); }
+
+  .is-loading .metric-tab, .is-loading .sc { position: relative; overflow: hidden; }
+  .is-loading .metric-tab::before, .is-loading .sc::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.65) 50%, rgba(255,255,255,0) 100%);
+    transform: translateX(-100%);
+    animation: shimmer 0.9s linear infinite;
+  }
+  @keyframes shimmer { to { transform: translateX(100%); } }
 
   /* TRANSITION for data updates */
   .tile-col-main, .tile-col-breakdown { transition: opacity 0.15s; }
@@ -232,8 +287,7 @@
     .banner { gap: 10px; }
     .metric-groups { gap: 10px; }
     .metric-tabs { grid-template-columns: 1fr; gap: 8px; }
-    .metric-tab { padding: 14px 12px; align-items: center; text-align: center; }
-    .metric-tab.active::after { display: none; }
+    .metric-tab { padding: 8px 8px; align-items: center; text-align: center; }
     .metric-tab-top { justify-content: center; }
     .metric-tab-text { align-items: center; }
     .metric-tab-value { font-size: 18px; }
@@ -259,7 +313,7 @@
     .sc-bar-value { font-size: 12.5px; }
     .sc-bar-pct { font-size: 11px; }
     .sc-pdf-btn { padding: 8px 14px; font-size: 12px; }
-    .period-tab { padding: 4px 10px; font-size: 11px; }
+    .period-tab { min-width: 44px; padding: 8px 10px; font-size: 11px; }
     .date-pill { font-size: 11.5px; padding: 5px 10px; }
   }
   @media (max-width: 480px) {
@@ -296,12 +350,12 @@
   <div class="nav-center">
     <div class="date-pill" id="datePill">📅 02/03/2026 – 03/05/2026</div>
     <div class="period-tabs" id="periodTabs">
-      <div class="period-tab" data-period="D">D</div>
-      <div class="period-tab" data-period="W">W</div>
-      <div class="period-tab active" data-period="M">M</div>
-      <div class="period-tab" data-period="Y">Y</div>
-      <div class="period-tab" data-period="L">L</div>
-      <div class="period-tab" data-period="T">T</div>
+      <div class="period-tab" data-period="D" title="Day">Day</div>
+      <div class="period-tab" data-period="W" title="Week">Week</div>
+      <div class="period-tab active" data-period="M" title="Month">Month</div>
+      <div class="period-tab" data-period="Y" title="Year">Year</div>
+      <div class="period-tab" data-period="L" title="Last Period">Last</div>
+      <div class="period-tab" data-period="T" title="Today">Today</div>
     </div>
   </div>
   <div class="nav-right">
@@ -314,12 +368,12 @@
 <div class="date-subbar">
   <div class="date-pill" id="datePillMobile">📅 02/03/2026 – 03/05/2026</div>
   <div class="period-tabs" id="periodTabsMobile">
-    <div class="period-tab" data-period="D">D</div>
-    <div class="period-tab" data-period="W">W</div>
-    <div class="period-tab active" data-period="M">M</div>
-    <div class="period-tab" data-period="Y">Y</div>
-    <div class="period-tab" data-period="L">L</div>
-    <div class="period-tab" data-period="T">T</div>
+    <div class="period-tab" data-period="D" title="Day">Day</div>
+    <div class="period-tab" data-period="W" title="Week">Week</div>
+    <div class="period-tab active" data-period="M" title="Month">Month</div>
+    <div class="period-tab" data-period="Y" title="Year">Year</div>
+    <div class="period-tab" data-period="L" title="Last Period">Last</div>
+    <div class="period-tab" data-period="T" title="Today">Today</div>
   </div>
 </div>
 
@@ -371,6 +425,7 @@
                 </div>
               </div>
               <div class="metric-tab-def">Pipeline + Manual Invoice Revenue.</div>
+              <div class="metric-affordance">View details →</div>
             </button>
             <button class="metric-tab" data-metric="jobs" type="button">
               <div class="metric-tab-top">
@@ -381,6 +436,7 @@
                 </div>
               </div>
               <div class="metric-tab-def">Accepted Proposals + Manual Invoices.</div>
+              <div class="metric-affordance">View details →</div>
             </button>
             <button class="metric-tab" data-metric="avg" type="button">
               <div class="metric-tab-top">
@@ -391,6 +447,7 @@
                 </div>
               </div>
               <div class="metric-tab-def">Total Sales Per Job Won.</div>
+              <div class="metric-affordance">View details →</div>
             </button>
           </div>
           <div class="metric-group-detail" id="metricDetailLeft"></div>
@@ -407,6 +464,8 @@
                 </div>
               </div>
               <div class="metric-tab-def">Accepted Proposals / Proposals Sent</div>
+              <div class="metric-subnote">Note: Jobs Won may differ - it counts all accepted proposals regardless of sent date.</div>
+              <div class="metric-affordance">View details →</div>
             </button>
             <button class="metric-tab" data-metric="setrate" type="button">
               <div class="metric-tab-top">
@@ -417,6 +476,7 @@
                 </div>
               </div>
               <div class="metric-tab-def">Contacts Created To Booked Rate.</div>
+              <div class="metric-affordance">View details →</div>
             </button>
             <button class="metric-tab" data-metric="appts" type="button">
               <div class="metric-tab-top">
@@ -427,6 +487,7 @@
                 </div>
               </div>
               <div class="metric-tab-def">Total appointments booked in period.</div>
+              <div class="metric-affordance">View details →</div>
             </button>
           </div>
           <div class="metric-group-detail" id="metricDetailRight"></div>
@@ -437,6 +498,7 @@
 
     <!-- METRICS SECTIONS (dynamically rendered) -->
     <div class="sections" id="sections"></div>
+    <div class="insights" id="insights"></div>
 
     <footer class="page-footer">
       Copyright © 2026 Dripjobs
@@ -444,11 +506,23 @@
   </div>
 </div>
 
+<div class="kpi-drawer-backdrop" id="kpiDrawerBackdrop"></div>
+<aside class="kpi-drawer" id="kpiDrawer" aria-hidden="true">
+  <div class="kpi-drawer-head">
+    <div class="kpi-drawer-title">Metric Breakdown</div>
+    <button type="button" class="metric-detail-close" id="kpiDrawerClose">Close</button>
+  </div>
+  <div class="kpi-drawer-body" id="kpiDrawerBody"></div>
+</aside>
+
 <script>
 // ═══════════════════════════════════════════════════════════════
 // BAR COLORS
 // ═══════════════════════════════════════════════════════════════
-const COLORS = ['#039855','#1570EF','#F79009','#F63D68','#7A5AF8','#06AED4','#DD2590'];
+const BAR_COLOR = '#6941C6';
+const BAR_TOP_COLOR = '#039855';
+const BAR_LOW_COLOR = '#B42318';
+const CATCH_ALL_RE = /^No\s/i;
 
 // ═══════════════════════════════════════════════════════════════
 // TEST DATA — all metrics connected across periods
@@ -985,18 +1059,24 @@ const set = (id, val) => { const el = document.getElementById(id); if (el) el.te
 
 function barRows(items, valueType) {
   if (!items || items.length === 0) return emptyState();
-  const maxVal = Math.max(...items.map(i => valueType === '$' ? i.value : (i.won || i.booked || i.value || 0)));
+  const processed = [...items].sort((a, b) => {
+    const aCatch = CATCH_ALL_RE.test(a.label || '');
+    const bCatch = CATCH_ALL_RE.test(b.label || '');
+    if (aCatch === bCatch) return 0;
+    return aCatch ? 1 : -1;
+  });
+  const maxVal = Math.max(...processed.map(i => valueType === '$' ? i.value : (i.won || i.booked || i.value || 0)));
   if (maxVal === 0) return emptyState();
-  return items.map((item, i) => {
+  return processed.map((item, i) => {
     let displayVal, pctLabel, fillPct;
     if (valueType === '$') {
-      const total = items.reduce((s,x) => s + x.value, 0);
+      const total = processed.reduce((s,x) => s + x.value, 0);
       const pct = total > 0 ? (item.value / total * 100) : 0;
       displayVal = fmt$(item.value);
       pctLabel = item.value === 0 ? '(0.00%)' : `(${pct.toFixed(2)}%)`;
       fillPct = item.value === 0 ? 0 : (item.value / maxVal * 100);
     } else if (valueType === 'count') {
-      const total = items.reduce((s,x) => s + (x.value || 0), 0);
+      const total = processed.reduce((s,x) => s + (x.value || 0), 0);
       const pct = total > 0 ? (item.value / total * 100) : 0;
       displayVal = item.value;
       pctLabel = item.value === 0 ? '(0.00%)' : `(${pct.toFixed(2)}%)`;
@@ -1012,10 +1092,15 @@ function barRows(items, valueType) {
       pctLabel = `(${rate.toFixed(0)}% set rate)`;
       fillPct = rate;
     }
-    const color = item.value === 0 ? '#D0D5DD' : COLORS[i % COLORS.length];
-    return `<div class="sc-bar-row">
+    const isCatchAll = CATCH_ALL_RE.test(item.label || '');
+    let color = BAR_COLOR;
+    if (i === 0 && !isCatchAll) color = BAR_TOP_COLOR;
+    if ((valueType === 'close' || valueType === 'setrate') && fillPct < 30) color = BAR_LOW_COLOR;
+    if (item.value === 0) color = '#D0D5DD';
+
+    return `<div class="sc-bar-row ${isCatchAll ? 'meta-row' : ''}">
       <div class="sc-bar-top">
-        <span class="sc-bar-label">${item.label}</span>
+        <span class="sc-bar-label">${item.label}${isCatchAll ? ' (Uncategorized)' : ''}</span>
         <span><span class="sc-bar-value">${displayVal}</span><span class="sc-bar-pct">${pctLabel}</span></span>
       </div>
       <div class="sc-bar-track"><div class="sc-bar-fill" style="width:${fillPct}%;background:${color};"></div></div>
@@ -1038,15 +1123,18 @@ function scIcon(paths) {
   return `<div class="sc-icon"><svg viewBox="0 0 24 24">${paths}</svg></div>`;
 }
 
-function scCard(iconPaths, title, subtitle, desc, bodyHtml, totalLabel, totalVal) {
+function scCard(iconPaths, title, subtitle, desc, bodyHtml, totalLabel, totalVal, infoNote) {
   const totalRow = totalLabel
     ? `<div class="sc-total"><span class="sc-total-label">${totalLabel}</span><span class="sc-total-value">${totalVal}</span></div>`
     : '';
+  const subtitleWithInfo = infoNote
+    ? `${subtitle}<span class="info-tip" title="${infoNote}">i</span>`
+    : subtitle;
   return `<div class="sc">
     <div class="sc-header">
       ${scIcon(iconPaths)}
       <div class="sc-meta">
-        <div class="sc-title">${title} <span>${subtitle}</span></div>
+        <div class="sc-title">${title} <span>${subtitleWithInfo}</span></div>
         <div class="sc-desc">${desc}</div>
       </div>
     </div>
@@ -1178,6 +1266,7 @@ function render(periodKey) {
         right: `<div class="tile-formula-label">Formula</div><div class="tile-formula">New + Returning = ${totalAppts} booked</div>`
       }
     };
+  currentDetailMap = detailMap;
 
   function renderMetricDetail(el, metricKey, group) {
     if (!el) return;
@@ -1210,6 +1299,7 @@ function render(periodKey) {
 
   renderMetricDetail(document.getElementById('metricDetailLeft'), activeMetricLeft, 'left');
   renderMetricDetail(document.getElementById('metricDetailRight'), activeMetricRight, 'right');
+  if (drawerMetric) renderKpiDrawer();
 
   // — Sections —
   const totalSalesSrc  = d.salesBySource.reduce((s,x) => s+x.value, 0);
@@ -1245,13 +1335,13 @@ function render(periodKey) {
         `<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>`,
         'Sales By Source', `(Total: ${fmt$(totalSalesSrc)})`,
         'Total amount invoiced during the specified time period with the corresponding lead source',
-        barRows(d.salesBySource, '$'), 'Total', fmt$(totalSalesSrc)
+        barRows(d.salesBySource, '$'), 'Total', fmt$(totalSalesSrc), 'Source-attributed view; totals may differ from all-sales views when records are uncategorized or unassigned.'
       )}
       ${scCard(
         `<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>`,
         'Closing Ratio by Salesperson', `(Total Jobs Won: ${totalWonSP})`,
         'For each salesperson, based on the same group of proposals sent in this period and how many from that group were eventually accepted',
-        barRows(d.closingBySalesperson, 'close'), 'Total Jobs Won', totalWonSP
+        barRows(d.closingBySalesperson, 'close'), 'Total Jobs Won', totalWonSP, 'Cohort-based denominator may differ from top Jobs Won KPI.'
       )}
     </div>
     <div class="section-row">
@@ -1259,7 +1349,7 @@ function render(periodKey) {
         `<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>`,
         'Sales By Salesperson', `(Total: ${fmt$(totalSalesSP)})`,
         'Total amount of sales for each salesperson assigned to the corresponding deal during the specified time period',
-        barRows(d.salesBySalesperson, '$'), 'Total', fmt$(totalSalesSP)
+        barRows(d.salesBySalesperson, '$'), 'Total', fmt$(totalSalesSP), 'Attribution by assignee can differ from source/product attribution totals.'
       )}
       ${scCard(
         `<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>`,
@@ -1281,7 +1371,7 @@ function render(periodKey) {
         `<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>`,
         'Sales By Product', `(Total: ${fmt$(totalSalesProd)})`,
         'Total amount of sales for each product or service specified in the Products / Services tab in settings during the specified time period',
-        barRows(d.salesByProduct, '$'), 'Total', fmt$(totalSalesProd)
+        barRows(d.salesByProduct, '$'), 'Total', fmt$(totalSalesProd), 'No Product Selected indicates uncategorized sales records.'
       )}
     </div>
     <div class="section-row">
@@ -1317,16 +1407,32 @@ function render(periodKey) {
       )}
     </div>
   `;
+
+  const topLead = [...d.leadsBySource].sort((a,b) => b.value - a.value)[0];
+  const topSalesSource = [...d.salesBySource].sort((a,b) => b.value - a.value)[0];
+  const uncategorizedProduct = d.salesByProduct.find(x => /^No\sProduct\sSelected$/i.test(x.label));
+  const insights = [
+    topSalesSource ? `${topSalesSource.label} was your top sales source at ${fmt$(topSalesSource.value)}.` : null,
+    topLead ? `${topLead.label} generated the most leads (${topLead.value}) in this period.` : null,
+    `Closing ratio is ${fmtPct(closingRatio)} and set rate is ${fmtPct(setRate)} for the selected period.`,
+    uncategorizedProduct && uncategorizedProduct.value > 0 ? `${fmt$(uncategorizedProduct.value)} is currently uncategorized under No Product Selected.` : null,
+  ].filter(Boolean).slice(0, 3);
+  const insightsEl = document.getElementById('insights');
+  if (insightsEl) {
+    insightsEl.innerHTML = `<div class="insights-title">Key Insights</div><div class="insights-list">${insights.map(i => `<div class="insight-item">• ${i}</div>`).join('')}</div>`;
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════
 // PERIOD TAB SWITCHING
 // ═══════════════════════════════════════════════════════════════
 let activePeriod = 'M';
-let activeMetricLeft = 'sales';
-let activeMetricRight = 'closing';
+let activeMetricLeft = null;
+let activeMetricRight = null;
 let mobileReturnScrollY = { left: null, right: null };
 let lastIsMobile = null;
+let drawerMetric = null;
+let currentDetailMap = null;
 const LEFT_METRICS = ['sales', 'jobs', 'avg'];
 const RIGHT_METRICS = ['closing', 'setrate', 'appts'];
 
@@ -1365,6 +1471,48 @@ function restoreDashboardScroll(group) {
   window.scrollTo({ top: targetY, behavior: 'smooth' });
 }
 
+function openKpiDrawer(metric) {
+  drawerMetric = metric;
+  const drawer = document.getElementById('kpiDrawer');
+  const backdrop = document.getElementById('kpiDrawerBackdrop');
+  if (!drawer || !backdrop) return;
+  drawer.classList.add('show');
+  backdrop.classList.add('show');
+  drawer.setAttribute('aria-hidden', 'false');
+  renderKpiDrawer();
+}
+
+function closeKpiDrawer() {
+  const drawer = document.getElementById('kpiDrawer');
+  const backdrop = document.getElementById('kpiDrawerBackdrop');
+  if (drawer) {
+    drawer.classList.remove('show');
+    drawer.setAttribute('aria-hidden', 'true');
+  }
+  if (backdrop) backdrop.classList.remove('show');
+  drawerMetric = null;
+}
+
+function renderKpiDrawer() {
+  const body = document.getElementById('kpiDrawerBody');
+  if (!body || !drawerMetric || !currentDetailMap) return;
+  const metric = currentDetailMap[drawerMetric];
+  if (!metric) return;
+  body.innerHTML = `
+    <div class="metric-detail-head">
+      <div>
+        <div class="metric-detail-title">${metric.title}</div>
+        <div class="metric-detail-desc">${metric.desc}</div>
+      </div>
+      <div class="metric-detail-head-right"><div class="metric-detail-value">${metric.value}</div></div>
+    </div>
+    <div class="metric-detail-grid">
+      <div>${metric.left}</div>
+      <div>${metric.right}</div>
+    </div>
+  `;
+}
+
 function closeMetricDetail(group) {
   if (group === 'left') {
     if (!activeMetricLeft) return;
@@ -1386,6 +1534,7 @@ function switchMetric(metric) {
 
   if (metric === currentActive) {
     closeMetricDetail(group);
+    closeKpiDrawer();
     return;
   }
 
@@ -1393,11 +1542,17 @@ function switchMetric(metric) {
     mobileReturnScrollY[group] = window.scrollY;
   }
 
-  if (group === 'left') activeMetricLeft = metric;
-  if (group === 'right') activeMetricRight = metric;
+  if (group === 'left') {
+    activeMetricLeft = metric;
+    activeMetricRight = null;
+  }
+  if (group === 'right') {
+    activeMetricRight = metric;
+    activeMetricLeft = null;
+  }
 
   render(activePeriod);
-  scrollToMetricDetail(group);
+  openKpiDrawer(metric);
 }
 
 function switchPeriod(period) {
@@ -1411,13 +1566,12 @@ function switchPeriod(period) {
     });
   });
 
-  // Flash tiles
-  document.querySelectorAll('.tile').forEach(t => {
-    t.classList.add('updating');
-    setTimeout(() => t.classList.remove('updating'), 200);
-  });
-
-  setTimeout(() => render(period), 120);
+  document.body.classList.add('is-loading');
+  setTimeout(() => {
+    render(period);
+    document.body.classList.remove('is-loading');
+    if (drawerMetric) renderKpiDrawer();
+  }, 260);
 }
 
 function applyResponsiveMetricDefaults() {
@@ -1425,10 +1579,6 @@ function applyResponsiveMetricDefaults() {
 
   if (lastIsMobile === null) {
     lastIsMobile = nowMobile;
-    if (nowMobile) {
-      activeMetricLeft = null;
-      activeMetricRight = null;
-    }
     return;
   }
 
@@ -1440,9 +1590,6 @@ function applyResponsiveMetricDefaults() {
     activeMetricRight = null;
     mobileReturnScrollY.left = null;
     mobileReturnScrollY.right = null;
-  } else {
-    if (!activeMetricLeft) activeMetricLeft = 'sales';
-    if (!activeMetricRight) activeMetricRight = 'closing';
   }
 
   render(activePeriod);
@@ -1467,6 +1614,9 @@ document.getElementById('metricGroups').addEventListener('click', e => {
   const tab = e.target.closest('.metric-tab');
   if (tab && tab.dataset.metric) switchMetric(tab.dataset.metric);
 });
+
+document.getElementById('kpiDrawerClose').addEventListener('click', closeKpiDrawer);
+document.getElementById('kpiDrawerBackdrop').addEventListener('click', closeKpiDrawer);
 
 window.addEventListener('resize', applyResponsiveMetricDefaults);
 
