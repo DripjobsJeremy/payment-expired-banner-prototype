@@ -1295,7 +1295,11 @@ function scrollToMetricDetail() {
   const detail = document.getElementById('metricDetail');
   if (!detail || detail.classList.contains('hidden')) return;
   requestAnimationFrame(() => {
-    detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const nav = document.querySelector('.nav');
+    const subbar = document.querySelector('.date-subbar');
+    const stickyOffset = (nav ? nav.offsetHeight : 0) + (subbar ? subbar.offsetHeight : 0);
+    const top = detail.getBoundingClientRect().top + window.scrollY - stickyOffset - 12;
+    window.scrollTo({ top, behavior: 'smooth' });
   });
 }
 
