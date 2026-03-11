@@ -66,15 +66,17 @@
     border: 1px solid var(--border);
     border-radius: 12px;
     background: #FCFCFD;
-    padding: 8px 8px 7px;
+    padding: 12px 14px;
     cursor: pointer;
     transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     text-align: left;
     position: relative;
     align-self: start;
+    gap: 12px;
   }
   .metric-tab:hover { border-color: var(--border-strong); transform: translateY(-1px); }
   .metric-tab.active {
@@ -82,11 +84,12 @@
     box-shadow: 0 0 0 2px rgba(105,65,198,0.12);
     background: #FAF8FF;
   }
-  .metric-tab-top { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; width: 100%; }
+  .metric-tab-left { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+  .metric-tab-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
   .metric-tab .tile-icon { width: 28px; height: 28px; font-size: 14px; border-radius: 7px; flex-shrink: 0; }
   .metric-tab-text { display: flex; flex-direction: column; }
-  .metric-tab-name { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--purple); }
-  .metric-tab-value { font-size: 16px; font-weight: 700; color: var(--text-primary); line-height: 1.05; margin-top: 1px; }
+  .metric-tab-name { font-size: 13px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; color: var(--purple); }
+  .metric-tab-value { font-size: 22px; font-weight: 700; color: var(--purple); line-height: 1; white-space: nowrap; flex-shrink: 0; }
   .metric-tab-def { font-size: 10px; color: var(--text-secondary); line-height: 1.25; }
   .metric-subnote { margin-top: 3px; font-size: 9.5px; color: #667085; line-height: 1.2; }
   .metric-affordance {
@@ -316,9 +319,7 @@
     .banner { gap: 10px; }
     .metric-groups { gap: 10px; }
     .metric-tabs { grid-template-columns: 1fr; gap: 8px; }
-    .metric-tab { padding: 8px 8px; align-items: center; text-align: center; }
-    .metric-tab-top { justify-content: center; }
-    .metric-tab-text { align-items: center; }
+    .metric-tab { padding: 10px 12px; }
     .metric-tab-value { font-size: 18px; }
     .metric-group-detail { margin-top: 10px; padding: 14px; }
     .metric-detail-grid { grid-template-columns: 1fr; gap: 10px; }
@@ -461,37 +462,37 @@
           <div class="metric-group-label">REVENUE & WINS</div>
           <div class="metric-tabs">
             <button class="metric-tab" data-metric="sales" type="button">
-              <div class="metric-tab-top">
-                <div class="tile-icon metric-icon-sales">💰</div>
-                <div class="metric-tab-text">
+              <div class="metric-tab-left">
+                <div class="metric-tab-top">
+                  <div class="tile-icon metric-icon-sales">💰</div>
                   <div class="metric-tab-name">Sales</div>
-                  <div class="metric-tab-value" id="tab-sales-value">$45,495</div>
                 </div>
+                <div class="metric-tab-def">Pipeline + Manual Invoice Revenue.</div>
+                <div class="metric-affordance">View details →</div>
               </div>
-              <div class="metric-tab-def">Pipeline + Manual Invoice Revenue.</div>
-              <div class="metric-affordance">View details →</div>
+              <div class="metric-tab-value" id="tab-sales-value">$45,495</div>
             </button>
             <button class="metric-tab" data-metric="jobs" type="button">
-              <div class="metric-tab-top">
-                <div class="tile-icon metric-icon-jobs">🏆</div>
-                <div class="metric-tab-text">
+              <div class="metric-tab-left">
+                <div class="metric-tab-top">
+                  <div class="tile-icon metric-icon-jobs">🏆</div>
                   <div class="metric-tab-name">Jobs Won</div>
-                  <div class="metric-tab-value" id="tab-jobs-value">11</div>
                 </div>
+                <div class="metric-tab-def">Accepted Proposals + Manual Invoices.</div>
+                <div class="metric-affordance">View details →</div>
               </div>
-              <div class="metric-tab-def">Accepted Proposals + Manual Invoices.</div>
-              <div class="metric-affordance">View details →</div>
+              <div class="metric-tab-value" id="tab-jobs-value">11</div>
             </button>
             <button class="metric-tab" data-metric="avg" type="button">
-              <div class="metric-tab-top">
-                <div class="tile-icon metric-icon-avg">📊</div>
-                <div class="metric-tab-text">
+              <div class="metric-tab-left">
+                <div class="metric-tab-top">
+                  <div class="tile-icon metric-icon-avg">📊</div>
                   <div class="metric-tab-name">Avg Job Size</div>
-                  <div class="metric-tab-value" id="tab-avg-value">$4,136</div>
                 </div>
+                <div class="metric-tab-def">Total Sales Per Job Won.</div>
+                <div class="metric-affordance">View details →</div>
               </div>
-              <div class="metric-tab-def">Total Sales Per Job Won.</div>
-              <div class="metric-affordance">View details →</div>
+              <div class="metric-tab-value" id="tab-avg-value">$4,136</div>
             </button>
           </div>
           <div class="metric-group-detail" id="metricDetailLeft"></div>
@@ -500,38 +501,38 @@
           <div class="metric-group-label">CONVERSIONS & VOLUME</div>
           <div class="metric-tabs">
             <button class="metric-tab" data-metric="closing" type="button">
-              <div class="metric-tab-top">
-                <div class="tile-icon metric-icon-closing">%</div>
-                <div class="metric-tab-text">
+              <div class="metric-tab-left">
+                <div class="metric-tab-top">
+                  <div class="tile-icon metric-icon-closing">%</div>
                   <div class="metric-tab-name">Closing Ratio</div>
-                  <div class="metric-tab-value" id="tab-closing-value">76.9%</div>
                 </div>
+                <div class="metric-tab-def">Accepted Proposals / Proposals Sent</div>
+                <div class="metric-subnote">Note: Jobs Won may differ - it counts all accepted proposals regardless of sent date.</div>
+                <div class="metric-affordance">View details →</div>
               </div>
-              <div class="metric-tab-def">Accepted Proposals / Proposals Sent</div>
-              <div class="metric-subnote">Note: Jobs Won may differ - it counts all accepted proposals regardless of sent date.</div>
-              <div class="metric-affordance">View details →</div>
+              <div class="metric-tab-value" id="tab-closing-value">76.9%</div>
             </button>
             <button class="metric-tab" data-metric="setrate" type="button">
-              <div class="metric-tab-top">
-                <div class="tile-icon metric-icon-setrate">🎯</div>
-                <div class="metric-tab-text">
+              <div class="metric-tab-left">
+                <div class="metric-tab-top">
+                  <div class="tile-icon metric-icon-setrate">🎯</div>
                   <div class="metric-tab-name">Set Rate</div>
-                  <div class="metric-tab-value" id="tab-set-value">45.2%</div>
                 </div>
+                <div class="metric-tab-def">Contacts Created To Booked Rate.</div>
+                <div class="metric-affordance">View details →</div>
               </div>
-              <div class="metric-tab-def">Contacts Created To Booked Rate.</div>
-              <div class="metric-affordance">View details →</div>
+              <div class="metric-tab-value" id="tab-set-value">45.2%</div>
             </button>
             <button class="metric-tab" data-metric="appts" type="button">
-              <div class="metric-tab-top">
-                <div class="tile-icon metric-icon-appts">📅</div>
-                <div class="metric-tab-text">
+              <div class="metric-tab-left">
+                <div class="metric-tab-top">
+                  <div class="tile-icon metric-icon-appts">📅</div>
                   <div class="metric-tab-name">Appointments</div>
-                  <div class="metric-tab-value" id="tab-appts-value">16</div>
                 </div>
+                <div class="metric-tab-def">Total appointments booked in period.</div>
+                <div class="metric-affordance">View details →</div>
               </div>
-              <div class="metric-tab-def">Total appointments booked in period.</div>
-              <div class="metric-affordance">View details →</div>
+              <div class="metric-tab-value" id="tab-appts-value">16</div>
             </button>
           </div>
           <div class="metric-group-detail" id="metricDetailRight"></div>
@@ -1537,6 +1538,12 @@ function closeKpiDrawer() {
     drawer.setAttribute('aria-hidden', 'true');
   }
   if (backdrop) backdrop.classList.remove('show');
+  if (drawerMetric) {
+    const group = metricGroupFor(drawerMetric);
+    if (group === 'left') activeMetricLeft = null;
+    else activeMetricRight = null;
+    document.querySelectorAll('.metric-tab').forEach(tab => tab.classList.remove('active'));
+  }
   drawerMetric = null;
 }
 
