@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DripJobs — Products & Services Prototype v2</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--purple:#7C3AED;--purple-light:#EDE9FE;--purple-mid:#A78BFA;--purple-dark:#5B21B6;--success:#10B981;--danger:#EF4444;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;--gray-300:#D1D5DB;--gray-400:#9CA3AF;--gray-500:#6B7280;--gray-600:#4B5563;--gray-700:#374151;--gray-800:#1F2937;}
+*{box-sizing:border-box;}body{font-family:'Nunito',sans-serif;background:var(--gray-50);color:var(--gray-800);margin:0;font-size:14px;}
+.app-shell{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:220px;background:#1E1144;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.sidebar-logo{padding:18px 20px 14px;border-bottom:1px solid rgba(255,255,255,.08);}
+.logo-text{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.3px;}.logo-text span{color:var(--purple-mid);}
+.sidebar-nav{padding:10px 0;flex:1;}
+.sidebar-section-label{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;padding:12px 18px 4px;}
+.nav-item-link{display:flex;align-items:center;gap:10px;padding:9px 18px;color:rgba(255,255,255,.65);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border-left:3px solid transparent;}
+.nav-item-link:hover{color:#fff;background:rgba(255,255,255,.06);}.nav-item-link.active{color:#fff;background:rgba(124,58,237,.25);border-left-color:var(--purple-mid);}
+.nav-item-link .nav-icon{width:16px;text-align:center;opacity:.8;}
+.main-area{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.topbar{height:58px;background:#fff;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;padding:0 24px;gap:12px;flex-shrink:0;}
+.topbar-breadcrumb{font-size:13px;color:var(--gray-500);display:flex;align-items:center;gap:6px;}
+.crumb-current{color:var(--gray-800);font-weight:700;}.crumb-sep{color:var(--gray-300);}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+.topbar-avatar{width:32px;height:32px;background:var(--purple-light);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--purple);}
+.page-content{flex:1;overflow-y:auto;padding:24px;}
+.page-header{display:flex;align-items:flex-start;margin-bottom:20px;gap:12px;}
+.page-header-title{font-size:20px;font-weight:800;color:var(--gray-800);margin:0;}
+.page-header-subtitle{font-size:13px;color:var(--gray-500);margin:2px 0 0;font-weight:500;}
+.page-header-actions{margin-left:auto;display:flex;gap:10px;flex-shrink:0;}
+/* Buttons */
+.btn-dj-primary{background:var(--purple);color:#fff;border:none;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .15s;min-height:38px;}
+.btn-dj-primary:hover{background:var(--purple-dark);color:#fff;}
+.btn-dj-outline{background:#fff;color:var(--gray-700);border:1.5px solid var(--gray-300);padding:9px 16px;border-radius:8px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .15s;min-height:38px;}
+.btn-dj-outline:hover{border-color:var(--purple);color:var(--purple);}
+.btn-dj-danger{background:#fff;color:var(--danger);border:1.5px solid #FECACA;padding:9px 16px;border-radius:8px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .15s;min-height:38px;}
+.btn-dj-danger:hover{background:#FEF2F2;border-color:var(--danger);}
+.btn-dj-ghost{background:transparent;color:var(--gray-500);border:none;padding:9px 14px;border-radius:8px;font-size:13px;font-weight:600;font-family:'Nunito',sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:all .15s;min-height:38px;}
+.btn-dj-ghost:hover{background:var(--gray-100);color:var(--gray-700);}
+/* Filter */
+.filter-bar{background:#fff;border:1px solid var(--gray-200);border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
+.filter-label{font-size:12px;font-weight:700;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
+.filter-select{height:36px;border:1.5px solid var(--gray-200);border-radius:7px;padding:0 28px 0 10px;font-size:13px;font-weight:600;color:var(--gray-700);background:var(--gray-50) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 8px center;-webkit-appearance:none;appearance:none;cursor:pointer;font-family:'Nunito',sans-serif;}
+.filter-select:focus{outline:none;border-color:var(--purple);}
+.search-input-wrap{position:relative;flex:1;min-width:180px;}
+.search-input-wrap .search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--gray-400);font-size:13px;}
+.search-input{width:100%;height:36px;border:1.5px solid var(--gray-200);border-radius:7px;padding:0 10px 0 32px;font-size:13px;font-family:'Nunito',sans-serif;color:var(--gray-700);background:var(--gray-50);}
+.search-input:focus{outline:none;border-color:var(--purple);}
+.filter-divider{width:1px;height:20px;background:var(--gray-200);}
+/* Table */
+.dj-table-wrap{background:#fff;border:1px solid var(--gray-200);border-radius:10px;overflow:hidden;}
+.dj-table{width:100%;border-collapse:collapse;}
+.dj-table thead th{background:var(--gray-50);padding:11px 14px;font-size:11px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--gray-200);white-space:nowrap;}
+.dj-table thead th:last-child{text-align:right;}
+.dj-table tbody tr{border-bottom:1px solid var(--gray-100);transition:background .1s;cursor:pointer;}
+.dj-table tbody tr:last-child{border-bottom:none;}.dj-table tbody tr:hover{background:#FAF7FF;}
+.dj-table tbody td{padding:11px 14px;font-size:13px;font-weight:600;color:var(--gray-700);vertical-align:middle;}
+.dj-table tbody td:last-child{text-align:right;}
+.product-thumb{width:38px;height:38px;border-radius:8px;object-fit:cover;border:1px solid var(--gray-200);flex-shrink:0;}
+.product-thumb-placeholder{width:38px;height:38px;border-radius:8px;background:var(--purple-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px;color:var(--purple);}
+.product-thumb-placeholder.service{background:#E0F2FE;color:#0891B2;}
+.product-name-cell{display:flex;align-items:center;gap:10px;}
+.product-name-text{font-weight:700;color:var(--gray-800);}
+.product-sku-text{font-size:11px;color:var(--gray-400);font-weight:500;margin-top:1px;}
+.badge-dj{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.badge-active{background:#ECFDF5;color:#065F46;}.badge-inactive{background:var(--gray-100);color:var(--gray-500);}
+.badge-type-product{background:var(--purple-light);color:var(--purple-dark);}.badge-type-service{background:#F0FDF4;color:#166534;}
+.badge-dot{width:6px;height:6px;border-radius:50%;}.badge-active .badge-dot{background:#10B981;}.badge-inactive .badge-dot{background:var(--gray-400);}
+.row-actions{display:flex;gap:6px;justify-content:flex-end;opacity:0;transition:opacity .15s;}
+tr:hover .row-actions{opacity:1;}
+.row-action-btn{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--gray-200);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gray-400);font-size:12px;transition:all .15s;}
+.row-action-btn:hover{border-color:var(--purple);color:var(--purple);}
+.table-footer{padding:12px 16px;border-top:1px solid var(--gray-100);background:var(--gray-50);display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--gray-500);font-weight:600;}
+/* Cards */
+.dj-card{background:#fff;border:1px solid var(--gray-200);border-radius:12px;margin-bottom:20px;overflow:hidden;}
+.dj-card-header{padding:16px 20px 14px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;}
+.dj-card-header-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--purple-light);color:var(--purple);font-size:13px;flex-shrink:0;}
+.dj-card-title{font-size:14px;font-weight:800;color:var(--gray-800);margin:0;}.dj-card-subtitle{font-size:12px;color:var(--gray-400);font-weight:500;margin:1px 0 0;}
+.dj-card-body{padding:20px;}
+/* Form */
+.form-row-dj{display:grid;gap:16px;margin-bottom:16px;}.form-row-dj:last-child{margin-bottom:0;}
+.form-row-dj.c2{grid-template-columns:1fr 1fr;}.form-row-dj.c3{grid-template-columns:1fr 1fr 1fr;}.form-row-dj.c1{grid-template-columns:1fr;}
+.form-group-dj{display:flex;flex-direction:column;gap:5px;}
+.form-label-dj{font-size:12px;font-weight:700;color:var(--gray-600);display:flex;align-items:center;gap:4px;}.form-label-dj .req{color:var(--danger);}
+.fc{height:40px;border:1.5px solid var(--gray-200);border-radius:8px;padding:0 12px;font-size:13px;font-weight:600;color:var(--gray-700);font-family:'Nunito',sans-serif;background:#fff;transition:border-color .15s;width:100%;}
+.fc:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.1);}
+.fc.sel{background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;-webkit-appearance:none;appearance:none;padding-right:30px;cursor:pointer;}
+.fc.ta{height:auto;padding:10px 12px;resize:vertical;min-height:80px;}
+.fc[readonly]{background:var(--gray-50);color:var(--gray-500);}
+.form-helper{font-size:11px;color:var(--gray-400);font-weight:500;margin-top:2px;}
+/* Toggles */
+.toggle-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--gray-100);}
+.toggle-row:last-child{border-bottom:none;padding-bottom:0;}.toggle-row:first-child{padding-top:0;}
+.toggle-info{flex:1;}.toggle-label{font-size:14px;font-weight:700;color:var(--gray-800);margin:0 0 3px;}.toggle-desc{font-size:12px;color:var(--gray-500);font-weight:500;line-height:1.5;margin:0;}
+.ts{position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;margin-top:2px;}
+.ts input{opacity:0;width:0;height:0;}
+.slider{position:absolute;cursor:pointer;inset:0;background:var(--gray-200);border-radius:24px;transition:all .2s;}
+.slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+.ts input:checked+.slider{background:var(--purple);}.ts input:checked+.slider:before{transform:translateX(20px);}
+/* Pricing table */
+.pt{width:100%;border-collapse:collapse;}
+.pt thead th{background:var(--gray-50);padding:9px 12px;font-size:11px;font-weight:800;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;border:1px solid var(--gray-200);}
+.pt tbody td{padding:10px 12px;border:1px solid var(--gray-200);font-size:13px;font-weight:600;color:var(--gray-700);}
+.pt tbody tr:hover td{background:var(--gray-50);}
+/* Tabs */
+.dj-tabs{display:flex;border-bottom:2px solid var(--gray-200);margin-bottom:24px;}
+.dj-tab{padding:10px 18px;font-size:13px;font-weight:700;color:var(--gray-500);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;display:flex;align-items:center;gap:7px;}
+.dj-tab:hover{color:var(--gray-700);}.dj-tab.active{color:var(--purple);border-bottom-color:var(--purple);}
+/* Back */
+.back-nav{display:inline-flex;align-items:center;gap:6px;color:var(--gray-500);font-size:13px;font-weight:700;cursor:pointer;margin-bottom:16px;padding:4px 0;transition:color .15s;border:none;background:none;font-family:'Nunito',sans-serif;}
+.back-nav:hover{color:var(--purple);}
+.status-num{background:var(--gray-100);color:var(--gray-600);font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;}
+/* Footer */
+.form-footer{background:#fff;border-top:1px solid var(--gray-200);padding:14px 24px;display:flex;align-items:center;gap:10px;margin:0 -24px -24px;box-shadow:0 -2px 10px rgba(0,0,0,.06);flex-shrink:0;}
+.form-footer-right{margin-left:auto;}
+/* Card grid */
+.cg2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+/* Hero */
+.hero-img{width:100%;height:200px;object-fit:cover;display:block;}
+.hero-empty{width:100%;height:170px;background:linear-gradient(135deg,var(--purple-light),#F5F3FF);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:all .2s;}
+.hero-empty:hover{background:linear-gradient(135deg,#DDD6FE,#EDE9FE);}
+.hero-empty-icon{width:52px;height:52px;background:rgba(124,58,237,.15);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--purple);}
+.hero-empty-text{font-size:13px;font-weight:700;color:var(--purple);}
+.hero-empty-sub{font-size:11px;color:var(--purple-mid);font-weight:500;}
+/* Attachments */
+.drop-zone{border:2px dashed var(--gray-300);border-radius:10px;padding:28px 20px;text-align:center;cursor:pointer;transition:all .2s;background:var(--gray-50);}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--purple);background:var(--purple-light);}
+.drop-zone-icon{font-size:28px;color:var(--gray-300);margin-bottom:8px;transition:color .2s;}
+.drop-zone:hover .drop-zone-icon,.drop-zone.dragover .drop-zone-icon{color:var(--purple);}
+.drop-zone-text{font-size:13px;font-weight:700;color:var(--gray-600);}
+.drop-zone-sub{font-size:11px;color:var(--gray-400);font-weight:500;margin-top:4px;}
+.att-list{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+.att-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:8px;}
+.att-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.att-name{font-size:13px;font-weight:700;color:var(--gray-700);flex:1;}
+.att-size{font-size:11px;color:var(--gray-400);font-weight:500;}
+.att-remove{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--gray-200);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gray-400);font-size:12px;transition:all .15s;margin-left:auto;}
+.att-remove:hover{border-color:var(--danger);color:var(--danger);}
+.att-thumb{width:36px;height:36px;border-radius:8px;object-fit:cover;border:1px solid var(--gray-200);}
+/* Categories modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(2px);padding:20px;}
+.modal-box{background:#fff;border-radius:14px;width:100%;max-width:500px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.18);animation:mIn .2s ease;}
+@keyframes mIn{from{opacity:0;transform:translateY(12px) scale(.97);}to{opacity:1;transform:none;}}
+.modal-hdr{padding:18px 20px 16px;border-bottom:1px solid var(--gray-100);display:flex;align-items:center;gap:10px;}
+.modal-hdr-icon{width:34px;height:34px;border-radius:8px;background:var(--purple-light);color:var(--purple);display:flex;align-items:center;justify-content:center;font-size:14px;}
+.modal-title{font-size:15px;font-weight:800;color:var(--gray-800);}
+.modal-close{margin-left:auto;width:30px;height:30px;border-radius:7px;border:none;background:var(--gray-100);color:var(--gray-500);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.modal-close:hover{background:var(--gray-200);}
+.modal-body{padding:20px;}
+.modal-ftr{padding:14px 20px;border-top:1px solid var(--gray-100);display:flex;justify-content:flex-end;}
+.cat-item{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:8px;margin-bottom:8px;}
+.cat-item-name{font-size:13px;font-weight:700;color:var(--gray-700);flex:1;}
+.cat-count{font-size:11px;font-weight:600;color:var(--gray-400);background:var(--gray-100);padding:2px 8px;border-radius:10px;}
+.cat-del{width:28px;height:28px;border-radius:6px;border:1.5px solid var(--gray-200);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--gray-400);font-size:12px;transition:all .15s;}
+.cat-del:hover{border-color:var(--danger);color:var(--danger);}
+.cat-add-row{display:flex;gap:8px;margin-top:4px;}
+.cat-add-input{flex:1;height:38px;border:1.5px solid var(--gray-200);border-radius:8px;padding:0 12px;font-size:13px;font-weight:600;font-family:'Nunito',sans-serif;color:var(--gray-700);}
+.cat-add-input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.1);}
+/* Custom cat dropdown */
+.cat-dd-wrap{position:relative;}
+.cat-dd-trigger{width:100%;height:40px;border:1.5px solid var(--gray-200);border-radius:8px;padding:0 30px 0 12px;font-size:13px;font-weight:600;color:var(--gray-700);font-family:'Nunito',sans-serif;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239CA3AF' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center;cursor:pointer;-webkit-appearance:none;appearance:none;text-align:left;display:flex;align-items:center;}
+.cat-dd-trigger:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.1);}
+.cat-dd-menu{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1.5px solid var(--gray-200);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.1);z-index:200;display:none;max-height:220px;overflow-y:auto;}
+.cat-dd-menu.open{display:block;animation:mIn .15s ease;}
+.cat-dd-opt{padding:9px 14px;font-size:13px;font-weight:600;color:var(--gray-700);cursor:pointer;transition:background .1s;}
+.cat-dd-opt:hover{background:var(--purple-light);color:var(--purple);}
+.cat-dd-opt.selected{background:var(--purple-light);color:var(--purple);font-weight:700;}
+.cat-dd-opt.empty{color:var(--gray-400);font-style:italic;}
+.cat-dd-add-btn{width:100%;padding:9px 14px;border:none;background:none;text-align:left;color:var(--purple);font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;display:flex;align-items:center;gap:7px;border-top:1px solid var(--gray-100);}
+.cat-dd-add-btn:hover{background:var(--purple-light);}
+.cat-inline-row{padding:8px 10px;border-top:1px solid var(--gray-100);display:flex;gap:6px;display:none;}
+.cat-inline-input{flex:1;height:32px;border:1.5px solid var(--gray-200);border-radius:6px;padding:0 8px;font-size:12px;font-family:'Nunito',sans-serif;font-weight:600;color:var(--gray-700);}
+.cat-inline-input:focus{outline:none;border-color:var(--purple);}
+.cat-inline-save{height:32px;padding:0 12px;background:var(--purple);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;}
+.cat-inline-save:hover{background:var(--purple-dark);}
+/* Toast */
+.toast-wrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;}
+.toast{background:#1F2937;color:#fff;padding:12px 16px;border-radius:10px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:10px;box-shadow:0 4px 16px rgba(0,0,0,.2);animation:tIn .2s ease;min-width:240px;}
+.toast .ti{font-size:15px;}.toast.s .ti{color:#10B981;}.toast.i .ti{color:var(--purple-mid);}
+@keyframes tIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:none;}}
+.notes-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;text-align:center;}
+.ne-icon{width:56px;height:56px;background:var(--purple-light);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--purple);margin-bottom:16px;}
+.screen{display:none;}.screen.active{display:flex;flex-direction:column;height:100%;}
+.hidden{display:none!important;}
+.proto-badge{position:fixed;bottom:16px;right:16px;background:rgba(30,17,68,.9);color:rgba(255,255,255,.8);font-size:11px;font-weight:700;padding:6px 12px;border-radius:20px;z-index:9999;letter-spacing:.5px;}
+.proto-badge span{color:var(--purple-mid);}
+.no-results-row td{text-align:center;padding:40px 16px;color:var(--gray-400);font-size:13px;font-weight:600;}
+/* Product number field */
+.num-field-wrap{position:relative;display:flex;align-items:center;}
+.num-field-wrap .num-lock-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--gray-400);font-size:12px;pointer-events:none;z-index:1;}
+.num-field-wrap .fc{padding-left:30px;background:var(--gray-50);color:var(--gray-500);cursor:default;}
+.num-field-wrap .fc:focus{border-color:var(--gray-300);box-shadow:none;outline:none;}
+.num-tooltip{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#1E1144;color:#fff;font-size:12px;font-weight:600;padding:9px 12px;border-radius:8px;z-index:100;display:none;line-height:1.5;box-shadow:0 4px 16px rgba(0,0,0,.18);pointer-events:none;}
+.num-tooltip::before{content:'';position:absolute;top:-5px;left:16px;width:10px;height:10px;background:#1E1144;transform:rotate(45deg);border-radius:2px;}
+.num-tooltip .nt-icon{color:var(--purple-mid);margin-right:5px;}
+.num-field-wrap:focus-within .num-tooltip{display:block;animation:tIn .15s ease;}
+
+/* ── UoM context bar inside Pricing card ─── */
+.uom-bar{display:flex;align-items:center;background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:9px;overflow:hidden;margin-bottom:18px;}
+.uom-bar-prefix{padding:0 14px;font-size:12px;font-weight:800;color:var(--gray-500);white-space:nowrap;border-right:1px solid var(--gray-200);height:42px;display:flex;align-items:center;letter-spacing:.2px;}
+.uom-bar select{flex:1;border:none;background:transparent;height:42px;padding:0 32px 0 14px;font-size:13px;font-weight:700;color:var(--purple);font-family:'Nunito',sans-serif;-webkit-appearance:none;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237C3AED' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+.uom-bar select:focus{outline:none;}
+.uom-bar select option{color:var(--gray-700);font-weight:600;}
+.uom-bar-hint{padding:0 14px;font-size:11px;color:var(--gray-400);font-weight:600;white-space:nowrap;border-left:1px solid var(--gray-200);height:42px;display:flex;align-items:center;gap:5px;}
+
+/* ── Coverage collapsible ─────────────────── */
+.cov-toggle-wrap{margin-top:18px;padding-top:16px;border-top:1px solid var(--gray-100);}
+.cov-toggle-row{display:flex;align-items:center;gap:12px;}
+.cov-chip{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:20px;border:1.5px dashed var(--gray-300);background:#fff;font-size:12px;font-weight:700;color:var(--gray-500);cursor:pointer;transition:all .18s;user-select:none;line-height:1;}
+.cov-chip:hover{border-color:var(--purple);color:var(--purple);background:var(--purple-light);}
+.cov-chip.active{border-style:solid;border-color:#6EE7B7;background:#ECFDF5;color:#065F46;}
+.cov-chip .cov-dot{width:7px;height:7px;border-radius:50%;background:var(--gray-300);flex-shrink:0;transition:background .18s;}
+.cov-chip.active .cov-dot{background:#10B981;}
+.cov-chip .cov-icon{font-size:11px;}
+.cov-helper{font-size:11px;color:var(--gray-400);font-weight:600;}
+.cov-body{max-height:0;overflow:hidden;transition:max-height .3s ease,opacity .22s ease;opacity:0;}
+.cov-body.open{max-height:140px;opacity:1;}
+.cov-inner{padding-top:14px;}
+
+/* ── Advanced / future-use accordion ──────── */
+.adv-wrap{margin-top:16px;padding-top:14px;border-top:1px solid var(--gray-100);}
+.adv-btn{display:flex;align-items:center;gap:8px;cursor:pointer;border:none;background:none;padding:0;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:var(--gray-400);transition:color .15s;width:100%;text-align:left;}
+.adv-btn:hover{color:var(--gray-600);}
+.adv-btn .adv-badge{background:#FEF3C7;color:#92400E;font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;letter-spacing:.3px;flex-shrink:0;}
+.adv-btn .adv-chev{font-size:10px;margin-left:auto;transition:transform .2s;}
+.adv-btn.open .adv-chev{transform:rotate(180deg);}
+.adv-body{max-height:0;overflow:hidden;transition:max-height .32s ease,opacity .22s ease;opacity:0;}
+.adv-body.open{max-height:260px;opacity:1;}
+.adv-notice{display:flex;align-items:flex-start;gap:10px;margin:12px 0 14px;padding:10px 14px;background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:8px;font-size:12px;font-weight:600;color:#78350F;line-height:1.55;}
+.adv-notice i{color:#F59E0B;flex-shrink:0;margin-top:1px;}
+
+
+/* ── Product Image Thumbnail ──────────────────── */
+.prod-img-wrap{position:relative;flex-shrink:0;}
+.prod-img-thumb{width:76px;height:76px;border-radius:10px;object-fit:cover;border:1.5px solid var(--gray-200);display:block;}
+.prod-img-placeholder{width:76px;height:76px;border-radius:10px;background:var(--purple-light);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;border:1.5px dashed var(--purple-mid);transition:all .2s;}
+.prod-img-placeholder:hover{background:#DDD6FE;}
+.prod-img-placeholder .pi-icon{font-size:18px;color:var(--purple);}
+.prod-img-placeholder .pi-label{font-size:9px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.5px;}
+.prod-img-change-overlay{position:absolute;inset:0;border-radius:10px;background:rgba(0,0,0,.52);display:none;align-items:center;justify-content:center;gap:3px;flex-direction:column;cursor:pointer;}
+.prod-img-wrap:hover .prod-img-change-overlay{display:flex;}
+.prod-img-change-overlay span{color:#fff;font-size:9px;font-weight:700;}
+.prod-img-change-overlay i{color:#fff;font-size:13px;}
+.prod-img-del{position:absolute;top:-8px;right:-8px;width:20px;height:20px;border-radius:50%;background:#fff;color:var(--danger);border:1.5px solid #FECACA;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.prod-img-del:hover{background:#FEF2F2;}
+/* ── AI Prompt Panel (Products & Services) ───── */
+.desc-label-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px;}
+.btn-ps-ai{flex-shrink:0;padding:4px 10px;background:var(--purple);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:'Nunito',sans-serif;transition:background .18s;}
+.btn-ps-ai:hover{background:var(--purple-dark);}
+.ps-ai-panel{background:#f0ebff;border:1.5px solid #c4b5fd;border-radius:8px;max-height:0;overflow:hidden;opacity:0;padding:0;margin-top:0;border-width:0;transition:max-height .25s ease,opacity .2s ease,padding .2s ease,margin .2s ease,border-width .01s ease;}
+.ps-ai-panel.open{max-height:500px;opacity:1;padding:14px 16px;margin-top:10px;border-width:1.5px;}
+.ps-ai-header{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--purple);margin-bottom:8px;}
+.ps-ai-hint{font-size:12px;font-style:italic;color:var(--purple);line-height:1.5;margin-bottom:10px;opacity:.85;}
+.ps-ai-textarea{width:100%;padding:10px 12px;border:1.5px solid #c4b5fd;border-radius:7px;font-size:13px;font-weight:600;color:var(--gray-700);outline:none;font-family:'Nunito',sans-serif;background:#fff;transition:border-color .15s;resize:vertical;min-height:68px;line-height:1.55;display:block;}
+.ps-ai-textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(124,58,237,.1);}
+.ps-ai-textarea::placeholder{color:#a98fe0;}
+.ps-ai-textarea.err-border{border-color:var(--danger);box-shadow:0 0 0 3px rgba(239,68,68,.1);}
+.ps-ai-err{font-size:11px;color:var(--danger);margin-top:4px;display:none;}
+.ps-ai-err.show{display:block;}
+.ps-ai-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;}
+.ps-ai-cancel-btn{background:none;border:none;color:#9b7de8;font-size:12px;font-weight:600;cursor:pointer;padding:6px 4px;font-family:'Nunito',sans-serif;transition:color .15s;}
+.ps-ai-cancel-btn:hover{color:var(--purple);}
+.ps-ai-gen{padding:8px 16px;background:var(--purple);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:'Nunito',sans-serif;transition:background .18s;height:36px;}
+.ps-ai-gen:hover:not([disabled]){background:var(--purple-dark);}
+.ps-ai-gen[disabled]{opacity:.6;cursor:not-allowed;}
+.ps-spin{width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;display:none;animation:psSpin .65s linear infinite;}
+@keyframes psSpin{to{transform:rotate(360deg);}}
+.ps-gen-loading .ps-spin{display:inline-block;}
+.ps-gen-loading .ps-gen-ico{display:none;}
+.ps-ai-preview-view{display:none;}
+.ps-ai-preview-view.show{display:block;}
+.ps-ai-preview-notes{font-size:12px;font-style:italic;color:#9b7de8;margin-bottom:8px;line-height:1.45;}
+.ps-ai-preview-body{background:#fff;border:1px solid #c4b5fd;border-radius:7px;padding:10px 12px;max-height:150px;overflow-y:auto;font-size:13px;line-height:1.65;color:var(--gray-700);margin-bottom:10px;}
+.ps-ai-preview-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.ps-ai-back-btn{background:none;border:none;color:#9b7de8;font-size:12px;font-weight:600;cursor:pointer;padding:6px 4px;font-family:'Nunito',sans-serif;transition:color .15s;display:inline-flex;align-items:center;gap:5px;}
+.ps-ai-back-btn:hover{color:var(--purple);}
+.ps-ai-use-btn{padding:8px 16px;background:var(--purple);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:'Nunito',sans-serif;transition:background .18s;}
+.ps-ai-use-btn:hover{background:var(--purple-dark);}
+.fc.ta.ai-glow{background:#f3eeff;border-color:var(--purple);}
+/* ── Sortable column headers ─────────────────── */
+.dj-table thead th.sortable{cursor:pointer;user-select:none;transition:background .12s,color .12s;}
+.dj-table thead th.sortable:hover{background:var(--purple-light);color:var(--purple);}
+.dj-table thead th.sort-active{background:var(--purple-light);color:var(--purple);}
+.sort-icon{display:inline-flex;flex-direction:column;gap:1px;margin-left:5px;vertical-align:middle;opacity:.35;transition:opacity .15s;}
+.sortable:hover .sort-icon,.sort-active .sort-icon{opacity:1;}
+.sort-icon .si-up,.sort-icon .si-down{width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;}
+.sort-icon .si-up{border-bottom:4px solid currentColor;}
+.sort-icon .si-down{border-top:4px solid currentColor;}
+.sort-active[data-dir="asc"] .sort-icon .si-up{opacity:1;}
+.sort-active[data-dir="asc"] .sort-icon .si-down{opacity:.25;}
+.sort-active[data-dir="desc"] .sort-icon .si-up{opacity:.25;}
+.sort-active[data-dir="desc"] .sort-icon .si-down{opacity:1;}
+
+</style>
+</head>
+<body>
+<div class="app-shell">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo"><div class="logo-text">Drip<span>Jobs</span></div></div>
+    <div class="sidebar-nav">
+      <div class="sidebar-section-label">Main</div>
+      <div class="nav-item-link"><span class="nav-icon"><i class="fas fa-home"></i></span> Dashboard</div>
+      <div class="nav-item-link"><span class="nav-icon"><i class="fas fa-filter"></i></span> Pipeline</div>
+      <div class="nav-item-link"><span class="nav-icon"><i class="fas fa-briefcase"></i></span> Jobs</div>
+      <div class="nav-item-link"><span class="nav-icon"><i class="fas fa-calendar-alt"></i></span> Appointments</div>
+      <div class="nav-item-link"><span class="nav-icon"><i class="fas fa-file-invoice-dollar"></i></span> Invoices</div>
+      <div class="sidebar-section-label">Settings</div>
+      <div class="nav-item-link"><span class="nav-icon"><i class="fas fa-building"></i></span> Company</div>
+      <div class="nav-item-link active"><span class="nav-icon"><i class="fas fa-box"></i></span> Products / Services</div>
+      <div class="nav-item-link"><span class="nav-icon"><i class="fas fa-users"></i></span> Employees</div>
+      <div class="nav-item-link"><span class="nav-icon"><i class="fas fa-tag"></i></span> Promo Codes</div>
+    </div>
+  </nav>
+
+  <div class="main-area">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <div class="topbar-breadcrumb">
+        <span>Settings</span>
+        <span class="crumb-sep"><i class="fas fa-chevron-right" style="font-size:9px"></i></span>
+        <span class="crumb-current" id="topbar-title">Products &amp; Services</span>
+      </div>
+      <div class="topbar-right">
+        <div style="font-size:12px;color:var(--gray-500);font-weight:600">Sparrow's Nest Painting</div>
+        <div class="topbar-avatar">JH</div>
+      </div>
+    </header>
+
+    <!-- SCREEN: LIST -->
+    <div class="screen active page-content" id="screen-list">
+      <div class="page-header">
+        <div>
+          <h1 class="page-header-title">Products &amp; Services</h1>
+          <p class="page-header-subtitle">Manage your products, services, and pricing</p>
+        </div>
+        <div class="page-header-actions">
+          <button class="btn-dj-outline" onclick="openCatModal()"><i class="fas fa-folder-open"></i> Categories</button>
+          <button class="btn-dj-primary" onclick="goToNew()"><i class="fas fa-plus"></i> Add New Product / Service</button>
+        </div>
+      </div>
+
+      <!-- Filter Bar -->
+      <div class="filter-bar">
+        <span class="filter-label"><i class="fas fa-sliders-h" style="margin-right:4px"></i> Filter</span>
+        <div class="filter-divider"></div>
+        <select class="filter-select" id="f-type" onchange="applyFilters()">
+          <option value="">All Types</option>
+          <option value="Product">Product</option>
+          <option value="Service">Service</option>
+        </select>
+        <select class="filter-select" id="f-cat" onchange="applyFilters()">
+          <option value="">All Categories</option>
+        </select>
+        <select class="filter-select" id="f-tax" onchange="applyFilters()">
+          <option value="">All — Taxable</option>
+          <option value="1">Taxable</option>
+          <option value="0">Non-Taxable</option>
+        </select>
+        <div class="filter-divider"></div>
+        <div class="search-input-wrap">
+          <i class="fas fa-search search-icon"></i>
+          <input class="search-input" type="text" id="f-search" placeholder="Search products &amp; services…" oninput="applyFilters()">
+        </div>
+      </div>
+
+      <div class="dj-table-wrap">
+        <table class="dj-table">
+          <thead>
+            <tr>
+              <th class="sortable" data-col="name" data-dir="" style="padding-left:14px" onclick="sortBy('name',this)">Product / Service <span class="sort-icon"><span class="si-up"></span><span class="si-down"></span></span></th>
+              <th class="sortable" data-col="type" data-dir="" onclick="sortBy('type',this)">Type <span class="sort-icon"><span class="si-up"></span><span class="si-down"></span></span></th>
+              <th class="sortable" data-col="category" data-dir="" onclick="sortBy('category',this)">Category <span class="sort-icon"><span class="si-up"></span><span class="si-down"></span></span></th>
+              <th class="sortable" data-col="sku" data-dir="" onclick="sortBy('sku',this)">SKU <span class="sort-icon"><span class="si-up"></span><span class="si-down"></span></span></th>
+              <th class="sortable" data-col="status" data-dir="" onclick="sortBy('status',this)">Status <span class="sort-icon"><span class="si-up"></span><span class="si-down"></span></span></th>
+              <th class="sortable" data-col="taxable" data-dir="" onclick="sortBy('taxable',this)">Taxable <span class="sort-icon"><span class="si-up"></span><span class="si-down"></span></span></th>
+              <th style="text-align:right;padding-right:14px">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tbl-body"></tbody>
+        </table>
+        <div class="table-footer">
+          <span id="tbl-count">—</span>
+        </div>
+      </div>
+    </div><!-- /screen-list -->
+
+    <!-- SCREEN: EDIT/NEW -->
+    <div class="screen" id="screen-edit" style="overflow:hidden;">
+      <div class="page-content" id="edit-area" style="flex:1;overflow-y:auto;">
+        <button class="back-nav" onclick="goToList()"><i class="fas fa-arrow-left"></i> Back to Products &amp; Services</button>
+
+        <div class="page-header">
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+              <h1 class="page-header-title" id="edit-title">New Product / Service</h1>
+              <span class="status-num hidden" id="edit-num">#—</span>
+              <span class="badge-dj badge-active hidden" id="edit-status-badge" style="font-size:11px"><span class="badge-dot"></span>Active</span>
+            </div>
+            <p class="page-header-subtitle" id="edit-sub">Fill in the details below to create a new product or service.</p>
+          </div>
+        </div>
+
+        <div class="dj-tabs">
+          <div class="dj-tab active" id="tab-btn-info" onclick="switchTab('info')"><i class="fas fa-info-circle"></i> Product Information</div>
+          <div class="dj-tab" id="tab-btn-att" onclick="switchTab('att')"><i class="fas fa-paperclip"></i> Attachments <span id="att-badge" class="hidden" style="background:var(--purple);color:#fff;font-size:10px;font-weight:800;padding:1px 6px;border-radius:10px;margin-left:2px"></span></div>
+          <div class="dj-tab" id="tab-btn-notes" onclick="switchTab('notes')"><i class="fas fa-sticky-note"></i> Notes</div>
+        </div>
+
+        <!-- TAB INFO -->
+        <div id="tab-info">
+          <!-- Basic Info -->
+          <div class="dj-card">
+            <div class="dj-card-header">
+              <div class="dj-card-header-icon"><i class="fas fa-tag"></i></div>
+              <div><div class="dj-card-title">Basic Information</div><div class="dj-card-subtitle">Name, category, type, and identifying details</div></div>
+              <!-- Compact product image thumbnail -->
+              <div class="prod-img-wrap" style="margin-left:auto" title="Upload a product photo">
+                <div id="hero-empty" class="prod-img-placeholder" onclick="triggerHero()">
+                  <i class="fas fa-image pi-icon"></i>
+                  <span class="pi-label">Add Photo</span>
+                </div>
+                <div id="hero-filled" class="hidden" style="position:relative">
+                  <img id="hero-img" class="prod-img-thumb" src="" alt="">
+                  <div class="prod-img-change-overlay" onclick="triggerHero()">
+                    <i class="fas fa-camera"></i>
+                    <span>Change</span>
+                  </div>
+                  <button class="prod-img-del" onclick="clearHero()" title="Remove image"><i class="fas fa-times"></i></button>
+                </div>
+                <input type="file" id="hero-input" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="onHeroFile(event)">
+              </div>
+            </div>
+            <div class="dj-card-body">
+              <div class="form-row-dj c3">
+                <div class="form-group-dj">
+                  <label class="form-label-dj"><i class="fas fa-hashtag" style="color:var(--gray-400);font-size:11px;margin-right:2px"></i> Product Number</label>
+                  <div class="num-field-wrap">
+                    <i class="fas fa-lock num-lock-icon"></i>
+                    <input type="text" class="fc" id="f-num" readonly onclick="showNumTooltip()">
+                    <div class="num-tooltip" id="num-tooltip"><i class="fas fa-info-circle nt-icon"></i>This number is auto-assigned by the system when the product is saved. It cannot be edited.</div>
+                  </div>
+                  <div class="form-helper" style="display:flex;align-items:center;gap:4px"><i class="fas fa-magic" style="color:var(--purple-mid);font-size:10px"></i> Auto-assigned on save — not editable</div>
+                </div>
+                <div class="form-group-dj">
+                  <label class="form-label-dj">Category</label>
+                  <div class="cat-dd-wrap" id="cat-dd-wrap">
+                    <button type="button" class="cat-dd-trigger" id="cat-dd-trigger" onclick="toggleCatDD()">
+                      <span id="cat-dd-label">— Select Category —</span>
+                    </button>
+                    <div class="cat-dd-menu" id="cat-dd-menu"></div>
+                  </div>
+                  <input type="hidden" id="f-cat">
+                </div>
+                <div class="form-group-dj">
+                  <label class="form-label-dj">Type <span class="req">*</span></label>
+                  <select class="fc sel" id="f-type-field"><option value="Product">Product</option><option value="Service">Service</option></select>
+                </div>
+              </div>
+              <div class="form-row-dj c2">
+                <div class="form-group-dj">
+                  <label class="form-label-dj">Name <span class="req">*</span></label>
+                  <input type="text" class="fc" id="f-name" placeholder="e.g. Sherwin-Williams Duration">
+                </div>
+                <div class="form-group-dj">
+                  <label class="form-label-dj">SKU / Barcode</label>
+                  <input type="text" class="fc" id="f-sku" placeholder="Optional">
+                </div>
+              </div>
+              <div class="form-row-dj c1">
+                <div class="form-group-dj">
+                  <label class="form-label-dj">Manufacturer</label>
+                  <input type="text" class="fc" id="f-mfr" placeholder="Optional">
+                </div>
+              </div>
+              <div class="form-row-dj c1">
+                <div class="form-group-dj">
+                  <div class="desc-label-row">
+                    <label class="form-label-dj" style="margin-bottom:0">Description</label>
+                    <button type="button" class="btn-ps-ai" onclick="openPsAiPanel()">&#x2736; Generate with AI</button>
+                  </div>
+                  <!-- Jobi AI panel -->
+                  <div class="ps-ai-panel" id="ps-ai-panel">
+                    <div id="ps-ai-input-view">
+                      <div class="ps-ai-header">&#x2736; Jobi AI — Write a Description</div>
+                      <div class="ps-ai-hint">Add a few notes and Jobi AI will write a polished description for your proposals and invoices.</div>
+                      <textarea class="ps-ai-textarea" id="ps-ai-input" placeholder="e.g. Interior wall painting, 2 coats, Sherwin-Williams Emerald Satin, living room…" oninput="clearPsAiErr()"></textarea>
+                      <div class="ps-ai-err" id="ps-ai-err">Please add some notes before generating.</div>
+                      <div class="ps-ai-actions">
+                        <button type="button" class="ps-ai-cancel-btn" onclick="closePsAiPanel()">&#x2715; Cancel</button>
+                        <button type="button" class="ps-ai-gen" id="ps-ai-gen-btn" onclick="triggerPsGenerate()">
+                          <i class="fas fa-wand-magic-sparkles ps-gen-ico"></i>
+                          <div class="ps-spin"></div>
+                          <span class="ps-gen-lbl">&#x2736; Generate</span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="ps-ai-preview-view" id="ps-ai-preview-view">
+                      <div class="ps-ai-header">&#x2736; AI-Generated Description</div>
+                      <div class="ps-ai-preview-notes" id="ps-ai-preview-notes"></div>
+                      <div class="ps-ai-preview-body" id="ps-ai-preview-body"></div>
+                      <div class="ps-ai-preview-actions">
+                        <button type="button" class="ps-ai-back-btn" onclick="showPsAiInput()">&#8592; Back</button>
+                        <button type="button" class="ps-ai-use-btn" onclick="applyPsDescription()">
+                          <i class="fas fa-check"></i> Use This Description
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <textarea class="fc ta" id="f-desc" rows="3" placeholder="Optional description shown on proposals and invoices"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pricing -->
+          <div class="dj-card">
+            <div class="dj-card-header">
+              <div class="dj-card-header-icon" style="background:#F0FDF4;color:#065F46"><i class="fas fa-dollar-sign"></i></div>
+              <div>
+                <div class="dj-card-title">Pricing</div>
+                <div class="dj-card-subtitle">Set cost, sell price, and how this item is billed on proposals &amp; invoices</div>
+              </div>
+              <div style="margin-left:auto"><button class="btn-dj-outline" style="padding:6px 12px;min-height:32px;font-size:12px" onclick="addTierRow()"><i class="fas fa-plus"></i> Add Price Tier</button></div>
+            </div>
+            <div class="dj-card-body">
+
+              <!-- Unit of Measure — anchors all pricing context -->
+              <label class="form-label-dj" style="margin-bottom:7px;display:flex;align-items:center;gap:5px">
+                <i class="fas fa-ruler-combined" style="color:var(--gray-400);font-size:11px"></i> Priced &amp; Billed Per
+              </label>
+              <div class="uom-bar">
+                <span class="uom-bar-prefix">Per</span>
+                <select id="f-uom">
+                  <option value="">— Select a unit —</option>
+                  <option>Gallon</option>
+                  <option>Quart</option>
+                  <option>5-Gallon Bucket</option>
+                  <option>Each</option>
+                  <option>Sq Ft</option>
+                  <option>Linear Ft</option>
+                  <option>Hour</option>
+                  <option>Day</option>
+                  <option>Job</option>
+                </select>
+                <span class="uom-bar-hint"><i class="fas fa-info-circle" style="font-size:11px"></i> The unit your cost &amp; sell price are based on</span>
+              </div>
+
+              <!-- Price tiers -->
+              <div style="border:1px solid var(--gray-200);border-radius:8px;overflow:hidden;">
+                <table class="pt">
+                  <thead><tr><th>Tier Name</th><th>Unit Cost</th><th>Sell Price</th><th>Margin %</th><th style="text-align:right">Remove</th></tr></thead>
+                  <tbody id="tier-body">
+                    <tr id="tier-empty">
+                      <td colspan="5" style="text-align:center;color:var(--gray-400);padding:26px 16px;font-size:13px">
+                        <i class="fas fa-tags" style="display:block;font-size:22px;margin-bottom:8px;color:var(--gray-200)"></i>
+                        No price tiers yet.<br>
+                        <span style="font-size:11px;font-weight:500">Click &ldquo;Add Price Tier&rdquo; to set your cost and sell price.</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Coverage Rate — collapsible, shown only when needed -->
+              <div class="cov-toggle-wrap">
+                <div class="cov-toggle-row">
+                  <div class="cov-chip" id="cov-chip" onclick="toggleCoverage()">
+                    <span class="cov-dot"></span>
+                    <i class="fas fa-tint cov-icon"></i>
+                    <span id="cov-chip-label">Add Coverage Rate</span>
+                    <i class="fas fa-chevron-down" id="cov-chev" style="font-size:10px"></i>
+                  </div>
+                  <span class="cov-helper">Optional &mdash; e.g. paint coverage per gallon</span>
+                </div>
+                <div class="cov-body" id="cov-body">
+                  <div class="cov-inner">
+                    <div class="form-row-dj c2" style="margin-bottom:0">
+                      <div class="form-group-dj">
+                        <label class="form-label-dj">Coverage Amount</label>
+                        <input type="text" class="fc" id="f-cov" placeholder="e.g. 400">
+                        <div class="form-helper">How much area one unit covers</div>
+                      </div>
+                      <div class="form-group-dj">
+                        <label class="form-label-dj">Coverage Unit</label>
+                        <select class="fc sel" id="f-covunit">
+                          <option value="">— Select —</option>
+                          <option>Sq Ft / Gallon</option>
+                          <option>Sq Ft / 5-Gallon Bucket</option>
+                          <option>Linear Ft / Gallon</option>
+                          <option>Sq Ft / Hour</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Advanced / future inventory settings -->
+              <div class="adv-wrap">
+                <button type="button" class="adv-btn" id="adv-btn" onclick="toggleAdv()">
+                  <i class="fas fa-cog" style="font-size:12px"></i>
+                  Advanced Settings
+                  <span class="adv-badge">Coming Soon</span>
+                  <i class="fas fa-chevron-down adv-chev"></i>
+                </button>
+                <div class="adv-body" id="adv-body">
+                  <div class="adv-notice">
+                    <i class="fas fa-clock"></i>
+                    <div><strong>Inventory tracking is coming in a future update.</strong> You can optionally fill in conversion fields now, but they won&apos;t affect proposals or invoices until inventory tracking is live.</div>
+                  </div>
+                  <div class="form-row-dj c2" style="margin-bottom:0">
+                    <div class="form-group-dj">
+                      <label class="form-label-dj">Conversion Rate</label>
+                      <input type="text" class="fc" id="f-convr" placeholder="e.g. 4">
+                      <div class="form-helper">e.g. 4 quarts per gallon</div>
+                    </div>
+                    <div class="form-group-dj">
+                      <label class="form-label-dj">Conversion Unit</label>
+                      <select class="fc sel" id="f-convu">
+                        <option value="">— None —</option>
+                        <option>Quart</option>
+                        <option>Ounce</option>
+                        <option>Liter</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Options + Quick Info -->
+          <div class="cg2">
+            <div class="dj-card" style="margin-bottom:0">
+              <div class="dj-card-header">
+                <div class="dj-card-header-icon"><i class="fas fa-sliders-h"></i></div>
+                <div><div class="dj-card-title">Options &amp; Settings</div><div class="dj-card-subtitle">Visibility, tax, and inventory controls</div></div>
+              </div>
+              <div class="dj-card-body">
+                <div class="toggle-row">
+                  <div class="toggle-info"><p class="toggle-label">Active Product / Service</p><p class="toggle-desc">Makes this item available when building proposals and invoices.</p></div>
+                  <label class="ts"><input type="checkbox" id="t-active" checked><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-info"><p class="toggle-label">Taxable</p><p class="toggle-desc">Applies applicable sales tax when included in a proposal or invoice.</p></div>
+                  <label class="ts"><input type="checkbox" id="t-tax"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-info"><p class="toggle-label">Do Not Inventory</p><p class="toggle-desc">Excludes this item from inventory tracking. Useful for services.</p></div>
+                  <label class="ts"><input type="checkbox" id="t-noinv"><span class="slider"></span></label>
+                </div>
+                <div class="toggle-row">
+                  <div class="toggle-info"><p class="toggle-label">Require Quantity</p><p class="toggle-desc">Forces crew to enter a quantity before this item can be saved.</p></div>
+                  <label class="ts"><input type="checkbox" id="t-reqq"><span class="slider"></span></label>
+                </div>
+              </div>
+            </div>
+            <div class="dj-card" style="margin-bottom:0">
+              <div class="dj-card-header">
+                <div class="dj-card-header-icon" style="background:#FFF7ED;color:#C2410C"><i class="fas fa-info"></i></div>
+                <div><div class="dj-card-title">Quick Info</div><div class="dj-card-subtitle">Summary &amp; usage stats</div></div>
+              </div>
+              <div class="dj-card-body" id="qi-body">
+                <div style="color:var(--gray-400);font-size:13px;font-weight:600;text-align:center;padding:20px 0"><i class="fas fa-box" style="font-size:24px;display:block;margin-bottom:8px"></i>Stats available after saving</div>
+              </div>
+            </div>
+          </div>
+        </div><!-- /tab-info -->
+
+        <!-- TAB ATTACHMENTS -->
+        <div id="tab-att" style="display:none">
+          <div class="dj-card">
+            <div class="dj-card-header">
+              <div class="dj-card-header-icon"><i class="fas fa-paperclip"></i></div>
+              <div><div class="dj-card-title">Attachments</div><div class="dj-card-subtitle">Documents, images, and files related to this product or service</div></div>
+              <div style="margin-left:auto"><button class="btn-dj-primary" style="padding:6px 14px;min-height:32px;font-size:12px" onclick="triggerAtt()"><i class="fas fa-plus"></i> Upload File</button></div>
+            </div>
+            <div class="dj-card-body">
+              <div class="drop-zone" id="drop-zone" onclick="triggerAtt()" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="onAttDrop(event)">
+                <div class="drop-zone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                <div class="drop-zone-text">Drop files here or click to browse</div>
+                <div class="drop-zone-sub">Supported: JPG, PNG, PDF, DOC, DOCX, XLS, XLSX, TXT, CSV · Max 25MB per file</div>
+              </div>
+              <input type="file" id="att-input" multiple accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.xls,.xlsx,.txt,.csv" style="display:none" onchange="onAttFiles(event)">
+              <div class="att-list" id="att-list"></div>
+              <div id="att-empty" style="text-align:center;padding:20px 0;color:var(--gray-400);font-size:13px;font-weight:600;display:none"><i class="fas fa-folder-open" style="font-size:22px;display:block;margin-bottom:8px;color:var(--gray-300)"></i>No attachments yet.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB NOTES -->
+        <div id="tab-notes" style="display:none">
+          <div class="dj-card">
+            <div class="dj-card-header">
+              <div class="dj-card-header-icon"><i class="fas fa-sticky-note"></i></div>
+              <div><div class="dj-card-title">Product Notes</div><div class="dj-card-subtitle">Internal notes visible only to your team</div></div>
+              <div style="margin-left:auto"><button class="btn-dj-primary" style="padding:6px 14px;min-height:32px;font-size:12px" onclick="toast('Add note coming soon','i')"><i class="fas fa-plus"></i> Add Note</button></div>
+            </div>
+            <div class="dj-card-body">
+              <div class="notes-empty"><div class="ne-icon"><i class="fas fa-sticky-note"></i></div><div style="font-size:16px;font-weight:800;color:var(--gray-700);margin-bottom:6px">No notes yet</div><div style="font-size:13px;color:var(--gray-400);font-weight:500">Add internal notes about this product.</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /edit-area -->
+      <div class="form-footer">
+        <div style="display:flex;gap:10px">
+          <button class="btn-dj-primary" onclick="saveProduct()"><i class="fas fa-check"></i> Save Changes</button>
+          <button class="btn-dj-ghost" onclick="goToList()">Cancel</button>
+        </div>
+        <div class="form-footer-right">
+          <button class="btn-dj-danger" id="del-btn" class="hidden" onclick="toast('Confirm product deletion? This cannot be undone.','i')"><i class="fas fa-trash-alt"></i> Delete Product</button>
+        </div>
+      </div>
+    </div><!-- /screen-edit -->
+
+  </div>
+</div>
+
+<!-- CATEGORIES MODAL -->
+<div class="modal-overlay hidden" id="cat-modal" onclick="if(event.target===this)closeCatModal()">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div class="modal-hdr-icon"><i class="fas fa-folder-open"></i></div>
+      <div class="modal-title">Manage Categories</div>
+      <button class="modal-close" onclick="closeCatModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <div id="cat-modal-list" style="max-height:260px;overflow-y:auto;margin-bottom:16px"></div>
+      <div class="cat-add-row">
+        <input type="text" class="cat-add-input" id="new-cat" placeholder="New category name…" onkeydown="if(event.key==='Enter')addCat()">
+        <button class="btn-dj-primary" style="padding:0 14px;min-height:38px" onclick="addCat()"><i class="fas fa-plus"></i> Add</button>
+      </div>
+    </div>
+    <div class="modal-ftr"><button class="btn-dj-ghost" onclick="closeCatModal()">Done</button></div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+<div class="proto-badge">✦ <span>DripJobs</span> Prototype v2 — #86b8rxmgn</div>
+
+<script>
+// ── STATE ──────────────────────────────────
+let categories = ['Paint & Coatings','Labor','Materials','Equipment'];
+let curId = null; // null = new product
+let workAtts = []; // attachments during editing
+let catDDOpen = false;
+
+const PRODUCTS = [
+  {id:1,name:'Sherwin-Williams Duration',type:'Product',category:'Paint & Coatings',sku:'SW-DUR-GAL',status:'Active',taxable:true,mfr:'Sherwin-Williams Co.',desc:'Premium exterior paint with 100% acrylic technology.',uom:'Gallon',cov:'400',covunit:'Sq Ft / Gallon',convr:'4',convu:'Quart',hero:null,atts:[],tiers:[{n:'Standard',c:'42.00',p:'68.00'},{n:'Contractor Discount',c:'42.00',p:'58.00'}],active:true,tax:true,noinv:false,reqq:false},
+  {id:2,name:'Exterior Painting Labor',type:'Service',category:'Labor',sku:'',status:'Active',taxable:false,mfr:'',desc:'',uom:'Hour',cov:'',covunit:'',convr:'',convu:'',hero:null,atts:[],tiers:[],active:true,tax:false,noinv:true,reqq:false},
+  {id:3,name:'Primer — PVA',type:'Product',category:'Paint & Coatings',sku:'PRI-PVA-5G',status:'Active',taxable:true,mfr:'',desc:'',uom:'5-Gallon Bucket',cov:'',covunit:'',convr:'',convu:'',hero:null,atts:[],tiers:[],active:true,tax:true,noinv:false,reqq:false},
+  {id:4,name:'Pressure Washing Service',type:'Service',category:'Labor',sku:'SVC-PWS-01',status:'Inactive',taxable:false,mfr:'',desc:'',uom:'Hour',cov:'',covunit:'',convr:'',convu:'',hero:null,atts:[],tiers:[],active:false,tax:false,noinv:true,reqq:false},
+  {id:5,name:'Drop Cloth',type:'Product',category:'Materials',sku:'MAT-DC-9X12',status:'Active',taxable:true,mfr:'',desc:'',uom:'Each',cov:'',covunit:'',convr:'',convu:'',hero:null,atts:[],tiers:[],active:true,tax:true,noinv:false,reqq:true},
+  {id:6,name:'Interior Painting Labor',type:'Service',category:'Labor',sku:'',status:'Active',taxable:false,mfr:'',desc:'',uom:'Hour',cov:'',covunit:'',convr:'',convu:'',hero:null,atts:[],tiers:[],active:true,tax:false,noinv:true,reqq:false},
+];
+
+// ── LIST / FILTERS ─────────────────────────
+// ── SORT STATE ───────────────────────────────────────────
+let sortCol=null, sortDir='asc';
+
+function sortBy(col, thEl){
+  if(sortCol===col){
+    sortDir=sortDir==='asc'?'desc':'asc';
+  } else {
+    sortCol=col; sortDir='asc';
+  }
+  // Update all th states
+  document.querySelectorAll('.dj-table thead th.sortable').forEach(th=>{
+    th.classList.remove('sort-active');
+    th.removeAttribute('data-dir');
+  });
+  thEl.classList.add('sort-active');
+  thEl.setAttribute('data-dir', sortDir);
+  applyFilters();
+}
+
+function applySortToItems(items){
+  if(!sortCol) return items;
+  return [...items].sort((a,b)=>{
+    let va=a[sortCol], vb=b[sortCol];
+    // Normalise: booleans → string, nulls → empty string
+    if(typeof va==='boolean') va=va?'Yes':'No';
+    if(typeof vb==='boolean') vb=vb?'Yes':'No';
+    va=(va||'').toString().toLowerCase();
+    vb=(vb||'').toString().toLowerCase();
+    if(va<vb) return sortDir==='asc'?-1:1;
+    if(va>vb) return sortDir==='asc'?1:-1;
+    return 0;
+  });
+}
+
+function applyFilters(){
+  const tv=document.getElementById('f-type').value;
+  const cv=document.getElementById('f-cat').value;
+  const xv=document.getElementById('f-tax').value;
+  const sv=document.getElementById('f-search').value.toLowerCase().trim();
+  const filtered=PRODUCTS.filter(p=>{
+    if(tv && p.type!==tv) return false;
+    if(cv && p.category!==cv) return false;
+    if(xv==='1' && !p.taxable) return false;
+    if(xv==='0' && p.taxable) return false;
+    if(sv && !p.name.toLowerCase().includes(sv) && !p.sku.toLowerCase().includes(sv)) return false;
+    return true;
+  });
+  renderTable(applySortToItems(filtered));
+}
+
+function renderTable(items){
+  const tb=document.getElementById('tbl-body');
+  tb.innerHTML='';
+  if(!items.length){
+    const tr=document.createElement('tr');
+    tr.className='no-results-row';
+    tr.innerHTML=`<td colspan="7"><i class="fas fa-search" style="font-size:22px;display:block;margin-bottom:8px;color:var(--gray-300)"></i>No products or services match your filters.</td>`;
+    tb.appendChild(tr);
+    document.getElementById('tbl-count').textContent='No results';
+    return;
+  }
+  document.getElementById('tbl-count').textContent=`Showing ${items.length} of ${PRODUCTS.length} products & services`;
+  items.forEach(p=>{
+    const tr=document.createElement('tr');
+    tr.onclick=()=>goToEdit(p.id);
+    const isService=p.type==='Service';
+    const typeClass=isService?'badge-type-service':'badge-type-product';
+    const statusClass=p.status==='Active'?'badge-active':'badge-inactive';
+    let thumb;
+    if(p.hero){
+      thumb=`<img class="product-thumb" src="${p.hero}" alt="">`;
+    } else {
+      const icon=isService?'fa-hard-hat':'fa-box';
+      thumb=`<div class="product-thumb-placeholder ${isService?'service':''}"><i class="fas ${icon}"></i></div>`;
+    }
+    tr.innerHTML=`
+      <td><div class="product-name-cell">${thumb}<div><div class="product-name-text">${p.name}</div><div class="product-sku-text">${p.sku?'SKU: '+p.sku:'No SKU'}</div></div></div></td>
+      <td><span class="badge-dj ${typeClass}">${p.type}</span></td>
+      <td>${p.category||'<span style="color:var(--gray-300)">—</span>'}</td>
+      <td>${p.sku?`<span style="font-family:monospace;font-size:12px;color:var(--gray-500)">${p.sku}</span>`:`<span style="color:var(--gray-300)">—</span>`}</td>
+      <td><span class="badge-dj ${statusClass}"><span class="badge-dot"></span>${p.status}</span></td>
+      <td>${p.taxable?`<i class="fas fa-check-circle" style="color:#10B981;font-size:14px"></i>`:`<i class="fas fa-minus-circle" style="color:var(--gray-300);font-size:14px"></i>`}</td>
+      <td><div class="row-actions">
+        <div class="row-action-btn" title="Edit" onclick="goToEdit(${p.id});event.stopPropagation()"><i class="fas fa-pencil-alt"></i></div>
+        <div class="row-action-btn" title="Duplicate" onclick="dupProduct(${p.id});event.stopPropagation()"><i class="fas fa-copy"></i></div>
+        <div class="row-action-btn" title="Delete" style="color:#EF4444;border-color:#FECACA" onclick="delProduct(${p.id});event.stopPropagation()"><i class="fas fa-trash-alt"></i></div>
+      </div></td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function refreshCatFilter(){
+  const sel=document.getElementById('f-cat');
+  const cur=sel.value;
+  sel.innerHTML='<option value="">All Categories</option>';
+  categories.forEach(c=>{
+    const o=document.createElement('option');
+    o.value=c;o.textContent=c;
+    if(c===cur)o.selected=true;
+    sel.appendChild(o);
+  });
+}
+
+function dupProduct(id){
+  const p=PRODUCTS.find(x=>x.id===id);
+  if(!p)return;
+  const c=JSON.parse(JSON.stringify(p));
+  c.id=Date.now();c.name=p.name+' (Copy)';
+  PRODUCTS.push(c);applyFilters();
+  toast(`"${p.name}" duplicated`,'s');
+}
+function delProduct(id){
+  const i=PRODUCTS.findIndex(x=>x.id===id);
+  if(i<0)return;
+  const n=PRODUCTS[i].name;
+  PRODUCTS.splice(i,1);applyFilters();
+  toast(`"${n}" deleted`,'i');
+}
+
+// ── NAVIGATION ─────────────────────────────
+function goToList(){
+  document.getElementById('screen-list').classList.add('active');
+  document.getElementById('screen-edit').classList.remove('active');
+  document.getElementById('topbar-title').textContent='Products & Services';
+  applyFilters();
+}
+
+function goToNew(){
+  curId=null; workAtts=[];
+  loadForm(null);
+  showScreen('edit');
+  document.getElementById('topbar-title').textContent='New Product / Service';
+  document.getElementById('edit-title').textContent='New Product / Service';
+  document.getElementById('edit-sub').textContent='Fill in the details below to create a new product or service.';
+  document.getElementById('edit-num').classList.add('hidden');
+  document.getElementById('edit-status-badge').classList.add('hidden');
+  document.getElementById('del-btn').style.display='none';
+  switchTab('info');
+}
+
+function goToEdit(id){
+  curId=id;
+  const p=PRODUCTS.find(x=>x.id===id);
+  workAtts=p?JSON.parse(JSON.stringify(p.atts)):[];
+  loadForm(p);
+  showScreen('edit');
+  document.getElementById('topbar-title').textContent=p?p.name:'Edit';
+  document.getElementById('edit-title').textContent=p?p.name:'Edit Product';
+  document.getElementById('edit-sub').textContent=(p?p.type:'Product')+' · '+(p&&p.category?p.category:'No Category');
+  document.getElementById('edit-num').classList.remove('hidden');
+  document.getElementById('edit-num').textContent='#'+(1000+id);
+  document.getElementById('edit-status-badge').classList.remove('hidden');
+  document.getElementById('del-btn').style.display='';
+  switchTab('info');
+}
+
+function showScreen(s){
+  document.getElementById('screen-list').classList.remove('active');
+  document.getElementById('screen-edit').classList.remove('active');
+  document.getElementById('screen-'+s).classList.add('active');
+  document.getElementById('edit-area').scrollTop=0;
+}
+
+// ── FORM LOAD ──────────────────────────────
+function loadForm(p){
+  document.getElementById('f-num').value=p?'#'+(1000+p.id):nextProductNum();
+  document.getElementById('f-name').value=p?p.name:'';
+  document.getElementById('f-sku').value=p?p.sku:'';
+  document.getElementById('f-mfr').value=p?p.mfr:'';
+  document.getElementById('f-desc').value=p?p.desc:'';
+  document.getElementById('f-uom').value=p?p.uom:'';
+  document.getElementById('f-cov').value=p?p.cov:'';
+  document.getElementById('f-covunit').value=p?p.covunit:'';
+  document.getElementById('f-convr').value=p?p.convr:'';
+  document.getElementById('f-convu').value=p?p.convu:'';
+  document.getElementById('f-type-field').value=p?p.type:'Product';
+  document.getElementById('f-cat').value=p?p.category:'';
+  setCatDDLabel(p?p.category:'');
+  document.getElementById('t-active').checked=p?p.active:true;
+  document.getElementById('t-tax').checked=p?p.tax:false;
+  document.getElementById('t-noinv').checked=p?p.noinv:false;
+  document.getElementById('t-reqq').checked=p?p.reqq:false;
+  setHero(p?p.hero:null);
+  // Auto-open coverage if product has coverage data
+  setCoverageOpen(!!(p&&(p.cov||p.covunit)));
+  // Always reset the advanced accordion to closed
+  var advBody=document.getElementById('adv-body');
+  var advBtn=document.getElementById('adv-btn');
+  if(advBody)advBody.classList.remove('open');
+  if(advBtn)advBtn.classList.remove('open');
+  loadTiers(p?p.tiers:[]);
+  renderAttList();
+  updateAttBadge();
+  document.getElementById('qi-body').innerHTML=p?`
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--gray-100)"><span style="font-size:13px;font-weight:600;color:var(--gray-500)">Times Used</span><span style="font-size:16px;font-weight:800">${Math.floor(Math.random()*60)+5}</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid var(--gray-100)"><span style="font-size:13px;font-weight:600;color:var(--gray-500)">Last Used</span><span style="font-size:13px;font-weight:700;color:var(--gray-700)">Feb 28, 2026</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:600;color:var(--gray-500)">Created</span><span style="font-size:13px;font-weight:700;color:var(--gray-700)">Jan 5, 2024</span></div>
+    </div>`
+  :`<div style="color:var(--gray-400);font-size:13px;font-weight:600;text-align:center;padding:20px 0"><i class="fas fa-box" style="font-size:24px;display:block;margin-bottom:8px"></i>Stats available after saving</div>`;
+}
+
+function saveProduct(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){toast('Product name is required','i');return;}
+  const heroSrc=document.getElementById('hero-img').src;
+  const heroFilled=!document.getElementById('hero-filled').classList.contains('hidden');
+  const data={
+    name,
+    type:document.getElementById('f-type-field').value,
+    category:document.getElementById('f-cat').value,
+    sku:document.getElementById('f-sku').value,
+    mfr:document.getElementById('f-mfr').value,
+    desc:document.getElementById('f-desc').value,
+    uom:document.getElementById('f-uom').value,
+    cov:document.getElementById('f-cov').value,
+    covunit:document.getElementById('f-covunit').value,
+    convr:document.getElementById('f-convr').value,
+    convu:document.getElementById('f-convu').value,
+    active:document.getElementById('t-active').checked,
+    tax:document.getElementById('t-tax').checked,
+    noinv:document.getElementById('t-noinv').checked,
+    reqq:document.getElementById('t-reqq').checked,
+    taxable:document.getElementById('t-tax').checked,
+    hero:heroFilled?heroSrc:null,
+    atts:JSON.parse(JSON.stringify(workAtts)),
+    tiers:[],
+  };
+  data.status=data.active?'Active':'Inactive';
+  if(curId){
+    const p=PRODUCTS.find(x=>x.id===curId);
+    if(p) Object.assign(p,data);
+    toast('Changes saved!','s');
+  } else {
+    const newId=Date.now();
+    PRODUCTS.push({id:newId,...data});
+    curId=newId;
+    toast(`"${name}" created!`,'s');
+  }
+  goToList();
+}
+
+// ── HERO ────────────────────────────────────
+function setHero(src){
+  if(src){
+    document.getElementById('hero-empty').classList.add('hidden');
+    document.getElementById('hero-filled').classList.remove('hidden');
+    document.getElementById('hero-img').src=src;
+  } else {
+    document.getElementById('hero-empty').classList.remove('hidden');
+    document.getElementById('hero-filled').classList.add('hidden');
+    document.getElementById('hero-img').src='';
+  }
+}
+function triggerHero(){document.getElementById('hero-input').value='';document.getElementById('hero-input').click();}
+function onHeroFile(e){
+  const f=e.target.files[0];if(!f)return;
+  if(f.size>10*1024*1024){toast('Image must be under 10MB','i');return;}
+  const r=new FileReader();r.onload=ev=>{setHero(ev.target.result);toast('Hero image uploaded','s');};r.readAsDataURL(f);
+}
+function clearHero(){setHero(null);toast('Hero image removed','i');}
+
+// ── ATTACHMENTS ─────────────────────────────
+const FICONS={jpg:'fa-file-image',jpeg:'fa-file-image',png:'fa-file-image',pdf:'fa-file-pdf',doc:'fa-file-word',docx:'fa-file-word',xls:'fa-file-excel',xlsx:'fa-file-excel',txt:'fa-file-alt',csv:'fa-file-csv'};
+const FCLRS={jpg:'#0891B2',jpeg:'#0891B2',png:'#0891B2',pdf:'#EF4444',doc:'#2563EB',docx:'#2563EB',xls:'#16A34A',xlsx:'#16A34A',txt:'#6B7280',csv:'#16A34A'};
+
+function triggerAtt(){document.getElementById('att-input').value='';document.getElementById('att-input').click();}
+function onAttFiles(e){processFiles(Array.from(e.target.files));}
+function onAttDrop(e){e.preventDefault();document.getElementById('drop-zone').classList.remove('dragover');processFiles(Array.from(e.dataTransfer.files));}
+
+function processFiles(files){
+  const ok=['jpg','jpeg','png','pdf','doc','docx','xls','xlsx','txt','csv'];
+  files.forEach(f=>{
+    const ext=f.name.split('.').pop().toLowerCase();
+    if(!ok.includes(ext)){toast(`.${ext} is not a supported file type`,'i');return;}
+    if(f.size>25*1024*1024){toast(`${f.name} exceeds the 25MB limit`,'i');return;}
+    const isImg=['jpg','jpeg','png'].includes(ext);
+    if(isImg){
+      const r=new FileReader();
+      r.onload=ev=>{workAtts.push({id:Date.now(),name:f.name,size:f.size,ext,isImg:true,url:ev.target.result});renderAttList();updateAttBadge();toast(`${f.name} uploaded`,'s');};
+      r.readAsDataURL(f);
+    } else {
+      workAtts.push({id:Date.now(),name:f.name,size:f.size,ext,isImg:false,url:null});
+      renderAttList();updateAttBadge();toast(`${f.name} uploaded`,'s');
+    }
+  });
+}
+
+function renderAttList(){
+  const list=document.getElementById('att-list');
+  const empty=document.getElementById('att-empty');
+  list.innerHTML='';
+  if(!workAtts.length){empty.style.display='';return;}
+  empty.style.display='none';
+  workAtts.forEach(a=>{
+    const icon=FICONS[a.ext]||'fa-file';
+    const clr=FCLRS[a.ext]||'#6B7280';
+    const sz=a.size>1024*1024?(a.size/1024/1024).toFixed(1)+' MB':Math.round(a.size/1024)+' KB';
+    const d=document.createElement('div');
+    d.className='att-item';
+    d.innerHTML=`${a.isImg&&a.url?`<img class="att-thumb" src="${a.url}" alt="">`:
+      `<div class="att-icon" style="background:${clr}18;color:${clr}"><i class="fas ${icon}"></i></div>`}
+      <div><div class="att-name">${a.name}</div><div class="att-size">${sz}</div></div>
+      <div class="att-remove" onclick="removeAtt(${a.id})"><i class="fas fa-times"></i></div>`;
+    list.appendChild(d);
+  });
+}
+function removeAtt(id){workAtts=workAtts.filter(a=>a.id!==id);renderAttList();updateAttBadge();}
+function updateAttBadge(){
+  const b=document.getElementById('att-badge');
+  if(workAtts.length){b.classList.remove('hidden');b.textContent=workAtts.length;}
+  else{b.classList.add('hidden');}
+}
+
+// ── PRICE TIERS ─────────────────────────────
+function loadTiers(tiers){
+  const tb=document.getElementById('tier-body');
+  const em=document.getElementById('tier-empty');
+  Array.from(tb.querySelectorAll('tr:not(#tier-empty)')).forEach(r=>r.remove());
+  if(!tiers.length){em.style.display='';return;}
+  em.style.display='none';
+  tiers.forEach(t=>addTierRow(t.n,t.c,t.p));
+}
+function addTierRow(n='',c='',p=''){
+  document.getElementById('tier-empty').style.display='none';
+  const tb=document.getElementById('tier-body');
+  const mu=(c&&p&&parseFloat(c)>0)?((parseFloat(p)-parseFloat(c))/parseFloat(c)*100).toFixed(1)+'%':'—';
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td><input type="text" value="${n}" placeholder="e.g. Standard" style="border:none;background:transparent;font-weight:700;font-family:'Nunito',sans-serif;width:100%;color:var(--gray-700)" oninput="recalc(this)"></td>
+    <td><input type="text" value="${c}" placeholder="$0.00" style="border:none;background:transparent;font-weight:600;font-family:'Nunito',sans-serif;width:80px;color:var(--gray-700)" oninput="recalc(this)"></td>
+    <td><input type="text" value="${p}" placeholder="$0.00" style="border:none;background:transparent;font-weight:600;font-family:'Nunito',sans-serif;width:80px;color:var(--gray-700)" oninput="recalc(this)"></td>
+    <td class="mu-cell"><span style="color:#10B981;font-weight:700">${mu}</span></td>
+    <td style="text-align:right"><button class="row-action-btn" style="display:inline-flex;margin-left:auto" onclick="this.closest('tr').remove();checkTiersEmpty()"><i class="fas fa-trash-alt" style="color:#EF4444"></i></button></td>`;
+  tb.appendChild(tr);
+}
+function recalc(inp){
+  const tr=inp.closest('tr');
+  const ins=tr.querySelectorAll('input');
+  const c=parseFloat(ins[1].value),p=parseFloat(ins[2].value);
+  const sp=tr.querySelector('.mu-cell span');
+  sp.textContent=(!isNaN(c)&&!isNaN(p)&&c>0)?((p-c)/c*100).toFixed(1)+'%':'—';
+}
+function checkTiersEmpty(){
+  if(!document.getElementById('tier-body').querySelectorAll('tr:not(#tier-empty)').length)
+    document.getElementById('tier-empty').style.display='';
+}
+
+// ── CATEGORIES MODAL ────────────────────────
+function openCatModal(){
+  renderCatModalList();
+  document.getElementById('cat-modal').classList.remove('hidden');
+  document.getElementById('new-cat').value='';
+}
+function closeCatModal(){
+  document.getElementById('cat-modal').classList.add('hidden');
+  refreshCatFilter();
+  rebuildCatDD();
+  applyFilters();
+}
+function renderCatModalList(){
+  const c=document.getElementById('cat-modal-list');
+  c.innerHTML='';
+  if(!categories.length){c.innerHTML='<div style="text-align:center;color:var(--gray-400);font-size:13px;font-weight:600;padding:16px 0">No categories yet. Add below.</div>';return;}
+  categories.forEach((cat,i)=>{
+    const cnt=PRODUCTS.filter(p=>p.category===cat).length;
+    const d=document.createElement('div');
+    d.className='cat-item';
+    d.innerHTML=`<i class="fas fa-folder" style="color:var(--gray-400);font-size:14px"></i><span class="cat-item-name">${cat}</span><span class="cat-count">${cnt} item${cnt!==1?'s':''}</span><button class="cat-del" onclick="delCat(${i})" title="Delete"><i class="fas fa-trash-alt"></i></button>`;
+    c.appendChild(d);
+  });
+}
+function addCat(){
+  const inp=document.getElementById('new-cat');
+  const n=inp.value.trim();
+  if(!n){toast('Enter a category name','i');return;}
+  if(categories.find(c=>c.toLowerCase()===n.toLowerCase())){toast('Category already exists','i');return;}
+  categories.push(n);inp.value='';
+  renderCatModalList();rebuildCatDD();refreshCatFilter();
+  toast(`Category "${n}" added`,'s');
+}
+function delCat(idx){
+  const n=categories[idx];
+  const inUse=PRODUCTS.some(p=>p.category===n);
+  if(inUse){toast(`"${n}" is in use by ${PRODUCTS.filter(p=>p.category===n).length} product(s)`,'i');return;}
+  categories.splice(idx,1);
+  renderCatModalList();rebuildCatDD();refreshCatFilter();
+  toast(`Category "${n}" removed`,'i');
+}
+
+// ── CUSTOM CATEGORY DROPDOWN ─────────────────
+function rebuildCatDD(){
+  const menu=document.getElementById('cat-dd-menu');
+  const cur=document.getElementById('f-cat').value;
+  menu.innerHTML='';
+  const blank=document.createElement('div');
+  blank.className='cat-dd-opt empty'+(cur===''?' selected':'');
+  blank.textContent='— No Category —';
+  blank.onclick=()=>pickCat('','— No Category —');
+  menu.appendChild(blank);
+  categories.forEach(c=>{
+    const o=document.createElement('div');
+    o.className='cat-dd-opt'+(cur===c?' selected':'');
+    o.textContent=c;
+    o.onclick=()=>pickCat(c,c);
+    menu.appendChild(o);
+  });
+  // Add new cat trigger
+  const btn=document.createElement('button');
+  btn.type='button';btn.className='cat-dd-add-btn';
+  btn.innerHTML='<i class="fas fa-plus"></i> Add New Category';
+  btn.onclick=showInlineCatAdd;
+  menu.appendChild(btn);
+  // Inline row
+  const row=document.createElement('div');
+  row.className='cat-inline-row';row.id='cat-inline-row';
+  row.innerHTML=`<input type="text" class="cat-inline-input" id="cat-inline-input" placeholder="Category name…" onkeydown="if(event.key==='Enter')saveInlineCat()"><button type="button" class="cat-inline-save" onclick="saveInlineCat()">Add</button>`;
+  menu.appendChild(row);
+}
+function setCatDDLabel(v){document.getElementById('cat-dd-label').textContent=v||'— Select Category —';}
+function toggleCatDD(){catDDOpen?closeCatDD():openCatDD();}
+function openCatDD(){
+  rebuildCatDD();
+  document.getElementById('cat-dd-menu').classList.add('open');
+  catDDOpen=true;
+  setTimeout(()=>document.addEventListener('click',outsideCatDD,true),0);
+}
+function closeCatDD(){
+  document.getElementById('cat-dd-menu').classList.remove('open');
+  catDDOpen=false;
+  document.removeEventListener('click',outsideCatDD,true);
+}
+function outsideCatDD(e){
+  if(!document.getElementById('cat-dd-wrap').contains(e.target)) closeCatDD();
+}
+function pickCat(val,label){
+  document.getElementById('f-cat').value=val;
+  setCatDDLabel(val?label:'— Select Category —');
+  closeCatDD();
+}
+function showInlineCatAdd(e){
+  e.stopPropagation();
+  const row=document.getElementById('cat-inline-row');
+  const btn=document.querySelector('.cat-dd-add-btn');
+  if(row){row.style.display='flex';if(btn)btn.style.display='none';}
+  setTimeout(()=>{const i=document.getElementById('cat-inline-input');if(i)i.focus();},40);
+}
+function saveInlineCat(){
+  const inp=document.getElementById('cat-inline-input');
+  const n=inp?inp.value.trim():'';
+  if(!n)return;
+  if(categories.find(c=>c.toLowerCase()===n.toLowerCase())){toast('Category already exists','i');return;}
+  categories.push(n);
+  refreshCatFilter();
+  pickCat(n,n);
+  toast(`Category "${n}" added`,'s');
+}
+
+// ── TABS ─────────────────────────────────────
+function switchTab(name){
+  ['info','att','notes'].forEach(t=>{
+    document.getElementById('tab-'+t).style.display=t===name?'':'none';
+    const btn=document.getElementById('tab-btn-'+(t==='att'?'att':t==='notes'?'notes':'info'));
+    if(btn){
+      if(t==='info') document.getElementById('tab-btn-info').classList.toggle('active',name==='info');
+      if(t==='att') document.getElementById('tab-btn-att').classList.toggle('active',name==='att');
+      if(t==='notes') document.getElementById('tab-btn-notes').classList.toggle('active',name==='notes');
+    }
+  });
+}
+
+// ── TOAST ─────────────────────────────────────
+function toast(msg,type='i'){
+  const c=document.getElementById('toast-wrap');
+  const icons={s:'✓',i:'ℹ'};
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<span class="ti">${icons[type]||'ℹ'}</span> ${msg}`;
+  c.appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';setTimeout(()=>t.remove(),300);},2800);
+}
+
+// ── COVERAGE TOGGLE ───────────────────────────────
+function setCoverageOpen(open){
+  var chip=document.getElementById('cov-chip');
+  var body=document.getElementById('cov-body');
+  var label=document.getElementById('cov-chip-label');
+  var chev=document.getElementById('cov-chev');
+  if(!chip||!body)return;
+  if(open){
+    chip.classList.add('active');
+    body.classList.add('open');
+    if(label)label.textContent='Coverage Rate';
+    if(chev)chev.style.transform='rotate(180deg)';
+  }else{
+    chip.classList.remove('active');
+    body.classList.remove('open');
+    if(label)label.textContent='Add Coverage Rate';
+    if(chev)chev.style.transform='';
+  }
+}
+function toggleCoverage(){
+  var body=document.getElementById('cov-body');
+  setCoverageOpen(!body.classList.contains('open'));
+}
+
+// ── ADVANCED ACCORDION ────────────────────────────
+function toggleAdv(){
+  var btn=document.getElementById('adv-btn');
+  var body=document.getElementById('adv-body');
+  if(!btn||!body)return;
+  var isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  btn.classList.toggle('open',!isOpen);
+}
+
+// ── PRODUCT NUMBER HELPERS ───────────────────────
+let numTipTimer=null;
+function showNumTooltip(){
+  var tip=document.getElementById('num-tooltip');
+  if(!tip)return;
+  tip.style.display='block';
+  clearTimeout(numTipTimer);
+  numTipTimer=setTimeout(function(){tip.style.display='none';},3400);
+}
+function nextProductNum(){
+  var maxId=PRODUCTS.reduce(function(m,p){return Math.max(m,p.id);},0);
+  return '#'+(1001+maxId);
+}
+
+// ── JOBI AI — DESCRIPTION (Products & Services) ──────────────
+let psAiPending = null; // generated HTML waiting for confirm
+let psAiHasExisting = false;
+
+const PS_AI_DESCRIPTIONS = [
+  // Pool of canned "AI-generated" descriptions to rotate through
+  (name, notes) => `<p><strong>${name}</strong></p><p><strong>Preparation:</strong></p><ul><li>Clear and protect the work area with drop cloths and masking</li><li>Inspect surfaces for damage, fill imperfections, and sand smooth</li><li>Apply primer to bare or repaired areas as needed</li></ul><p><strong>Application:</strong></p><ul><li>Apply two finish coats for uniform coverage and durability</li><li>Allow proper dry time between coats per manufacturer specs</li></ul><p><em>Note: Pricing is based on standard conditions. Additional charges may apply for extensive prep or specialty requirements.</em></p>`,
+  (name, notes) => `<p><strong>${name}</strong></p><p>Professional-grade application by our trained crew. Every job includes thorough surface preparation, premium materials, and a clean worksite from start to finish.</p><p><strong>What's included:</strong></p><ul><li>Full surface prep and protection of adjacent areas</li><li>Two-coat application for lasting color and coverage</li><li>Final walk-through and touch-up before completion</li></ul><p><em>Scope and pricing may vary based on site conditions. We'll confirm exact details before starting.</em></p>`,
+];
+
+function openPsAiPanel(){
+  const panel=document.getElementById('ps-ai-panel');
+  panel.classList.add('open');
+  // reset to input view
+  document.getElementById('ps-ai-preview-view').classList.remove('show');
+  document.getElementById('ps-ai-input-view').style.display='';
+  setTimeout(()=>document.getElementById('ps-ai-input').focus(),80);
+}
+
+function closePsAiPanel(){
+  document.getElementById('ps-ai-panel').classList.remove('open');
+}
+
+function clearPsAiErr(){
+  document.getElementById('ps-ai-input').classList.remove('err-border');
+  document.getElementById('ps-ai-err').classList.remove('show');
+}
+
+function triggerPsGenerate(){
+  const inp=document.getElementById('ps-ai-input');
+  const notes=inp.value.trim();
+  if(!notes){
+    inp.classList.add('err-border');
+    document.getElementById('ps-ai-err').classList.add('show');
+    inp.focus();
+    return;
+  }
+  inp.classList.remove('err-border');
+  document.getElementById('ps-ai-err').classList.remove('show');
+
+  const existingText=(document.getElementById('f-desc').value||'').trim();
+  psAiHasExisting=existingText.length>0;
+
+  const btn=document.getElementById('ps-ai-gen-btn');
+  const lbl=btn.querySelector('.ps-gen-lbl');
+  btn.classList.add('ps-gen-loading');
+  btn.disabled=true;
+  if(lbl) lbl.textContent='Generating…';
+
+  setTimeout(()=>{
+    btn.classList.remove('ps-gen-loading');
+    btn.disabled=false;
+    if(lbl) lbl.textContent='✶ Generate';
+
+    const name=document.getElementById('f-name').value.trim()||'This item';
+    const fn=PS_AI_DESCRIPTIONS[Math.floor(Math.random()*PS_AI_DESCRIPTIONS.length)];
+    psAiPending=fn(name,notes);
+
+    if(psAiHasExisting){
+      // Show preview — let user confirm before overwriting
+      document.getElementById('ps-ai-preview-notes').innerHTML=`<em>Based on your notes: ${escPsHtml(notes)}</em>`;
+      document.getElementById('ps-ai-preview-body').innerHTML=psAiPending;
+      document.getElementById('ps-ai-input-view').style.display='none';
+      document.getElementById('ps-ai-preview-view').classList.add('show');
+    } else {
+      applyPsDescription();
+    }
+  },1800);
+}
+
+function showPsAiInput(){
+  document.getElementById('ps-ai-preview-view').classList.remove('show');
+  document.getElementById('ps-ai-input-view').style.display='';
+}
+
+function applyPsDescription(){
+  if(!psAiPending) return;
+  // Strip HTML tags — put plain-text into the textarea (simple approach for this prototype)
+  const tmp=document.createElement('div');
+  tmp.innerHTML=psAiPending;
+  document.getElementById('f-desc').value=tmp.textContent||tmp.innerText||'';
+  document.getElementById('f-desc').classList.add('ai-glow');
+  setTimeout(()=>document.getElementById('f-desc').classList.remove('ai-glow'),1400);
+  closePsAiPanel();
+  toast('Description generated by Jobi AI','s');
+  psAiPending=null;
+}
+
+function escPsHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── INIT ──────────────────────────────────────
+refreshCatFilter();
+renderTable(PRODUCTS);
+</script>
+</body>
+</html>
