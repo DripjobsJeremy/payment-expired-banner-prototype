@@ -584,6 +584,7 @@ const DATA = {
       salesPipeline: 4800, salesManual: 0,
       jobsSigned: 1, jobsUnsigned: 0, jobsManual: 0,
       proposalsSent: 2, proposalsPending: 1, proposalsRejected: 0,
+      proposalsAcceptedOnSite: 0,
       closingWonFromSentCohort: 1,
       apptsNew: 2, apptsReturning: 1,
       leads: 8,
@@ -634,6 +635,7 @@ const DATA = {
       salesPipeline: 12400, salesManual: 1200,
       jobsSigned: 3, jobsUnsigned: 1, jobsManual: 1,
       proposalsSent: 6, proposalsPending: 1, proposalsRejected: 1,
+      proposalsAcceptedOnSite: 0,
       closingWonFromSentCohort: 4,
       apptsNew: 5, apptsReturning: 2,
       leads: 18,
@@ -707,7 +709,8 @@ const DATA = {
       salesPipeline: 39106, salesManual: 6389,
       jobsSigned: 8, jobsUnsigned: 2, jobsManual: 1,
       proposalsSent: 13, proposalsPending: 2, proposalsRejected: 1,
-      closingWonFromSentCohort: 10,
+      proposalsAcceptedOnSite: 1,
+      closingWonFromSentCohort: 11,
       apptsNew: 12, apptsReturning: 4,
       leads: 42,
       contactsCreated: 42,
@@ -809,7 +812,8 @@ const DATA = {
       salesPipeline: 148200, salesManual: 22400,
       jobsSigned: 31, jobsUnsigned: 5, jobsManual: 4,
       proposalsSent: 52, proposalsPending: 6, proposalsRejected: 6,
-      closingWonFromSentCohort: 36,
+      proposalsAcceptedOnSite: 2,
+      closingWonFromSentCohort: 38,
       apptsNew: 44, apptsReturning: 18,
       leads: 142,
       contactsCreated: 142,
@@ -915,6 +919,7 @@ const DATA = {
       salesPipeline: 28400, salesManual: 3200,
       jobsSigned: 7, jobsUnsigned: 1, jobsManual: 1,
       proposalsSent: 12, proposalsPending: 2, proposalsRejected: 2,
+      proposalsAcceptedOnSite: 0,
       closingWonFromSentCohort: 8,
       apptsNew: 10, apptsReturning: 4,
       leads: 32,
@@ -997,7 +1002,8 @@ const DATA = {
       salesPipeline: 412600, salesManual: 58400,
       jobsSigned: 92, jobsUnsigned: 14, jobsManual: 11,
       proposalsSent: 164, proposalsPending: 8, proposalsRejected: 18,
-      closingWonFromSentCohort: 106,
+      proposalsAcceptedOnSite: 4,
+      closingWonFromSentCohort: 110,
       apptsNew: 128, apptsReturning: 64,
       leads: 422,
       contactsCreated: 422,
@@ -1209,8 +1215,10 @@ function render(periodKey) {
   const manualAvgJobSize = k.jobsManual > 0 ? k.salesManual / k.jobsManual : 0;
   const avgJobSize    = totalJobs > 0 ? totalSales / totalJobs : 0;
   const totalProposalsSent = k.proposalsSent;
+  const proposalsAcceptedOnSite = k.proposalsAcceptedOnSite || 0;
+  const qualifiedProposals = totalProposalsSent + proposalsAcceptedOnSite;
   const closingFromProposals = k.closingWonFromSentCohort;
-  const closingRatio  = totalProposalsSent > 0 ? (closingFromProposals / totalProposalsSent * 100) : 0;
+  const closingRatio  = qualifiedProposals > 0 ? (closingFromProposals / qualifiedProposals * 100) : 0;
   const totalAppts    = k.apptsNew + k.apptsReturning;
   const totalLeads    = k.contactsCreated;
   const setRateBooked = k.contactsBookedAnytime;
@@ -1286,13 +1294,22 @@ function render(periodKey) {
       },
       closing: {
         title: 'Closing Ratio',
-        desc: 'Based on the same group of proposals sent in the selected period. We track how many from that same group were eventually accepted.',
+        desc: 'Based on the same group of proposals qualified in the selected period. We track how many from that same group were eventually accepted.',
         value: fmtPct(closingRatio),
         left: `
           <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">Accepted from Same Group</div></div><div class="bd-right"><div class="bd-value">${closingFromProposals}</div></div></div>
-          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Sent in Period</div></div><div class="bd-right"><div class="bd-value">${totalProposalsSent}</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Qualified in Period</div></div><div class="bd-right"><div class="bd-value">${qualifiedProposals}</div></div></div>
+          <div class="bd-divider"></div>
+          <div class="bd-section-label">SENT TO CUSTOMERS</div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">Accepted (signed)</div></div><div class="bd-right"><div class="bd-value">${k.jobsSigned}</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:#DC6803"></div><div class="bd-label">No signature △</div></div><div class="bd-right"><div class="bd-value" style="color:#DC6803">${k.jobsUnsigned}</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Accepted on Site</div></div><div class="bd-right"><div class="bd-value">${proposalsAcceptedOnSite}</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:#98A2B3"></div><div class="bd-label">Pending</div></div><div class="bd-right"><div class="bd-value">${k.proposalsPending}</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--red)"></div><div class="bd-label">Rejected</div></div><div class="bd-right"><div class="bd-value">${k.proposalsRejected}</div></div></div>
+          <div class="bd-divider"></div>
+          <div class="bd-total"><div class="bd-total-label">Sent Total</div><div class="bd-total-value">${qualifiedProposals}</div></div>
         `,
-        right: `<div class="tile-formula-label">Formula</div><div class="tile-formula">${closingFromProposals} accepted ÷ ${totalProposalsSent} sent</div><div class="tile-formula-label" style="margin-top:12px;">Note</div><div class="tile-formula">This tracks proposals sent and accepted within the same period. Jobs Won may differ — it counts all accepted proposals regardless of when they were sent.</div>`
+        right: `<div class="tile-formula-label">Formula</div><div class="tile-formula">${closingFromProposals} accepted ÷ ${qualifiedProposals} qualified</div><div class="tile-formula-label" style="margin-top:12px;">Note</div><div class="tile-formula">This tracks proposals that were qualified and/or accepted in the given period. Jobs Won may differ — it counts all accepted proposals regardless of when they were qualified.</div>`
       },
       setrate: {
         title: 'Set Rate',
