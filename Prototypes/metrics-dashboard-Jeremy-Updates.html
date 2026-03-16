@@ -507,7 +507,7 @@
                   <div class="tile-icon metric-icon-closing">%</div>
                   <div class="metric-tab-name">Closing Ratio</div>
                 </div>
-                <div class="metric-tab-def">Accepted Proposals / Proposals Sent</div>
+                <div class="metric-tab-def">Accepted Proposals / Qualified Proposals</div>
                 <div class="metric-subnote">Note: Jobs Won may differ - it counts all accepted proposals regardless of sent date.</div>
                 <div class="metric-affordance">View details →</div>
               </div>
@@ -1297,9 +1297,6 @@ function render(periodKey) {
         desc: 'Based on the same group of proposals qualified in the selected period. We track how many from that same group were eventually accepted.',
         value: fmtPct(closingRatio),
         left: `
-          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">Accepted from Same Group</div></div><div class="bd-right"><div class="bd-value">${closingFromProposals}</div></div></div>
-          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Qualified in Period</div></div><div class="bd-right"><div class="bd-value">${qualifiedProposals}</div></div></div>
-          <div class="bd-divider"></div>
           <div class="bd-section-label">SENT TO CUSTOMERS</div>
           <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">Accepted (signed)</div></div><div class="bd-right"><div class="bd-value">${k.jobsSigned}</div></div></div>
           <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:#DC6803"></div><div class="bd-label">No signature △</div></div><div class="bd-right"><div class="bd-value" style="color:#DC6803">${k.jobsUnsigned}</div></div></div>
