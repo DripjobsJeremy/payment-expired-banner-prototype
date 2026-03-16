@@ -276,10 +276,13 @@
   .sc-total { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 6px; }
   .sc-total-label { font-size: 13px; font-weight: 700; color: var(--text-primary); }
   .sc-total-value { font-size: 13px; font-weight: 700; color: var(--text-primary); }
-  .sc-footer { display: flex; justify-content: flex-end; margin-top: 16px; }
+  .sc-footer { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-top: 16px; }
   .sc-pdf-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border: 1px solid #FECDCA; border-radius: 6px; background: #FFF5F5; color: var(--red); font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
   .sc-pdf-btn:hover { background: #FEE4E2; }
   .sc-pdf-btn svg { width: 13px; height: 13px; fill: var(--red); }
+  .sc-csv-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border: 1px solid #ABEFC6; border-radius: 6px; background: #F6FEF9; color: #067647; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+  .sc-csv-btn:hover { background: #DCFAE6; }
+  .sc-csv-btn svg { width: 13px; height: 13px; stroke: #067647; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
   .sc-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 0; color: var(--text-muted); gap: 8px; }
   .sc-empty svg { width: 36px; height: 36px; stroke: var(--text-muted); fill: none; stroke-width: 1.5; }
   .sc-empty-text { font-size: 13px; color: var(--text-muted); }
@@ -343,7 +346,7 @@
     .sc-bar-label { font-size: 12.5px; }
     .sc-bar-value { font-size: 12.5px; }
     .sc-bar-pct { font-size: 11px; }
-    .sc-pdf-btn { padding: 8px 14px; font-size: 12px; }
+    .sc-pdf-btn, .sc-csv-btn { padding: 8px 14px; font-size: 12px; }
     .period-tab { min-width: 44px; padding: 8px 10px; font-size: 11px; }
     .date-pill { font-size: 11.5px; padding: 5px 10px; }
 
@@ -1170,15 +1173,153 @@ function emptyState() {
   </div>`;
 }
 
-function pdfBtn() {
-  return `<div class="sc-footer"><button class="sc-pdf-btn"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>PDF</button></div>`;
+function pdfBtn(csvId) {
+  return `<div class="sc-footer">
+    <button class="sc-csv-btn" onclick="exportCSV('${csvId}')"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>CSV</button>
+    <button class="sc-pdf-btn"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>PDF</button>
+  </div>`;
+}
+
+function exportCSV(cardId) {
+  const d = DATA[activePeriod];
+  const k = d.kpi;
+  const period = d.label.replace(/📅\s*/, '');
+
+  const totalSales = k.salesPipeline + k.salesManual;
+  const totalJobs = k.jobsSigned + k.jobsUnsigned + k.jobsManual;
+  const avgJobSize = totalJobs > 0 ? (totalSales / totalJobs).toFixed(2) : 0;
+  const qualifiedProposals = k.proposalsSent + (k.proposalsAcceptedOnSite || 0);
+  const closingRatio = qualifiedProposals > 0 ? (k.closingWonFromSentCohort / qualifiedProposals * 100).toFixed(1) : 0;
+  const totalAppts = k.apptsNew + k.apptsReturning;
+  const setRate = k.contactsCreated > 0 ? (k.contactsBookedAnytime / k.contactsCreated * 100).toFixed(1) : 0;
+
+  // Breakdown card data maps
+  const breakdowns = {
+    'leads-by-source':        { headers: ['Source', 'Leads'], rows: d.leadsBySource.map(x => [x.label, x.value]) },
+    'leads-to-appts':         { headers: ['Source', 'Booked', 'Total Leads', 'Set Rate (%)'], rows: d.leadsToAppts.map(x => [x.label, x.booked, x.leads, x.leads > 0 ? (x.booked/x.leads*100).toFixed(1) : 0]) },
+    'sales-by-source':        { headers: ['Source', 'Sales ($)'], rows: d.salesBySource.map(x => [x.label, x.value]) },
+    'sales-by-salesperson':   { headers: ['Salesperson', 'Sales ($)'], rows: d.salesBySalesperson.map(x => [x.label, x.value]) },
+    'sales-by-zip':           { headers: ['Zip Code', 'Sales ($)'], rows: d.salesByZip.map(x => [x.label, x.value]) },
+    'sales-by-crew':          { headers: ['Crew', 'Sales ($)'], rows: d.salesByCrew.map(x => [x.label, x.value]) },
+    'sales-by-product':       { headers: ['Product', 'Sales ($)'], rows: d.salesByProduct.map(x => [x.label, x.value]) },
+    'interior-by-rate':       { headers: ['Production Rate', 'Sales ($)'], rows: d.interiorByRate.map(x => [x.label, x.value]) },
+    'exterior-by-rate':       { headers: ['Production Rate', 'Sales ($)'], rows: d.exteriorByRate.map(x => [x.label, x.value]) },
+    'closing-by-source':      { headers: ['Source', 'Jobs Won', 'Proposals Sent', 'Closing Ratio (%)'], rows: d.closingBySource.map(x => [x.label, x.won, x.sent, x.sent > 0 ? (x.won/x.sent*100).toFixed(1) : 0]) },
+    'closing-by-salesperson': { headers: ['Salesperson', 'Jobs Won', 'Proposals Sent', 'Closing Ratio (%)'], rows: d.closingBySalesperson.map(x => [x.label, x.won, x.sent, x.sent > 0 ? (x.won/x.sent*100).toFixed(1) : 0]) },
+    'closing-by-zip':         { headers: ['Zip Code', 'Jobs Won', 'Proposals Sent', 'Closing Ratio (%)'], rows: d.closingByZip.map(x => [x.label, x.won, x.sent, x.sent > 0 ? (x.won/x.sent*100).toFixed(1) : 0]) },
+  };
+
+  const kpiSections = {
+    sales: [
+      ['Metric', 'Value'],
+      ['Period', period],
+      ['Pipeline Sales', k.salesPipeline],
+      ['Manual Invoice Sales', k.salesManual],
+      ['Total Sales', totalSales],
+    ],
+    jobs: [
+      ['Metric', 'Value'],
+      ['Period', period],
+      ['Jobs Won – Signed Accepted', k.jobsSigned],
+      ['Jobs Won – Accepted No Signature', k.jobsUnsigned],
+      ['Jobs Won – Manual Invoice', k.jobsManual],
+      ['Jobs Won – Total', totalJobs],
+    ],
+    avg: [
+      ['Metric', 'Value'],
+      ['Period', period],
+      ['Pipeline Sales', k.salesPipeline],
+      ['Proposal Jobs Won', k.jobsSigned + k.jobsUnsigned],
+      ['Manual Invoice Sales', k.salesManual],
+      ['Manual Invoice Jobs', k.jobsManual],
+      ['Average Job Size (Combined)', avgJobSize],
+    ],
+    closing: [
+      ['Metric', 'Value'],
+      ['Period', period],
+      ['Accepted (Signed)', k.jobsSigned],
+      ['No Signature', k.jobsUnsigned],
+      ['Accepted on Site', k.proposalsAcceptedOnSite || 0],
+      ['Pending', k.proposalsPending],
+      ['Rejected', k.proposalsRejected],
+      ['Sent Total (Qualified)', qualifiedProposals],
+      ['Accepted from Group', k.closingWonFromSentCohort],
+      ['Closing Ratio (%)', closingRatio],
+    ],
+    setrate: [
+      ['Metric', 'Value'],
+      ['Period', period],
+      ['Contacts Created', k.contactsCreated],
+      ['Booked from Group', k.contactsBookedAnytime],
+      ['Set Rate (%)', setRate],
+    ],
+    appts: [
+      ['Metric', 'Value'],
+      ['Period', period],
+      ['New Appointments', k.apptsNew],
+      ['Returning Appointments', k.apptsReturning],
+      ['Total Appointments', totalAppts],
+    ],
+  };
+
+  // Breakdown card?
+  if (breakdowns[cardId]) {
+    const bd = breakdowns[cardId];
+    const rows = [['Period', period], [], [cardId.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())], bd.headers, ...bd.rows];
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `dripjobs-${cardId}-${period.replace(/[^a-z0-9]/gi, '-')}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    return;
+  }
+
+  // Full summary export if no specific card
+  const rows = kpiSections[cardId] || [
+    ['Metric', 'Value'],
+    ['Period', period],
+    ['Pipeline Sales', k.salesPipeline],
+    ['Manual Invoice Sales', k.salesManual],
+    ['Total Sales', totalSales],
+    [''],
+    ['Jobs Won – Signed Accepted', k.jobsSigned],
+    ['Jobs Won – Accepted No Signature', k.jobsUnsigned],
+    ['Jobs Won – Manual Invoice', k.jobsManual],
+    ['Jobs Won – Total', totalJobs],
+    [''],
+    ['Average Job Size', avgJobSize],
+    [''],
+    ['Qualified Proposals', qualifiedProposals],
+    ['Accepted from Group', k.closingWonFromSentCohort],
+    ['Closing Ratio (%)', closingRatio],
+    [''],
+    ['Contacts Created', k.contactsCreated],
+    ['Booked from Group', k.contactsBookedAnytime],
+    ['Set Rate (%)', setRate],
+    [''],
+    ['New Appointments', k.apptsNew],
+    ['Returning Appointments', k.apptsReturning],
+    ['Total Appointments', totalAppts],
+  ];
+
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `dripjobs-report-${cardId}-${period.replace(/[^a-z0-9]/gi, '-')}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 function scIcon(paths) {
   return `<div class="sc-icon"><svg viewBox="0 0 24 24">${paths}</svg></div>`;
 }
 
-function scCard(iconPaths, title, subtitle, desc, bodyHtml, totalLabel, totalVal, infoNote) {
+function scCard(iconPaths, title, subtitle, desc, bodyHtml, totalLabel, totalVal, infoNote, csvId) {
   const totalRow = totalLabel
     ? `<div class="sc-total"><span class="sc-total-label">${totalLabel}</span><span class="sc-total-value">${totalVal}</span></div>`
     : '';
@@ -1196,7 +1337,7 @@ function scCard(iconPaths, title, subtitle, desc, bodyHtml, totalLabel, totalVal
     <div class="sc-divider"></div>
     <div class="sc-body">${bodyHtml}</div>
     ${totalRow}
-    ${pdfBtn()}
+    ${pdfBtn(csvId || 'summary')}
   </div>`;
 }
 
@@ -1384,13 +1525,13 @@ function render(periodKey) {
         `<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>`,
         'Leads By Source', `(Total Leads: ${totalLeadsCount})`,
         'Total new contacts that entered your system during the period with their corresponding lead source',
-        barRows(d.leadsBySource, 'count'), 'Total', totalLeadsCount
+        barRows(d.leadsBySource, 'count'), 'Total', totalLeadsCount, null, 'leads-by-source'
       )}
       ${scCard(
         `<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>`,
         'Leads To Appointments', `(Total Booked: ${totalLeadsAppts})`,
         'Based on the same group of leads created in this period, showing how many eventually booked for each source',
-        barRows(d.leadsToAppts, 'setrate'), 'Total Booked', totalLeadsAppts
+        barRows(d.leadsToAppts, 'setrate'), 'Total Booked', totalLeadsAppts, null, 'leads-to-appts'
       )}
     </div>
     <div class="section-row">
@@ -1398,13 +1539,13 @@ function render(periodKey) {
         `<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>`,
         'Sales By Source', `(Total: ${fmt$(totalSalesSrc)})`,
         'Total amount invoiced during the specified time period with the corresponding lead source',
-        barRows(d.salesBySource, '$'), 'Total', fmt$(totalSalesSrc), 'Source-attributed view; totals may differ from all-sales views when records are uncategorized or unassigned.'
+        barRows(d.salesBySource, '$'), 'Total', fmt$(totalSalesSrc), 'Source-attributed view; totals may differ from all-sales views when records are uncategorized or unassigned.', 'sales-by-source'
       )}
       ${scCard(
         `<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>`,
         'Closing Ratio by Salesperson', `(Total Jobs Won: ${totalWonSP})`,
         'For each salesperson, based on the same group of proposals sent in this period and how many from that group were eventually accepted',
-        barRows(d.closingBySalesperson, 'close'), 'Total Jobs Won', totalWonSP, 'Cohort-based denominator may differ from top Jobs Won KPI.'
+        barRows(d.closingBySalesperson, 'close'), 'Total Jobs Won', totalWonSP, 'Cohort-based denominator may differ from top Jobs Won KPI.', 'closing-by-salesperson'
       )}
     </div>
     <div class="section-row">
@@ -1412,13 +1553,13 @@ function render(periodKey) {
         `<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>`,
         'Sales By Salesperson', `(Total: ${fmt$(totalSalesSP)})`,
         'Total amount of sales for each salesperson assigned to the corresponding deal during the specified time period',
-        barRows(d.salesBySalesperson, '$'), 'Total', fmt$(totalSalesSP), 'Attribution by assignee can differ from source/product attribution totals.'
+        barRows(d.salesBySalesperson, '$'), 'Total', fmt$(totalSalesSP), 'Attribution by assignee can differ from source/product attribution totals.', 'sales-by-salesperson'
       )}
       ${scCard(
         `<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>`,
         'Sales By Zip Code', `(Total: ${fmt$(totalSalesZip)})`,
         'Total amount of sales during the specified time period associated with a corresponding zip code',
-        barRows(d.salesByZip, '$'), 'Total', fmt$(totalSalesZip)
+        barRows(d.salesByZip, '$'), 'Total', fmt$(totalSalesZip), null, 'sales-by-zip'
       )}
     </div>
     <div class="section-row">
@@ -1428,13 +1569,14 @@ function render(periodKey) {
         'Total dollar amount of scheduled projects assigned to each crew. You can specify crew names in Company settings',
         barRows(d.salesByCrew, '$'),
         totalSalesCrew > 0 ? 'Total' : null,
-        totalSalesCrew > 0 ? fmt$(totalSalesCrew) : null
+        totalSalesCrew > 0 ? fmt$(totalSalesCrew) : null,
+        null, 'sales-by-crew'
       )}
       ${scCard(
         `<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>`,
         'Sales By Product', `(Total: ${fmt$(totalSalesProd)})`,
         'Total amount of sales for each product or service specified in the Products / Services tab in settings during the specified time period',
-        barRows(d.salesByProduct, '$'), 'Total', fmt$(totalSalesProd), 'No Product Selected indicates uncategorized sales records.'
+        barRows(d.salesByProduct, '$'), 'Total', fmt$(totalSalesProd), 'No Product Selected indicates uncategorized sales records.', 'sales-by-product'
       )}
     </div>
     <div class="section-row">
@@ -1444,7 +1586,8 @@ function render(periodKey) {
         'This data represents the sales based on Interior Production Rates',
         barRows(d.interiorByRate, '$'),
         totalIntRate > 0 ? 'Total' : null,
-        totalIntRate > 0 ? fmt$(totalIntRate) : null
+        totalIntRate > 0 ? fmt$(totalIntRate) : null,
+        null, 'interior-by-rate'
       )}
       ${scCard(
         `<path d="M17 8h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-2v4l-4-4H9a1.994 1.994 0 0 1-1.414-.586m0 0L11 14h4a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2v4l.586-.586z"/>`,
@@ -1452,7 +1595,8 @@ function render(periodKey) {
         'This data represents the sales based on Exterior Production Rates',
         barRows(d.exteriorByRate, '$'),
         totalExtRate > 0 ? 'Total' : null,
-        totalExtRate > 0 ? fmt$(totalExtRate) : null
+        totalExtRate > 0 ? fmt$(totalExtRate) : null,
+        null, 'exterior-by-rate'
       )}
     </div>
     <div class="section-row">
@@ -1460,13 +1604,13 @@ function render(periodKey) {
         `<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>`,
         'Closing Ratio by Source', `(Total Jobs Won: ${totalWonSrc})`,
         'For each lead source, based on the same group of proposals sent in this period and how many from that group were eventually accepted',
-        barRows(d.closingBySource, 'close'), 'Total Jobs Won', totalWonSrc
+        barRows(d.closingBySource, 'close'), 'Total Jobs Won', totalWonSrc, null, 'closing-by-source'
       )}
       ${scCard(
         `<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>`,
         'Closing Ratio by Zip Code', `(Total Jobs Won: ${totalWonZip})`,
         'For each zip code, based on the same group of proposals sent in this period and how many from that group were eventually accepted',
-        barRows(d.closingByZip, 'close'), 'Total Jobs Won', totalWonZip
+        barRows(d.closingByZip, 'close'), 'Total Jobs Won', totalWonZip, null, 'closing-by-zip'
       )}
     </div>
   `;
