@@ -1129,7 +1129,7 @@ function barRows(items, valueType) {
   });
   const maxVal = Math.max(...processed.map(i => valueType === '$' ? i.value : (i.won || i.booked || i.value || 0)));
   if (maxVal === 0) return emptyState();
-  return processed.map((item, i) => {
+  const rows = processed.map((item, i) => {
     let displayVal, pctLabel, fillPct;
     if (valueType === '$') {
       const total = processed.reduce((s,x) => s + x.value, 0);
