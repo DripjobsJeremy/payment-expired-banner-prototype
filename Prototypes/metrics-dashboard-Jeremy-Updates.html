@@ -278,7 +278,8 @@
   .sc-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
   .sc-bar-amount { font-size: 13px; font-weight: 700; color: var(--text-primary); text-align: right; font-family: 'JetBrains Mono', monospace; white-space: nowrap; width: 100%; display: block; }
   .sc-bar-pct { font-size: 12px; font-weight: 400; color: var(--text-secondary); text-align: right; white-space: nowrap; width: 100%; display: block; }
-  .sc-bar-rate-cell { text-align: right; white-space: nowrap; width: 100%; display: block; }
+  .sc-bar-rate-cell { display: flex; justify-content: flex-end; align-items: center; gap: 4px; width: 100%; white-space: nowrap; }
+  .sc-bar-rate-cell .sc-bar-amount, .sc-bar-rate-cell .sc-bar-pct { display: inline; width: auto; text-align: left; }
   .meta-row .sc-bar-label { color: #667085; font-style: italic; }
   .meta-row .sc-bar-fill { opacity: 0.75; }
   .sc-total { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 6px; }
