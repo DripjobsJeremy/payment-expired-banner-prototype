@@ -1119,7 +1119,8 @@ const DATA = {
 // HELPERS
 // ═══════════════════════════════════════════════════════════════
 const fmt$ = v => v === 0 ? '$0.00' : '$' + v.toLocaleString('en-US', {minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2});
-const fmtPct = v => v.toFixed(1) + '%';
+const fmt2pct = v => { const n = Number(v); return (n === 100 ? '100' : n.toFixed(2)) + '%'; };
+const fmtPct = fmt2pct;
 const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
 
 function barRows(items, valueType) {
@@ -1138,23 +1139,23 @@ function barRows(items, valueType) {
       const total = processed.reduce((s,x) => s + x.value, 0);
       const pct = total > 0 ? (item.value / total * 100) : 0;
       displayVal = fmt$(item.value);
-      pctLabel = item.value === 0 ? '(0.00%)' : `(${pct.toFixed(2)}%)`;
+      pctLabel = item.value === 0 ? '(0.00%)' : `(${fmt2pct(pct)})`;
       fillPct = item.value === 0 ? 0 : (item.value / maxVal * 100);
     } else if (valueType === 'count') {
       const total = processed.reduce((s,x) => s + (x.value || 0), 0);
       const pct = total > 0 ? (item.value / total * 100) : 0;
       displayVal = item.value;
-      pctLabel = item.value === 0 ? '(0.00%)' : `(${pct.toFixed(2)}%)`;
+      pctLabel = item.value === 0 ? '(0.00%)' : `(${fmt2pct(pct)})`;
       fillPct = item.value === 0 ? 0 : (item.value / maxVal * 100);
     } else if (valueType === 'close') {
       const closeRate = item.sent > 0 ? (item.won / item.sent * 100) : 0;
       displayVal = item.won;
-      pctLabel = `(${closeRate.toFixed(2)}% close rate)`;
+      pctLabel = `(${fmt2pct(closeRate).replace('%','')}% close rate)`;
       fillPct = closeRate;
     } else if (valueType === 'setrate') {
       const rate = item.leads > 0 ? (item.booked / item.leads * 100) : 0;
       displayVal = item.booked;
-      pctLabel = `(${rate.toFixed(0)}% set rate)`;
+      pctLabel = `(${fmt2pct(rate).replace('%','')}% set rate)`;
       fillPct = rate;
     }
     const isCatchAll = CATCH_ALL_RE.test(item.label || '');
@@ -1218,14 +1219,14 @@ function exportCSV(cardId) {
   const totalJobs = k.jobsSigned + k.jobsUnsigned + k.jobsManual;
   const avgJobSize = totalJobs > 0 ? (totalSales / totalJobs).toFixed(2) : 0;
   const qualifiedProposals = k.proposalsSent + (k.proposalsAcceptedOnSite || 0);
-  const closingRatio = qualifiedProposals > 0 ? (k.closingWonFromSentCohort / qualifiedProposals * 100).toFixed(1) : 0;
+  const closingRatio = qualifiedProposals > 0 ? (k.closingWonFromSentCohort / qualifiedProposals * 100).toFixed(2) : 0;
   const totalAppts = k.apptsNew + k.apptsReturning;
-  const setRate = k.contactsCreated > 0 ? (k.contactsBookedAnytime / k.contactsCreated * 100).toFixed(1) : 0;
+  const setRate = k.contactsCreated > 0 ? (k.contactsBookedAnytime / k.contactsCreated * 100).toFixed(2) : 0;
 
   // Breakdown card data maps
   const breakdowns = {
     'leads-by-source':        { headers: ['Source', 'Leads'], rows: d.leadsBySource.map(x => [x.label, x.value]) },
-    'leads-to-appts':         { headers: ['Source', 'Booked', 'Total Leads', 'Set Rate (%)'], rows: d.leadsToAppts.map(x => [x.label, x.booked, x.leads, x.leads > 0 ? (x.booked/x.leads*100).toFixed(1) : 0]) },
+    'leads-to-appts':         { headers: ['Source', 'Booked', 'Total Leads', 'Set Rate (%)'], rows: d.leadsToAppts.map(x => [x.label, x.booked, x.leads, x.leads > 0 ? (x.booked/x.leads*100).toFixed(2) : 0]) },
     'sales-by-source':        { headers: ['Source', 'Sales ($)'], rows: d.salesBySource.map(x => [x.label, x.value]) },
     'sales-by-salesperson':   { headers: ['Salesperson', 'Sales ($)'], rows: d.salesBySalesperson.map(x => [x.label, x.value]) },
     'sales-by-zip':           { headers: ['Zip Code', 'Sales ($)'], rows: d.salesByZip.map(x => [x.label, x.value]) },
@@ -1233,9 +1234,9 @@ function exportCSV(cardId) {
     'sales-by-product':       { headers: ['Product', 'Sales ($)'], rows: d.salesByProduct.map(x => [x.label, x.value]) },
     'interior-by-rate':       { headers: ['Production Rate', 'Sales ($)'], rows: d.interiorByRate.map(x => [x.label, x.value]) },
     'exterior-by-rate':       { headers: ['Production Rate', 'Sales ($)'], rows: d.exteriorByRate.map(x => [x.label, x.value]) },
-    'closing-by-source':      { headers: ['Source', 'Jobs Won', 'Proposals Sent', 'Closing Ratio (%)'], rows: d.closingBySource.map(x => [x.label, x.won, x.sent, x.sent > 0 ? (x.won/x.sent*100).toFixed(1) : 0]) },
-    'closing-by-salesperson': { headers: ['Salesperson', 'Jobs Won', 'Proposals Sent', 'Closing Ratio (%)'], rows: d.closingBySalesperson.map(x => [x.label, x.won, x.sent, x.sent > 0 ? (x.won/x.sent*100).toFixed(1) : 0]) },
-    'closing-by-zip':         { headers: ['Zip Code', 'Jobs Won', 'Proposals Sent', 'Closing Ratio (%)'], rows: d.closingByZip.map(x => [x.label, x.won, x.sent, x.sent > 0 ? (x.won/x.sent*100).toFixed(1) : 0]) },
+    'closing-by-source':      { headers: ['Source', 'Jobs Won', 'Proposals Sent', 'Closing Ratio (%)'], rows: d.closingBySource.map(x => [x.label, x.won, x.sent, x.sent > 0 ? (x.won/x.sent*100).toFixed(2) : 0]) },
+    'closing-by-salesperson': { headers: ['Salesperson', 'Jobs Won', 'Proposals Sent', 'Closing Ratio (%)'], rows: d.closingBySalesperson.map(x => [x.label, x.won, x.sent, x.sent > 0 ? (x.won/x.sent*100).toFixed(2) : 0]) },
+    'closing-by-zip':         { headers: ['Zip Code', 'Jobs Won', 'Proposals Sent', 'Closing Ratio (%)'], rows: d.closingByZip.map(x => [x.label, x.won, x.sent, x.sent > 0 ? (x.won/x.sent*100).toFixed(2) : 0]) },
   };
 
   const kpiSections = {
@@ -1393,13 +1394,13 @@ function render(periodKey) {
   const totalLeads    = k.contactsCreated;
   const setRateBooked = k.contactsBookedAnytime;
   const setRate       = totalLeads > 0 ? (setRateBooked / totalLeads * 100) : 0;
-  const pipelinePct   = totalSales > 0 ? Math.round(k.salesPipeline / totalSales * 100) : 0;
-  const manualPct     = 100 - pipelinePct;
-  const apptNewPct    = totalAppts > 0 ? Math.round(k.apptsNew / totalAppts * 100) : 0;
-  const apptRetPct    = 100 - apptNewPct;
-  const jobSignedPct  = totalJobs > 0 ? Math.round(k.jobsSigned / totalJobs * 100) : 0;
-  const jobUnsignedPct= totalJobs > 0 ? Math.round(k.jobsUnsigned / totalJobs * 100) : 0;
-  const jobManualPct  = 100 - jobSignedPct - jobUnsignedPct;
+  const pipelinePct   = totalSales > 0 ? fmt2pct(k.salesPipeline / totalSales * 100) : '0.00%';
+  const manualPct     = totalSales > 0 ? fmt2pct(k.salesManual / totalSales * 100) : '0.00%';
+  const apptNewPct    = totalAppts > 0 ? fmt2pct(k.apptsNew / totalAppts * 100) : '0.00%';
+  const apptRetPct    = totalAppts > 0 ? fmt2pct(k.apptsReturning / totalAppts * 100) : '0.00%';
+  const jobSignedPct  = totalJobs > 0 ? fmt2pct(k.jobsSigned / totalJobs * 100) : '0.00%';
+  const jobUnsignedPct= totalJobs > 0 ? fmt2pct(k.jobsUnsigned / totalJobs * 100) : '0.00%';
+  const jobManualPct  = totalJobs > 0 ? fmt2pct(k.jobsManual / totalJobs * 100) : '0.00%';
   const pipelineAvgFormula = proposalJobsWon > 0
     ? `${fmt$(k.salesPipeline)} ÷ ${proposalJobsWon} = ${fmt$(pipelineAvgJobSize)}`
     : 'Pipeline Avg: no accepted proposal jobs in this period';
@@ -1435,8 +1436,8 @@ function render(periodKey) {
         desc: 'Total invoiced revenue for the period. Includes both proposal pipeline revenue and manual invoices for transparency.',
         value: fmt$(totalSales),
         left: `
-          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">Pipeline Sales</div></div><div class="bd-right"><div class="bd-value">${fmt$(k.salesPipeline)}</div><div class="bd-pct">${pipelinePct}%</div></div></div>
-          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Manual Invoice Sales</div></div><div class="bd-right"><div class="bd-value">${fmt$(k.salesManual)}</div><div class="bd-pct">${manualPct}%</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">Pipeline Sales</div></div><div class="bd-right"><div class="bd-value">${fmt$(k.salesPipeline)}</div><div class="bd-pct">${pipelinePct}</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Manual Invoice Sales</div></div><div class="bd-right"><div class="bd-value">${fmt$(k.salesManual)}</div><div class="bd-pct">${manualPct}</div></div></div>
         `,
         right: `<div class="tile-formula-label">Formula</div><div class="tile-formula">Pipeline + Manual = ${fmt$(totalSales)}</div>`
       },
@@ -1445,9 +1446,9 @@ function render(periodKey) {
         desc: 'Jobs won in the period from accepted proposals and manual invoices. Manual invoice wins are displayed separately for user clarity.',
         value: totalJobs,
         left: `
-          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">Signed Accepted</div></div><div class="bd-right"><div class="bd-value">${k.jobsSigned}</div><div class="bd-pct">${jobSignedPct}%</div></div></div>
-          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--warning)"></div><div class="bd-label">Accepted No Signature</div></div><div class="bd-right"><div class="bd-value">${k.jobsUnsigned}</div><div class="bd-pct">${jobUnsignedPct}%</div></div></div>
-          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Manual Invoice Jobs</div></div><div class="bd-right"><div class="bd-value">${k.jobsManual}</div><div class="bd-pct">${jobManualPct}%</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">Signed Accepted</div></div><div class="bd-right"><div class="bd-value">${k.jobsSigned}</div><div class="bd-pct">${jobSignedPct}</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--warning)"></div><div class="bd-label">Accepted No Signature</div></div><div class="bd-right"><div class="bd-value">${k.jobsUnsigned}</div><div class="bd-pct">${jobUnsignedPct}</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Manual Invoice Jobs</div></div><div class="bd-right"><div class="bd-value">${k.jobsManual}</div><div class="bd-pct">${jobManualPct}</div></div></div>
         `,
         right: `<div class="tile-formula-label">Formula</div><div class="tile-formula">Signed + Unsigned + Manual = ${totalJobs}</div>`
       },
@@ -1493,8 +1494,8 @@ function render(periodKey) {
         desc: 'Total appointments booked in the period, split by customer type for visibility and staffing analysis.',
         value: totalAppts,
         left: `
-          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">New Customers</div></div><div class="bd-right"><div class="bd-value">${k.apptsNew}</div><div class="bd-pct">${apptNewPct}%</div></div></div>
-          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Returning Customers</div></div><div class="bd-right"><div class="bd-value">${k.apptsReturning}</div><div class="bd-pct">${apptRetPct}%</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--green)"></div><div class="bd-label">New Customers</div></div><div class="bd-right"><div class="bd-value">${k.apptsNew}</div><div class="bd-pct">${apptNewPct}</div></div></div>
+          <div class="bd-row"><div class="bd-left"><div class="bd-dot" style="background:var(--blue)"></div><div class="bd-label">Returning Customers</div></div><div class="bd-right"><div class="bd-value">${k.apptsReturning}</div><div class="bd-pct">${apptRetPct}</div></div></div>
         `,
         right: `<div class="tile-formula-label">Formula</div><div class="tile-formula">New + Returning = ${totalAppts} booked</div>`
       }
