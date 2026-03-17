@@ -1154,12 +1154,12 @@ function barRows(items, valueType) {
     } else if (valueType === 'close') {
       const closeRate = item.sent > 0 ? (item.won / item.sent * 100) : 0;
       displayVal = item.won;
-      pctLabel = `(${fmt2pct(closeRate).replace('%','')}% close rate)`;
+      pctLabel = `(${fmt2pct(closeRate)})`;
       fillPct = closeRate;
     } else if (valueType === 'setrate') {
       const rate = item.leads > 0 ? (item.booked / item.leads * 100) : 0;
       displayVal = item.booked;
-      pctLabel = `(${fmt2pct(rate).replace('%','')}% set rate)`;
+      pctLabel = `(${fmt2pct(rate)})`;
       fillPct = rate;
     }
     const isCatchAll = CATCH_ALL_RE.test(item.label || '');
