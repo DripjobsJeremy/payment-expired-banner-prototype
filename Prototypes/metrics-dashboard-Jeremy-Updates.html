@@ -264,13 +264,17 @@
   .sc-desc { font-size: 12px; color: var(--text-secondary); margin-top: 3px; line-height: 1.5; }
   .sc-divider { height: 1px; background: var(--border); margin-bottom: 16px; }
   .sc-body { min-height: 60px; }
-  .sc-bar-row { margin-bottom: 14px; }
-  .sc-bar-top { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 5px; }
-  .sc-bar-label { font-size: 13px; font-weight: 500; color: var(--text-primary); }
-  .sc-bar-value { font-size: 13px; font-weight: 700; color: var(--text-primary); white-space: nowrap; margin-left: 12px; }
-  .sc-bar-pct { font-size: 12px; font-weight: 400; color: var(--text-secondary); margin-left: 4px; }
-  .sc-bar-track { height: 6px; background: #F0F2F5; border-radius: 99px; overflow: hidden; }
-  .sc-bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+  /* 4-column anatomy grid */
+  .sc-bar-grid-header { display: grid; grid-template-columns: 130px 1fr 120px 68px; gap: 10px; align-items: center; padding-bottom: 8px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+  .sc-bar-col-label { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); }
+  .sc-bar-col-label.right { text-align: right; }
+  .sc-bar-row { display: grid; grid-template-columns: 130px 1fr 120px 68px; gap: 10px; align-items: center; padding: 5px 0; border-bottom: 1px solid #f3f4f6; }
+  .sc-bar-row:last-child { border-bottom: none; }
+  .sc-bar-label { font-size: 13px; font-weight: 500; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sc-bar-track { height: 22px; background: #F0F2F5; border-radius: 4px; overflow: hidden; }
+  .sc-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+  .sc-bar-amount { font-size: 13px; font-weight: 700; color: var(--text-primary); text-align: right; font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+  .sc-bar-pct { font-size: 12px; font-weight: 400; color: var(--text-secondary); text-align: right; white-space: nowrap; }
   .meta-row .sc-bar-label { color: #667085; font-style: italic; }
   .meta-row .sc-bar-fill { opacity: 0.75; }
   .sc-total { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 14px; margin-top: 6px; }
@@ -1157,13 +1161,19 @@ function barRows(items, valueType) {
     if (item.value === 0) color = '#D0D5DD';
 
     return `<div class="sc-bar-row ${isCatchAll ? 'meta-row' : ''}">
-      <div class="sc-bar-top">
-        <span class="sc-bar-label">${item.label}${isCatchAll ? ' (Uncategorized)' : ''}</span>
-        <span><span class="sc-bar-value">${displayVal}</span><span class="sc-bar-pct">${pctLabel}</span></span>
-      </div>
+      <span class="sc-bar-label" title="${item.label}${isCatchAll ? ' (Uncategorized)' : ''}">${item.label}${isCatchAll ? ' (Uncategorized)' : ''}</span>
       <div class="sc-bar-track"><div class="sc-bar-fill" style="width:${fillPct}%;background:${color};"></div></div>
+      <span class="sc-bar-amount">${displayVal}</span>
+      <span class="sc-bar-pct">${pctLabel}</span>
     </div>`;
-  }).join('');
+  });
+  const header = `<div class="sc-bar-grid-header">
+    <span class="sc-bar-col-label">Source</span>
+    <span class="sc-bar-col-label">Volume</span>
+    <span class="sc-bar-col-label right">Amount</span>
+    <span class="sc-bar-col-label right">Share</span>
+  </div>`;
+  return header + rows.join('');
 }
 
 function emptyState() {
