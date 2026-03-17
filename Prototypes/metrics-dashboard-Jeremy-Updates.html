@@ -270,6 +270,9 @@
   .sc-bar-col-label.right { text-align: right; }
   .sc-bar-row { display: grid; grid-template-columns: 130px 1fr 120px 68px; gap: 10px; align-items: center; padding: 5px 0; border-bottom: 1px solid #f3f4f6; }
   .sc-bar-row:last-child { border-bottom: none; }
+  .sc-bar-row--rate { grid-template-columns: 130px 1fr auto; }
+  .sc-bar-grid-header--rate { grid-template-columns: 130px 1fr auto; }
+  .sc-bar-rate-cell { text-align: right; white-space: nowrap; }
   .sc-bar-label { font-size: 13px; font-weight: 500; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sc-bar-track { height: 22px; background: #F0F2F5; border-radius: 4px; overflow: hidden; }
   .sc-bar-fill { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
@@ -1160,6 +1163,14 @@ function barRows(items, valueType) {
     if ((valueType === 'close' || valueType === 'setrate') && fillPct < 30) color = BAR_LOW_COLOR;
     if (item.value === 0) color = '#D0D5DD';
 
+    const isRateType = valueType === 'close' || valueType === 'setrate';
+    if (isRateType) {
+      return `<div class="sc-bar-row sc-bar-row--rate ${isCatchAll ? 'meta-row' : ''}">
+        <span class="sc-bar-label" title="${item.label}${isCatchAll ? ' (Uncategorized)' : ''}">${item.label}${isCatchAll ? ' (Uncategorized)' : ''}</span>
+        <div class="sc-bar-track"><div class="sc-bar-fill" style="width:${fillPct}%;background:${color};"></div></div>
+        <span class="sc-bar-rate-cell"><span class="sc-bar-amount">${displayVal}</span> <span class="sc-bar-pct">${pctLabel}</span></span>
+      </div>`;
+    }
     return `<div class="sc-bar-row ${isCatchAll ? 'meta-row' : ''}">
       <span class="sc-bar-label" title="${item.label}${isCatchAll ? ' (Uncategorized)' : ''}">${item.label}${isCatchAll ? ' (Uncategorized)' : ''}</span>
       <div class="sc-bar-track"><div class="sc-bar-fill" style="width:${fillPct}%;background:${color};"></div></div>
@@ -1167,12 +1178,20 @@ function barRows(items, valueType) {
       <span class="sc-bar-pct">${pctLabel}</span>
     </div>`;
   });
-  const header = `<div class="sc-bar-grid-header">
-    <span class="sc-bar-col-label">Source</span>
-    <span class="sc-bar-col-label">Volume</span>
-    <span class="sc-bar-col-label right">Amount</span>
-    <span class="sc-bar-col-label right">Share</span>
-  </div>`;
+  const isRateType = valueType === 'close' || valueType === 'setrate';
+  const rateHeader = valueType === 'close' ? 'Won (Close Rate)' : 'Booked (Set Rate)';
+  const header = isRateType
+    ? `<div class="sc-bar-grid-header sc-bar-grid-header--rate">
+        <span class="sc-bar-col-label">Source</span>
+        <span class="sc-bar-col-label">Volume</span>
+        <span class="sc-bar-col-label right">${rateHeader}</span>
+      </div>`
+    : `<div class="sc-bar-grid-header">
+        <span class="sc-bar-col-label">Source</span>
+        <span class="sc-bar-col-label">Volume</span>
+        <span class="sc-bar-col-label right">Amount</span>
+        <span class="sc-bar-col-label right">Share</span>
+      </div>`;
   return header + rows.join('');
 }
 
