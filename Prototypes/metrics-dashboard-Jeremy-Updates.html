@@ -1119,7 +1119,7 @@ const DATA = {
 // HELPERS
 // ═══════════════════════════════════════════════════════════════
 const fmt$ = v => v === 0 ? '$0.00' : '$' + v.toLocaleString('en-US', {minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2});
-const fmt2pct = v => { const n = Number(v); return (n === 100 ? '100' : n.toFixed(2)) + '%'; };
+const fmt2pct = v => Math.round(Number(v)) + '%';
 const fmtPct = fmt2pct;
 const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
 
