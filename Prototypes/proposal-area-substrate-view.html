@@ -3,1417 +3,1026 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DripJobs – Accepted Proposal: Area Substrate View</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<title>DripJobs – Proposal #2613161</title>
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; }
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: #f4f5f7;
-    color: #1e1e2d;
-    font-size: 14px;
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #fff;
+  color: #111827;
+  font-size: 14px;
+  line-height: 1.5;
+}
 
-  /* ── Sidebar ── */
-  .sidebar {
-    width: 220px;
-    min-height: 100vh;
-    background: #1e1e2d;
-    position: fixed;
-    top: 0; left: 0;
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
-  }
-  .sidebar-logo {
-    padding: 18px 20px 14px;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-  }
-  .sidebar-logo svg { width: 110px; }
-  .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
-  .sidebar-section-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: rgba(255,255,255,0.35);
-    padding: 14px 20px 4px;
-    text-transform: uppercase;
-  }
-  .sidebar-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 7px 20px;
-    color: rgba(255,255,255,0.6);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-    border-radius: 0;
-    text-decoration: none;
-  }
-  .sidebar-item:hover { background: rgba(255,255,255,0.06); color: #fff; text-decoration: none; }
-  .sidebar-item.active { background: rgba(124,58,237,0.25); color: #c4b5fd; }
-  .sidebar-item i { width: 16px; text-align: center; font-size: 13px; }
+/* ── Proposal Header ── */
+.proposal-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 24px;
+  padding: 20px 28px;
+  border-bottom: 1px solid #E5E7EB;
+  align-items: start;
+}
 
-  /* ── Main ── */
-  .main-content {
-    margin-left: 220px;
-    padding: 0;
-  }
+/* Left col */
+.customer-col { display: flex; flex-direction: column; gap: 5px; }
+.customer-name {
+  color: #5B21B6; font-weight: 600; font-size: 14px;
+  text-decoration: none; cursor: pointer;
+}
+.customer-name:hover { text-decoration: underline; }
+.customer-detail {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 13px; color: #374151;
+}
+.customer-detail i { color: #9CA3AF; width: 13px; text-align: center; font-size: 12px; flex-shrink: 0; }
+.copy-icon-btn {
+  background: none; border: none; cursor: pointer;
+  color: #9CA3AF; padding: 0; font-size: 11px; line-height: 1;
+}
+.copy-icon-btn:hover { color: #6366F1; }
+.btn-send-msg {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid #D1D5DB; border-radius: 6px;
+  padding: 5px 11px; font-size: 12px; font-weight: 500;
+  color: #374151; background: #fff; cursor: pointer;
+  margin-top: 4px; width: fit-content; font-family: inherit;
+}
+.btn-send-msg:hover { background: #F9FAFB; }
+.project-select {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid #D1D5DB; border-radius: 6px;
+  padding: 5px 10px; font-size: 12px;
+  color: #6B7280; background: #fff; cursor: pointer;
+  margin-top: 2px; width: fit-content; font-family: inherit;
+}
 
-  /* ── Top Bar ── */
-  .topbar {
-    background: #fff;
-    border-bottom: 1px solid #e5e7eb;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    padding: 0 24px;
-    gap: 12px;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-  }
-  .topbar-back {
-    color: #7C3AED;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    text-decoration: none;
-  }
-  .topbar-back:hover { color: #5b21b6; text-decoration: none; }
-  .topbar-divider { color: #d1d5db; }
-  .topbar-title { font-size: 14px; font-weight: 700; color: #1e1e2d; }
-  .topbar-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+/* Center col */
+.proposal-center { text-align: center; }
+.proposal-number-row {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.proposal-number { font-size: 19px; font-weight: 700; color: #111827; }
+.btn-download {
+  width: 30px; height: 30px; border: 1px solid #D1D5DB; border-radius: 6px;
+  background: #fff; cursor: pointer; color: #6B7280;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.btn-download:hover { background: #F9FAFB; }
+.status-pending {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: #FFFBEB; border: 1px solid #FDE68A;
+  color: #D97706; font-size: 13px; font-weight: 600;
+  padding: 6px 20px; border-radius: 20px; margin-top: 10px;
+}
 
-  /* ── Status Badge ── */
-  .badge-accepted {
-    background: #dcfce7;
-    color: #15803d;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    padding: 4px 10px;
-    border-radius: 20px;
-    text-transform: uppercase;
-  }
-  .badge-area-type {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .badge-interior { background: #ede9fe; color: #6d28d9; }
-  .badge-exterior { background: #e0f2fe; color: #0369a1; }
+/* Right col */
+.meta-col { text-align: right; display: flex; flex-direction: column; gap: 4px; }
+.meta-row { font-size: 13px; color: #374151; }
+.meta-label { font-weight: 500; }
+.meta-link { color: #5B21B6; text-decoration: none; font-weight: 500; }
+.meta-link:hover { text-decoration: underline; }
+.badge-not-initiated {
+  display: inline-block; background: #1F2937; color: #fff;
+  font-size: 10px; font-weight: 600; padding: 2px 8px;
+  border-radius: 4px; letter-spacing: 0.04em; vertical-align: middle;
+}
 
-  /* ── Page Layout ── */
-  .page-body { padding: 24px; }
+/* ── Action Row ── */
+.action-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 11px 28px; border-bottom: 1px solid #E5E7EB;
+}
+.btn-action {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid #D1D5DB; border-radius: 6px;
+  padding: 6px 14px; font-size: 13px; font-weight: 500;
+  color: #374151; background: #fff; cursor: pointer; font-family: inherit;
+  transition: background 0.1s, border-color 0.1s;
+}
+.btn-action:hover { background: #F9FAFB; border-color: #9CA3AF; }
+.btn-action i { font-size: 12px; }
+.btn-icon-sq {
+  width: 33px; height: 33px; border: 1px solid #D1D5DB; border-radius: 6px;
+  background: #fff; cursor: pointer; color: #6B7280;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.btn-icon-sq:hover { background: #F9FAFB; }
 
-  /* ── Proposal Header Card ── */
-  .proposal-header-card {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 20px 24px;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-  .proposal-customer-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: #ede9fe;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    font-weight: 700;
-    color: #7C3AED;
-    flex-shrink: 0;
-  }
-  .proposal-meta { flex: 1; }
-  .proposal-customer-name { font-size: 17px; font-weight: 700; color: #1e1e2d; margin: 0 0 2px; }
-  .proposal-sub-meta { font-size: 12px; color: #6b7280; display: flex; gap: 16px; flex-wrap: wrap; margin: 0; }
-  .proposal-sub-meta span { display: flex; align-items: center; gap: 5px; }
-  .proposal-amount-block { text-align: right; }
-  .proposal-amount { font-size: 24px; font-weight: 700; color: #1e1e2d; margin: 0; }
-  .proposal-amount-label { font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; margin: 0; }
+/* ── Tab Nav ── */
+.tab-nav {
+  display: flex; align-items: flex-end; gap: 0;
+  border-bottom: 2px solid #E5E7EB;
+  padding: 0 28px;
+  overflow-x: auto; scrollbar-width: none;
+}
+.tab-nav::-webkit-scrollbar { display: none; }
+.tab-item {
+  padding: 10px 14px; font-size: 13px; font-weight: 500;
+  color: #6B7280; cursor: pointer; white-space: nowrap;
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+  transition: color 0.1s; -webkit-user-select: none; user-select: none;
+}
+.tab-item:hover { color: #374151; }
+.tab-item.active { color: #6366F1; border-bottom-color: #6366F1; font-weight: 600; }
 
-  /* ── Action Bar ── */
-  .action-bar {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 12px 20px;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .btn-action {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    border-radius: 7px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    border: 1px solid #e5e7eb;
-    background: #fff;
-    color: #374151;
-    transition: background 0.15s, border-color 0.15s;
-    font-family: 'Nunito', sans-serif;
-  }
-  .btn-action:hover { background: #f9fafb; border-color: #d1d5db; }
-  .btn-action.primary { background: #7C3AED; color: #fff; border-color: #7C3AED; }
-  .btn-action.primary:hover { background: #6d28d9; border-color: #6d28d9; }
-  .btn-action.disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
-  .action-spacer { flex: 1; }
+/* ── Content Area ── */
+.content-area { padding: 24px 28px; min-height: 320px; }
+.content-settings { display: none; padding: 24px 28px; }
+.content-settings.visible { display: block; }
 
-  /* ── Helper Banner ── */
-  .helper-banner {
-    background: #f0fafa;
-    border-left: 4px solid #0DCECE;
-    border-radius: 0 8px 8px 0;
-    padding: 10px 16px;
-    font-size: 13px;
-    color: #374151;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .helper-banner i { color: #0DCECE; font-size: 14px; flex-shrink: 0; }
+/* ── Section ── */
+.section { margin-bottom: 28px; }
+.section-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+}
+.section-title { font-size: 16px; font-weight: 700; color: #111827; white-space: nowrap; }
+.section-rule { flex: 1; height: 1px; background: #E5E7EB; }
 
-  /* ── Section Card ── */
-  .section-card {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    margin-bottom: 16px;
-    overflow: hidden;
-  }
-  .section-card-header {
-    padding: 14px 20px;
-    border-bottom: 1px solid #f3f4f6;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .section-card-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1e1e2d;
-    margin: 0;
-  }
-  .section-badge {
-    background: #f3f4f6;
-    color: #6b7280;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 12px;
-  }
+/* ── Empty State ── */
+.empty-state {
+  border: 1px solid #E5E7EB; border-radius: 6px;
+  padding: 13px 16px; background: #F9FAFB;
+  font-size: 13px; color: #9CA3AF; font-style: italic;
+  display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+}
+.empty-state i { flex-shrink: 0; }
 
-  /* ── Line Items Table ── */
-  .line-items-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .line-items-table thead th {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #9ca3af;
-    padding: 10px 16px;
-    background: #f9fafb;
-    border-bottom: 1px solid #e5e7eb;
-    white-space: nowrap;
-  }
-  .line-items-table thead th:first-child { padding-left: 20px; }
-  .line-items-table thead th:last-child { padding-right: 20px; text-align: right; }
+/* ── Add buttons ── */
+.section-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-add {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid #A78BFA; border-radius: 6px;
+  padding: 6px 14px; font-size: 13px; font-weight: 500;
+  color: #5B21B6; background: #fff; cursor: pointer; font-family: inherit;
+  transition: background 0.1s;
+}
+.btn-add:hover { background: #F5F3FF; }
+.btn-how-it-works {
+  display: inline-flex; align-items: center; gap: 7px;
+  border: none; border-radius: 6px;
+  padding: 6px 14px; font-size: 13px; font-weight: 600;
+  color: #fff; background: #6366F1; cursor: pointer; font-family: inherit;
+  transition: background 0.1s;
+}
+.btn-how-it-works:hover { background: #4F46E5; }
 
-  /* ── Area Row ── */
-  .area-row {
-    background: #fff;
-    border-bottom: 1px solid #f3f4f6;
-    cursor: pointer;
-    transition: background 0.12s;
-    user-select: none;
-  }
-  .area-row:hover { background: #faf8ff; }
-  .area-row.expanded { background: #faf8ff; border-bottom: none; }
-  .area-row td {
-    padding: 13px 16px;
-    vertical-align: middle;
-  }
-  .area-row td:first-child { padding-left: 20px; }
-  .area-row td:last-child { padding-right: 20px; }
+/* ── Areas List ── */
+.areas-list {
+  border: 1px solid #E5E7EB; border-radius: 8px;
+  overflow: hidden; margin-bottom: 10px;
+}
+.areas-list-header {
+  display: grid;
+  grid-template-columns: 1fr 150px 100px 90px 100px 36px;
+  background: #F9FAFB; border-bottom: 1px solid #E5E7EB;
+  padding: 8px 14px; gap: 8px;
+}
+.col-th {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.07em; color: #9CA3AF;
+}
+.col-th.right { text-align: right; }
 
-  .area-name-cell {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .area-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 7px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .area-icon.interior { background: #ede9fe; color: #7C3AED; }
-  .area-icon.exterior { background: #e0f2fe; color: #0369a1; }
-  .area-icon i { font-size: 13px; }
+/* Area row */
+.area-item { border-bottom: 1px solid #F3F4F6; }
+.area-item:last-child { border-bottom: none; }
+.area-item.expanded { border-bottom-color: #E5E7EB; }
 
-  .area-name-label {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1e1e2d;
-  }
-  .area-name-hint {
-    font-size: 11px;
-    color: #9ca3af;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-top: 1px;
-  }
-  .area-name-hint i { font-size: 10px; color: #7C3AED; }
-  .area-chevron {
-    margin-left: auto;
-    color: #9ca3af;
-    transition: transform 0.2s ease, color 0.15s;
-    font-size: 13px;
-  }
-  .area-row.expanded .area-chevron {
-    transform: rotate(180deg);
-    color: #7C3AED;
-  }
-  .area-row:hover .area-chevron { color: #7C3AED; }
+.area-row-header {
+  display: grid;
+  grid-template-columns: 1fr 150px 100px 90px 100px 36px;
+  padding: 11px 14px; gap: 8px; align-items: center;
+  cursor: pointer; transition: background 0.1s; -webkit-user-select: none; user-select: none;
+}
+.area-row-header:hover { background: #FAFAFA; }
+.area-item.expanded .area-row-header { background: #F9F8FF; }
 
-  .area-dims {
-    font-size: 13px;
-    color: #374151;
-  }
-  .area-dims-label {
-    font-size: 11px;
-    color: #9ca3af;
-    margin-bottom: 1px;
-  }
+.area-name-cell { display: flex; align-items: center; gap: 8px; }
+.area-icon {
+  width: 28px; height: 28px; border-radius: 6px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.area-icon.int { background: #EDE9FE; color: #7C3AED; }
+.area-icon.ext { background: #E0F2FE; color: #0369A1; }
+.area-icon i { font-size: 12px; }
+.area-name-label { font-size: 13px; font-weight: 600; color: #111827; }
+.area-type-hint { margin-top: 2px; }
+.badge-type {
+  font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px;
+  text-transform: uppercase; letter-spacing: 0.04em; display: inline-block;
+}
+.badge-int { background: #EDE9FE; color: #6D28D9; }
+.badge-ext { background: #E0F2FE; color: #0369A1; }
 
-  .area-substrate-count {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: #ede9fe;
-    color: #7C3AED;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 3px 9px;
-    border-radius: 12px;
-  }
+.area-dims { font-size: 12px; color: #6B7280; }
+.substrate-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #F3F4F6; color: #6B7280;
+  font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 10px;
+}
+.area-sqft { font-size: 13px; color: #374151; font-weight: 500; }
+.area-total { font-size: 13px; font-weight: 700; color: #111827; text-align: right; }
+.area-chevron-cell { display: flex; align-items: center; justify-content: center; }
+.chevron-icon {
+  color: #9CA3AF; font-size: 11px;
+  transition: transform 0.2s ease, color 0.15s;
+}
+.area-item.expanded .chevron-icon { transform: rotate(180deg); color: #6366F1; }
 
-  .area-total {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1e1e2d;
-    text-align: right;
-  }
+/* ── Substrate Panel ── */
+.substrate-panel {
+  display: none;
+  background: #F9F8FF;
+  border-top: 1px solid #EDE9FE;
+}
+.substrate-panel.open { display: block; }
+.substrate-panel-inner { padding: 14px 14px 16px 54px; }
+@keyframes panel-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
+.substrate-panel.open .substrate-panel-inner { animation: panel-in 0.18s ease; }
 
-  /* ── Substrate Expand Panel ── */
-  .substrate-panel {
-    display: none;
-    background: #faf8ff;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  .substrate-panel.open { display: table-row-group; }
+.substrate-panel-title {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.07em; color: #7C3AED;
+  display: flex; align-items: center; gap: 6px; margin-bottom: 10px;
+}
+.substrate-panel-title span.subtitle {
+  font-weight: 400; color: #9CA3AF; text-transform: none;
+  letter-spacing: 0; font-size: 11px;
+}
 
-  .substrate-panel-inner {
-    padding: 0 20px 16px 20px;
-  }
+/* Substrate cards */
+.substrate-card {
+  background: #fff; border: 1px solid #E5E7EB; border-radius: 8px;
+  padding: 12px 14px; margin-bottom: 6px;
+  display: grid;
+  grid-template-columns: minmax(120px,1fr) minmax(150px,1.2fr) minmax(150px,1.2fr) 80px;
+  gap: 14px; align-items: start;
+}
+.substrate-card:last-of-type { margin-bottom: 0; }
 
-  .substrate-panel-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 0 10px;
-    border-bottom: 1px solid #ede9fe;
-    margin-bottom: 0;
-  }
-  .substrate-panel-title {
-    font-size: 12px;
-    font-weight: 700;
-    color: #7C3AED;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin: 0;
-  }
-  .substrate-panel-subtitle {
-    font-size: 12px;
-    color: #9ca3af;
-    margin: 0;
-    margin-left: auto;
-  }
+.sub-name { font-weight: 600; color: #111827; font-size: 13px; }
+.sub-client-label {
+  font-size: 11px; color: #9CA3AF; margin-top: 2px;
+}
+.sub-client-label span {
+  background: #F3F4F6; padding: 1px 5px; border-radius: 3px;
+  font-size: 10px; font-weight: 600; color: #6B7280;
+}
+.sub-product-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 6px;
+  padding: 5px 10px; font-size: 12px; color: #374151;
+  line-height: 1.4; margin-top: 2px;
+}
+.sub-product-pill i { color: #0DCECE; font-size: 11px; flex-shrink: 0; }
+.sub-col-label {
+  font-size: 10px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.07em; color: #9CA3AF; margin-bottom: 3px;
+}
+.sub-calc-val { font-size: 13px; font-weight: 700; color: #111827; }
+.sub-rate { font-size: 12px; color: #6B7280; margin-top: 2px; }
+.sub-total { font-size: 14px; font-weight: 700; color: #111827; text-align: right; padding-top: 1px; }
 
-  /* Substrate items table */
-  .substrate-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 4px;
-  }
-  .substrate-table thead th {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: #b5b5c3;
-    padding: 10px 16px 8px;
-    border-bottom: 1px solid #ede9fe;
-    white-space: nowrap;
-  }
-  .substrate-table thead th:first-child { padding-left: 0; }
-  .substrate-table thead th:last-child { text-align: right; padding-right: 0; }
+.substrate-footer {
+  display: flex; justify-content: flex-end; align-items: center;
+  gap: 10px; padding-top: 10px; margin-top: 10px;
+  border-top: 1px solid #EDE9FE;
+}
+.substrate-footer-label { font-size: 12px; color: #9CA3AF; font-weight: 500; }
+.substrate-footer-value { font-size: 14px; font-weight: 700; color: #5B21B6; }
 
-  .substrate-row {
-    border-bottom: 1px solid #f3f0ff;
-  }
-  .substrate-row:last-child { border-bottom: none; }
-  .substrate-row td {
-    padding: 16px 16px;
-    vertical-align: top;
-    font-size: 13px;
-    color: #374151;
-  }
-  .substrate-row td:first-child { padding-left: 0; }
-  .substrate-row td:last-child { text-align: right; padding-right: 0; }
+/* ── Settings View ── */
+.settings-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;
+}
+.settings-card {
+  border: 1px solid #E5E7EB; border-radius: 8px; padding: 18px 20px;
+}
+.settings-card-title { font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 14px; }
+.settings-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 0; border-bottom: 1px solid #F3F4F6; font-size: 13px;
+}
+.settings-row:last-child { border-bottom: none; padding-bottom: 0; }
+.settings-row-label { color: #374151; font-weight: 500; display: flex; align-items: center; gap: 5px; }
+.settings-row-label i { color: #9CA3AF; font-size: 11px; }
+.settings-row-val { color: #374151; font-size: 13px; }
+.toggle {
+  width: 36px; height: 20px; border-radius: 10px; cursor: pointer;
+  position: relative; flex-shrink: 0; border: none;
+}
+.toggle.on { background: #6366F1; }
+.toggle.off { background: #D1D5DB; }
+.toggle::after {
+  content: ''; position: absolute; width: 16px; height: 16px;
+  background: #fff; border-radius: 50%; top: 2px;
+  transition: left 0.15s;
+}
+.toggle.on::after { left: 18px; }
+.toggle.off::after { left: 2px; }
+.btn-deposit-add {
+  background: #6366F1; color: #fff; border: none; border-radius: 5px;
+  padding: 3px 10px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit;
+}
+.select-field {
+  border: 1px solid #D1D5DB; border-radius: 6px; padding: 5px 10px;
+  font-size: 13px; color: #374151; font-family: inherit; background: #fff;
+}
+.settings-note {
+  background: #F0FDF4; border-left: 3px solid #34D399; border-radius: 0 6px 6px 0;
+  padding: 8px 12px; font-size: 12px; color: #065F46; margin: 8px 0;
+  display: flex; gap: 6px; align-items: flex-start;
+}
+.settings-note strong { color: #047857; }
+.acorn-card {
+  border: 1px solid #E5E7EB; border-radius: 8px; padding: 20px;
+  text-align: center; margin-top: 16px;
+}
+.acorn-logo { font-size: 22px; font-weight: 800; color: #1F2937; margin-bottom: 8px; }
+.acorn-logo span { color: #10B981; }
+.acorn-note { font-size: 12px; color: #6B7280; font-weight: 500; }
 
-  /* Col 1 — Substrate identity */
-  .substrate-name { font-weight: 700; color: #1e1e2d; font-size: 14px; margin-bottom: 4px; }
-  .substrate-client-label {
-    font-size: 11px;
-    color: #9ca3af;
-    margin-bottom: 6px;
-  }
-  .substrate-client-label span {
-    background: #f3f4f6;
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 600;
-    color: #6b7280;
-  }
-  .substrate-category-pill {
-    display: inline-block;
-    background: #ede9fe;
-    color: #6d28d9;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 10px;
-    white-space: nowrap;
-    letter-spacing: 0.03em;
-  }
+/* ── Bottom Bar ── */
+.bottom-bar {
+  border-top: 1px solid #E5E7EB; padding: 14px 28px;
+  background: #fff;
+}
+.setup-payments-link {
+  font-size: 13px; color: #5B21B6; text-decoration: none;
+  display: inline-block; margin-bottom: 10px;
+}
+.setup-payments-link:hover { text-decoration: underline; }
+.cannot-send-banner {
+  display: flex; align-items: center; gap: 8px;
+  background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 6px;
+  padding: 9px 14px; font-size: 13px; color: #92400E; margin-bottom: 12px;
+}
+.cannot-send-banner i { color: #F59E0B; flex-shrink: 0; }
+.bottom-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.btn-send-proposal {
+  background: #6366F1; color: #fff; border: none; border-radius: 6px;
+  padding: 8px 18px; font-size: 13px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+}
+.btn-send-proposal:hover { background: #4F46E5; }
+.btn-bottom {
+  border: 1px solid #D1D5DB; border-radius: 6px;
+  padding: 7px 14px; font-size: 13px; font-weight: 500;
+  color: #374151; background: #fff; cursor: pointer; font-family: inherit;
+}
+.btn-bottom:hover { background: #F9FAFB; }
+.btn-bottom.disabled { color: #9CA3AF; border-color: #E5E7EB; cursor: not-allowed; }
+.btn-bottom.danger { color: #EF4444; }
 
-  /* Col 2 — Product */
-  .substrate-product-pill {
-    display: inline-flex;
-    align-items: flex-start;
-    gap: 7px;
-    font-size: 12px;
-    font-weight: 500;
-    color: #374151;
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 7px;
-    padding: 7px 11px;
-    line-height: 1.5;
-    white-space: normal;
+/* ── Mobile ── */
+@media (max-width: 767px) {
+  .proposal-header {
+    grid-template-columns: 1fr;
+    padding: 14px 16px; gap: 14px;
   }
-  .substrate-product-pill i { color: #0DCECE; font-size: 12px; flex-shrink: 0; margin-top: 1px; }
-
-  /* Col 3 — Measurement */
-  .substrate-meas-label {
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: #c4b5fd;
-    margin-bottom: 3px;
+  .proposal-center { text-align: left; }
+  .proposal-number-row { justify-content: flex-start; }
+  .meta-col { text-align: left; }
+  .action-row {
+    padding: 10px 16px; justify-content: flex-start;
+    overflow-x: auto; flex-wrap: nowrap;
   }
-  .substrate-calc-value {
-    font-size: 13px;
-    font-weight: 700;
-    color: #1e1e2d;
-    margin-bottom: 6px;
+  .tab-nav { padding: 0 16px; }
+  .content-area, .content-settings { padding: 16px; }
+  .bottom-bar { padding: 12px 16px; }
+  .areas-list-header { display: none; }
+  .area-row-header {
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
   }
-  .substrate-qty-rate {
-    font-size: 12px;
-    color: #9ca3af;
-    line-height: 1.6;
+  .area-row-header .area-dims,
+  .area-row-header .substrate-chip,
+  .area-row-header .area-sqft { display: none; }
+  .area-row-header .area-total { grid-row: 1; grid-column: 2; }
+  .area-row-header .area-chevron-cell { grid-row: 1; grid-column: 2; }
+  .substrate-panel-inner { padding: 12px 12px 14px 12px; }
+  .substrate-card {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
   }
-  .substrate-qty-rate strong {
-    color: #374151;
-    font-weight: 700;
+  .substrate-card > div:nth-child(3) { grid-column: 1 / -1; }
+  .substrate-card > div:nth-child(4) {
+    grid-column: 1 / -1; text-align: right;
+    border-top: 1px solid #F3F4F6; padding-top: 8px;
   }
-
-  /* Col 4 — Total */
-  .substrate-total-amount {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1e1e2d;
-  }
-
-  /* Substrate panel footer */
-  .substrate-panel-footer {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 0 2px;
-    border-top: 1px solid #ede9fe;
-    margin-top: 2px;
-  }
-  .substrate-area-subtotal-label {
-    font-size: 12px;
-    color: #9ca3af;
-    font-weight: 600;
-  }
-  .substrate-area-subtotal-value {
-    font-size: 15px;
-    font-weight: 700;
-    color: #7C3AED;
-  }
-
-  /* ── Line Items Footer / Totals ── */
-  .totals-section {
-    padding: 16px 20px;
-    border-top: 1px solid #e5e7eb;
-    background: #fafafa;
-  }
-  .totals-row {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 24px;
-    margin-bottom: 6px;
-  }
-  .totals-label {
-    font-size: 13px;
-    color: #6b7280;
-    min-width: 120px;
-    text-align: right;
-  }
-  .totals-value {
-    font-size: 13px;
-    font-weight: 600;
-    color: #374151;
-    min-width: 90px;
-    text-align: right;
-  }
-  .totals-row.grand .totals-label {
-    font-size: 14px;
-    font-weight: 700;
-    color: #1e1e2d;
-  }
-  .totals-row.grand .totals-value {
-    font-size: 18px;
-    font-weight: 700;
-    color: #1e1e2d;
-  }
-  .totals-divider {
-    height: 1px;
-    background: #e5e7eb;
-    margin: 8px 20px;
-  }
-
-  /* ── Other sections ── */
-  .terms-section {
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 16px 20px;
-    margin-bottom: 16px;
-    font-size: 13px;
-    color: #6b7280;
-    line-height: 1.6;
-  }
-  .terms-title { font-size: 13px; font-weight: 700; color: #374151; margin: 0 0 6px; }
-
-  /* ── Info note ── */
-  .accepted-note {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #dcfce7;
-    color: #15803d;
-    font-size: 12px;
-    font-weight: 600;
-    padding: 5px 12px;
-    border-radius: 20px;
-  }
-  .accepted-note i { font-size: 11px; }
-
-  /* ── Disabled icon ── */
-  .icon-disabled {
-    color: #d1d5db;
-    cursor: not-allowed;
-    font-size: 14px;
-  }
-  .icon-active {
-    color: #9ca3af;
-    cursor: pointer;
-    font-size: 14px;
-    transition: color 0.15s;
-  }
-  .icon-active:hover { color: #7C3AED; }
-
-  /* Tooltip */
-  [data-tooltip] {
-    position: relative;
-  }
-  [data-tooltip]:hover::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%);
-    background: #1e1e2d;
-    color: #fff;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 4px 9px;
-    border-radius: 5px;
-    white-space: nowrap;
-    z-index: 999;
-    pointer-events: none;
-  }
-
-  /* ── Annotation callout ── */
-  .annotation-callout {
-    position: relative;
-    margin: 8px 0 20px;
-  }
-  .annotation-callout-bubble {
-    display: inline-flex;
-    align-items: flex-start;
-    gap: 10px;
-    background: #fffbeb;
-    border: 1px solid #fcd34d;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 12px;
-    color: #92400e;
-    max-width: 560px;
-  }
-  .annotation-callout-bubble i { color: #f59e0b; margin-top: 1px; flex-shrink: 0; }
-
-  /* Highlight pulse on newly expanded row */
-  @keyframes panel-open {
-    from { opacity: 0; transform: translateY(-4px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .substrate-panel.open .substrate-panel-inner {
-    animation: panel-open 0.2s ease;
-  }
-
-  /* ── Hamburger (hidden on desktop) ── */
-  .hamburger-btn {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px 6px;
-    color: #374151;
-    font-size: 18px;
-    line-height: 1;
-    flex-shrink: 0;
-  }
-  .sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    z-index: 99;
-  }
-  .sidebar-overlay.open { display: block; }
-
-  /* ── Mobile ── */
-  @media (max-width: 767px) {
-    /* Sidebar slides off-screen */
-    .sidebar {
-      transform: translateX(-100%);
-      transition: transform 0.25s ease;
-      z-index: 200;
-    }
-    .sidebar.open { transform: translateX(0); }
-
-    /* Main content fills full width */
-    .main-content { margin-left: 0; }
-
-    /* Show hamburger */
-    .hamburger-btn { display: flex; align-items: center; }
-
-    /* Topbar */
-    .topbar { padding: 0 12px; gap: 8px; }
-    .topbar-divider { display: none; }
-    .topbar-title {
-      font-size: 12px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 120px;
-    }
-    .topbar-actions { gap: 5px; }
-    .btn-text { display: none; }
-    .accepted-note .accepted-text { display: none; }
-
-    /* Page body */
-    .page-body { padding: 12px; }
-
-    /* Proposal header card — stack */
-    .proposal-header-card {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 14px 16px;
-    }
-    .proposal-amount-block {
-      width: 100%;
-      text-align: left;
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      border-top: 1px solid #f3f4f6;
-      padding-top: 10px;
-    }
-    .proposal-amount-label { font-size: 12px; color: #9ca3af; }
-    .proposal-amount { font-size: 20px; }
-
-    /* Action bar — horizontal scroll */
-    .action-bar {
-      overflow-x: auto;
-      flex-wrap: nowrap;
-      -webkit-overflow-scrolling: touch;
-      padding: 10px 12px;
-      scrollbar-width: none;
-    }
-    .action-bar::-webkit-scrollbar { display: none; }
-    .action-bar .action-spacer,
-    .action-bar > span:last-child { display: none; }
-
-    /* Section card header hint */
-    .section-card-header > div:last-child { display: none; }
-
-    /* ── Area table: hide Dimensions (col 2) and Sq Ft (col 4) ── */
-    .line-items-table thead th:nth-child(2),
-    .line-items-table thead th:nth-child(4),
-    .area-row td:nth-child(2),
-    .area-row td:nth-child(4) { display: none; }
-    /* Area name column gets more room */
-    .line-items-table thead th:nth-child(1) { width: 55%; }
-    .line-items-table thead th:nth-child(3) { width: 18%; }
-    .line-items-table thead th:nth-child(5) { width: 27%; }
-
-    /* Area row cells */
-    .area-row td { padding: 12px 10px; }
-    .area-row td:first-child { padding-left: 14px; }
-    .area-row td:last-child { padding-right: 14px; }
-    .area-name-label { font-size: 13px; }
-
-    /* ── Substrate panel ── */
-    .substrate-panel-inner { padding: 0 14px 14px; }
-    .substrate-panel-header { flex-direction: column; align-items: flex-start; gap: 2px; }
-    .substrate-panel-subtitle { margin-left: 0; }
-
-    /* Convert substrate table rows to stacked cards */
-    .substrate-table { display: block; }
-    .substrate-table thead { display: none; }
-    .substrate-table tbody { display: block; }
-    .substrate-row {
-      display: block;
-      background: #fff;
-      border: 1px solid #ede9fe !important;
-      border-radius: 8px;
-      padding: 12px;
-      margin-top: 8px;
-    }
-    .substrate-row td {
-      display: block;
-      padding: 0 0 6px 0 !important;
-      text-align: left !important;
-      border: none;
-    }
-    .substrate-row td:last-child {
-      padding: 8px 0 0 !important;
-      border-top: 1px solid #f3f0ff;
-      margin-top: 4px;
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    /* Totals section */
-    .totals-section { padding: 14px; }
-    .totals-label { min-width: 90px; }
-    .totals-value { min-width: 80px; }
-
-    /* Terms */
-    .terms-section { padding: 14px; }
-  }
+  .settings-grid { grid-template-columns: 1fr; }
+  .bottom-actions { gap: 6px; }
+}
 </style>
 </head>
 <body>
 
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+<!-- ── Proposal Header ── -->
+<div class="proposal-header">
 
-<!-- Sidebar -->
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <svg viewBox="0 0 120 28" fill="none">
-      <circle cx="10" cy="14" r="7" fill="#7C3AED"/>
-      <circle cx="10" cy="14" r="3.5" fill="#fff"/>
-      <text x="22" y="19" fill="#fff" font-family="Nunito,sans-serif" font-weight="700" font-size="15">dripjobs</text>
-    </svg>
+  <!-- Left: Customer -->
+  <div class="customer-col">
+    <a class="customer-name" href="#">Dripjobs Harrison</a>
+    <div class="customer-detail">
+      <i class="fas fa-map-marker-alt"></i>
+      <span>221 N Nashville Ave, Hernando, FL, 34442</span>
+      <button type="button" class="copy-icon-btn" aria-label="Copy address"><i class="far fa-copy"></i></button>
+    </div>
+    <div class="customer-detail">
+      <i class="fas fa-envelope"></i>
+      <span>jeremy@dripjobs.com</span>
+    </div>
+    <div class="customer-detail">
+      <i class="fas fa-mobile-alt"></i>
+      <span>(727) 250-8869</span>
+    </div>
+    <button type="button" class="btn-send-msg">
+      <i class="fas fa-users" style="font-size:11px;"></i> Send Message
+    </button>
+    <button type="button" class="project-select">
+      <i class="fas fa-th-large" style="font-size:10px;"></i>
+      [ Select a project ]
+      <i class="fas fa-chevron-down" style="font-size:10px;"></i>
+    </button>
   </div>
-  <nav class="sidebar-nav">
-    <div class="sidebar-section-label">Sales</div>
-    <a class="sidebar-item" href="#"><i class="fas fa-exchange-alt"></i> Sales Pipeline</a>
-    <a class="sidebar-item" href="#"><i class="fas fa-list"></i> Sales List</a>
-    <a class="sidebar-item" href="#"><i class="fas fa-briefcase"></i> Jobs List</a>
-    <a class="sidebar-item" href="#"><i class="fas fa-columns"></i> Jobs Pipeline</a>
-    <a class="sidebar-item" href="#"><i class="far fa-clipboard"></i> Work Orders</a>
 
-    <div class="sidebar-section-label">Daily Ops</div>
-    <a class="sidebar-item" href="#"><i class="far fa-calendar-alt"></i> Appointments</a>
-    <a class="sidebar-item" href="#"><i class="far fa-comment-alt"></i> Chat</a>
-    <a class="sidebar-item" href="#"><i class="fas fa-tasks"></i> Tasks</a>
+  <!-- Center: Proposal # & status -->
+  <div class="proposal-center">
+    <div class="proposal-number-row">
+      <span class="proposal-number">Proposal #2613161</span>
+      <button type="button" class="btn-download" aria-label="Download proposal">
+        <i class="fas fa-download" style="font-size:11px;"></i>
+      </button>
+    </div>
+    <div><span class="status-pending"><i class="fas fa-clock"></i> PENDING</span></div>
+  </div>
 
-    <div class="sidebar-section-label">Documents</div>
-    <a class="sidebar-item" href="#"><i class="far fa-file-invoice-dollar"></i> Invoices</a>
-    <a class="sidebar-item active" href="#"><i class="far fa-file-alt"></i> Proposals</a>
+  <!-- Right: Metadata -->
+  <div class="meta-col">
+    <div class="meta-row"><span class="meta-label">Created On:</span> 3/21/2026</div>
+    <div class="meta-row"><span class="meta-label">Display Name:</span> <a class="meta-link" href="#">Proposal #2613161</a></div>
+    <div class="meta-row"><span class="meta-label">Exp. Date:</span> <a class="meta-link" href="#">Not Set</a></div>
+    <div class="meta-row"><span class="meta-label">Salesperson:</span> <a class="meta-link" href="#">Jeremy Harrison</a></div>
+    <div class="meta-row"><span class="meta-label">Financing Status:</span> <span class="badge-not-initiated">NOT INITIATED</span></div>
+  </div>
 
-    <div class="sidebar-section-label">Financials</div>
-    <a class="sidebar-item" href="#"><i class="fas fa-hard-hat"></i> Job Costing</a>
-    <a class="sidebar-item" href="#"><i class="fas fa-chart-line"></i> Production Rates</a>
-    <a class="sidebar-item" href="#"><i class="fas fa-tachometer-alt"></i> Metrics</a>
-  </nav>
 </div>
 
-<!-- Main Content -->
-<div class="main-content">
+<!-- ── Action Row ── -->
+<div class="action-row">
+  <button type="button" class="btn-action">
+    <i class="fas fa-exchange-alt"></i> View Deal
+  </button>
+  <button type="button" class="btn-action">
+    <i class="fas fa-sitemap"></i> Work Order <i class="fas fa-chevron-down" style="font-size:10px;margin-left:2px;"></i>
+  </button>
+  <button type="button" class="btn-action">
+    <i class="far fa-user"></i> Customer View
+  </button>
+  <button type="button" class="btn-icon-sq" aria-label="Copy proposal link">
+    <i class="far fa-copy" style="font-size:12px;"></i>
+  </button>
+</div>
 
-  <!-- Top Bar -->
-  <div class="topbar">
-    <button type="button" class="hamburger-btn" onclick="openSidebar()" aria-label="Open menu">
-      <i class="fas fa-bars"></i>
-    </button>
-    <a class="topbar-back" href="#">
-      <i class="fas fa-arrow-left" style="font-size:11px;"></i> <span class="btn-text">Proposals</span>
-    </a>
-    <span class="topbar-divider">/</span>
-    <span class="topbar-title">Michael Reynolds — 2215 Oak Lane</span>
-    <div class="topbar-actions">
-      <span class="accepted-note">
-        <i class="fas fa-check-circle"></i> <span class="accepted-text">Accepted</span>
-      </span>
-      <button class="btn-action" style="font-size:12px;">
-        <i class="fas fa-envelope"></i> <span class="btn-text">Resend</span>
-      </button>
-      <button class="btn-action primary" style="font-size:12px;">
-        <i class="fas fa-file-invoice-dollar"></i> <span class="btn-text">Create Invoice</span>
+<!-- ── Tab Navigation ── -->
+<div class="tab-nav">
+  <div class="tab-item active" onclick="switchTab('settings')">Settings</div>
+  <div class="tab-item" onclick="switchTab('reports')">Reports</div>
+  <div class="tab-item" onclick="switchTab('attachments')">Attachments</div>
+  <div class="tab-item" onclick="switchTab('notes')">Notes</div>
+  <div class="tab-item" onclick="switchTab('activity')">Activity Log</div>
+  <div class="tab-item" onclick="switchTab('video')">Video</div>
+  <div class="tab-item" onclick="switchTab('custom')">Custom Sections</div>
+  <div class="tab-item" onclick="switchTab('rates')">Production Rates</div>
+  <div class="tab-item" onclick="switchTab('details')">Details</div>
+  <div class="tab-item" onclick="switchTab('color')">Color Chart</div>
+  <div class="tab-item" onclick="switchTab('booking')">Booking Form</div>
+</div>
+
+<!-- ── Main Proposal Content (shown when no tab or Settings active) ── -->
+<div class="content-area" id="content-main">
+
+  <!-- Line Items -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Line Items</span>
+      <div class="section-rule"></div>
+    </div>
+    <div class="empty-state">
+      <i class="fas fa-info-circle"></i>
+      Start by adding a Line Items here...
+    </div>
+    <div class="section-btns">
+      <button type="button" class="btn-add">Add Item</button>
+      <button type="button" class="btn-add">Add Multiple Items</button>
+    </div>
+  </div>
+
+  <!-- Areas (substrate view feature) -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Areas</span>
+      <div class="section-rule"></div>
+    </div>
+
+    <div class="areas-list">
+      <!-- Column headers -->
+      <div class="areas-list-header">
+        <div class="col-th">Area</div>
+        <div class="col-th">Dimensions</div>
+        <div class="col-th">Substrates</div>
+        <div class="col-th">Sq Ft</div>
+        <div class="col-th right">Subtotal</div>
+        <div></div>
+      </div>
+
+      <!-- ══ Area 1: Living Room ══ -->
+      <div class="area-item" id="area-1">
+        <div class="area-row-header" onclick="toggleArea(1)">
+          <div class="area-name-cell">
+            <div class="area-icon int"><i class="fas fa-couch"></i></div>
+            <div>
+              <div class="area-name-label">Living Room</div>
+              <div class="area-type-hint"><span class="badge-type badge-int">Interior</span></div>
+            </div>
+          </div>
+          <div class="area-dims">18 × 15 × 9 ft</div>
+          <div><span class="substrate-chip"><i class="fas fa-layer-group" style="font-size:10px;"></i> 3</span></div>
+          <div class="area-sqft">756 sq ft</div>
+          <div class="area-total">$2,100.00</div>
+          <div class="area-chevron-cell"><i class="fas fa-chevron-down chevron-icon" id="chevron-1"></i></div>
+        </div>
+        <div class="substrate-panel" id="panel-1">
+          <div class="substrate-panel-inner">
+            <div class="substrate-panel-title">
+              <i class="fas fa-layer-group"></i> Living Room — Substrates
+              <span class="subtitle">· 3 substrates · 18 × 15 × 9 ft</span>
+            </div>
+            <div class="substrate-card">
+              <div>
+                <div class="sub-name">Walls</div>
+                <div class="sub-client-label"><span>Client label:</span> Interior Walls</div>
+                <div style="margin-top:5px;"><span class="badge-type badge-int">Walls (10×10)</span></div>
+              </div>
+              <div>
+                <div class="sub-col-label">Product</div>
+                <div class="sub-product-pill"><i class="fas fa-tint"></i> BM Aura Interior Matte</div>
+              </div>
+              <div>
+                <div class="sub-col-label">Measurement</div>
+                <div class="sub-calc-val">Sq Ft (Walls)</div>
+                <div class="sub-rate"><strong>486</strong> sq ft · $1.85 / sq ft</div>
+              </div>
+              <div class="sub-total">$899.10</div>
+            </div>
+            <div class="substrate-card">
+              <div>
+                <div class="sub-name">Ceiling</div>
+                <div class="sub-client-label"><span>Client label:</span> Ceiling (Flat)</div>
+                <div style="margin-top:5px;"><span class="badge-type badge-int">Ceiling</span></div>
+              </div>
+              <div>
+                <div class="sub-col-label">Product</div>
+                <div class="sub-product-pill"><i class="fas fa-tint"></i> BM Ceiling White</div>
+              </div>
+              <div>
+                <div class="sub-col-label">Measurement</div>
+                <div class="sub-calc-val">Sq Ft (Floor)</div>
+                <div class="sub-rate"><strong>270</strong> sq ft · $1.65 / sq ft</div>
+              </div>
+              <div class="sub-total">$445.50</div>
+            </div>
+            <div class="substrate-card">
+              <div>
+                <div class="sub-name">Trim &amp; Doors</div>
+                <div class="sub-client-label"><span>Client label:</span> Trim, Baseboard &amp; Doors</div>
+                <div style="margin-top:5px;"><span class="badge-type badge-int">Trim</span></div>
+              </div>
+              <div>
+                <div class="sub-col-label">Product</div>
+                <div class="sub-product-pill"><i class="fas fa-tint"></i> BM Advance Semi-Gloss</div>
+              </div>
+              <div>
+                <div class="sub-col-label">Measurement</div>
+                <div class="sub-calc-val">Price Per Item</div>
+                <div class="sub-rate"><strong>1</strong> item · $755.40 flat</div>
+              </div>
+              <div class="sub-total">$755.40</div>
+            </div>
+            <div class="substrate-footer">
+              <span class="substrate-footer-label">Area subtotal</span>
+              <span class="substrate-footer-value">$2,100.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ Area 2: Master Bedroom ══ -->
+      <div class="area-item" id="area-2">
+        <div class="area-row-header" onclick="toggleArea(2)">
+          <div class="area-name-cell">
+            <div class="area-icon int"><i class="fas fa-bed"></i></div>
+            <div>
+              <div class="area-name-label">Master Bedroom</div>
+              <div class="area-type-hint"><span class="badge-type badge-int">Interior</span></div>
+            </div>
+          </div>
+          <div class="area-dims">14 × 12 × 9 ft</div>
+          <div><span class="substrate-chip"><i class="fas fa-layer-group" style="font-size:10px;"></i> 3</span></div>
+          <div class="area-sqft">462 sq ft</div>
+          <div class="area-total">$1,650.00</div>
+          <div class="area-chevron-cell"><i class="fas fa-chevron-down chevron-icon" id="chevron-2"></i></div>
+        </div>
+        <div class="substrate-panel" id="panel-2">
+          <div class="substrate-panel-inner">
+            <div class="substrate-panel-title">
+              <i class="fas fa-layer-group"></i> Master Bedroom — Substrates
+              <span class="subtitle">· 3 substrates · 14 × 12 × 9 ft</span>
+            </div>
+            <div class="substrate-card">
+              <div>
+                <div class="sub-name">Walls</div>
+                <div class="sub-client-label"><span>Client label:</span> Bedroom Walls</div>
+                <div style="margin-top:5px;"><span class="badge-type badge-int">Walls (10×10)</span></div>
+              </div>
+              <div>
+                <div class="sub-col-label">Product</div>
+                <div class="sub-product-pill"><i class="fas fa-tint"></i> BM Aura Interior Matte</div>
+              </div>
+              <div>
+                <div class="sub-col-label">Measurement</div>
+                <div class="sub-calc-val">Sq Ft (Walls)</div>
+                <div class="sub-rate"><strong>378</strong> sq ft · $1.85 / sq ft</div>
+              </div>
+              <div class="sub-total">$699.30</div>
+            </div>
+            <div class="substrate-card">
+              <div>
+                <div class="sub-name">Ceiling</div>
+                <div class="sub-client-label"><span>Client label:</span> Ceiling (Flat)</div>
+                <div style="margin-top:5px;"><span class="badge-type badge-int">Ceiling</span></div>
+              </div>
+              <div>
+                <div class="sub-col-label">Product</div>
+                <div class="sub-product-pill"><i class="fas fa-tint"></i> BM Ceiling White</div>
+              </div>
+              <div>
+                <div class="sub-col-label">Measurement</div>
+                <div class="sub-calc-val">Sq Ft (Floor)</div>
+                <div class="sub-rate"><strong>168</strong> sq ft · $1.65 / sq ft</div>
+              </div>
+              <div class="sub-total">$277.20</div>
+            </div>
+            <div class="substrate-card">
+              <div>
+                <div class="sub-name">Doors</div>
+                <div class="sub-client-label"><span>Client label:</span> Interior Doors</div>
+                <div style="margin-top:5px;"><span class="badge-type badge-int">Doors</span></div>
+              </div>
+              <div>
+                <div class="sub-col-label">Product</div>
+                <div class="sub-product-pill"><i class="fas fa-tint"></i> BM Advance Semi-Gloss</div>
+              </div>
+              <div>
+                <div class="sub-col-label">Measurement</div>
+                <div class="sub-calc-val">Price Per Item</div>
+                <div class="sub-rate"><strong>2</strong> doors · $336.75 ea</div>
+              </div>
+              <div class="sub-total">$673.50</div>
+            </div>
+            <div class="substrate-footer">
+              <span class="substrate-footer-label">Area subtotal</span>
+              <span class="substrate-footer-value">$1,650.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ Area 3: Exterior Front ══ -->
+      <div class="area-item" id="area-3">
+        <div class="area-row-header" onclick="toggleArea(3)">
+          <div class="area-name-cell">
+            <div class="area-icon ext"><i class="fas fa-home"></i></div>
+            <div>
+              <div class="area-name-label">Exterior Front</div>
+              <div class="area-type-hint"><span class="badge-type badge-ext">Exterior</span></div>
+            </div>
+          </div>
+          <div class="area-dims">45 × — × 18 ft</div>
+          <div><span class="substrate-chip"><i class="fas fa-layer-group" style="font-size:10px;"></i> 4</span></div>
+          <div class="area-sqft">810 sq ft</div>
+          <div class="area-total">$3,200.00</div>
+          <div class="area-chevron-cell"><i class="fas fa-chevron-down chevron-icon" id="chevron-3"></i></div>
+        </div>
+        <div class="substrate-panel" id="panel-3">
+          <div class="substrate-panel-inner">
+            <div class="substrate-panel-title">
+              <i class="fas fa-layer-group"></i> Exterior Front — Substrates
+              <span class="subtitle">· 4 substrates · 45 ft wide × 18 ft tall</span>
+            </div>
+            <div class="substrate-card">
+              <div>
+                <div class="sub-name">Siding</div>
+                <div class="sub-client-label"><span>Client label:</span> Exterior Siding</div>
+                <div style="margin-top:5px;"><span class="badge-type badge-ext">Exterior Paint</span></div>
+              </div>
+              <div>
+                <div class="sub-col-label">Product</div>
+                <div class="sub-product-pill"><i class="fas fa-tint"></i> BM Aura Exterior Satin</div>
+              </div>
+              <div>
+                <div class="sub-col-label">Measurement</div>
+                <div class="sub-calc-val">Sq Ft (Walls)</div>
+                <div class="sub-rate"><strong>650</strong> sq ft · $2.20 / sq ft</div>
+              </div>
+              <div class="sub-total">$1,430.00</div>
+            </div>
+            <div class="substrate-card">
+              <div>
+                <div class="sub-name">Fascia &amp; Soffit</div>
+                <div class="sub-client-label"><span>Client label:</span> Fascia Board &amp; Soffit</div>
+                <div style="margin-top:5px;"><span class="badge-type badge-ext">Fascia</span></div>
+              </div>
+              <div>
+                <div class="sub-col-label">Product</div>
+                <div class="sub-product-pill"><i class="fas fa-tint"></i> BM Advance Satin</div>
+              </div>
+              <div>
+                <div class="sub-col-label">Measurement</div>
+                <div class="sub-calc-val">Linear Foot</div>
+                <div class="sub-rate"><strong>90</strong> lin ft · $6.00 / ln ft</div>
+              </div>
+              <div class="sub-total">$540.00</div>
+            </div>
+            <div class="substrate-card">
+              <div>
+                <div class="sub-name">Trim &amp; Window Casings</div>
+                <div class="sub-client-label"><span>Client label:</span> Exterior Trim</div>
+                <div style="margin-top:5px;"><span class="badge-type badge-ext">Trim</span></div>
+              </div>
+              <div>
+                <div class="sub-col-label">Product</div>
+                <div class="sub-product-pill"><i class="fas fa-tint"></i> BM Advance Semi-Gloss</div>
+              </div>
+              <div>
+                <div class="sub-col-label">Measurement</div>
+                <div class="sub-calc-val">Price Per Item</div>
+                <div class="sub-rate"><strong>1</strong> item · $780.00 flat</div>
+              </div>
+              <div class="sub-total">$780.00</div>
+            </div>
+            <div class="substrate-card">
+              <div>
+                <div class="sub-name">Front Door</div>
+                <div class="sub-client-label"><span>Client label:</span> Entry Door (2 Sides)</div>
+                <div style="margin-top:5px;"><span class="badge-type badge-ext">Doors</span></div>
+              </div>
+              <div>
+                <div class="sub-col-label">Product</div>
+                <div class="sub-product-pill"><i class="fas fa-tint"></i> BM Aura Grand Entrance</div>
+              </div>
+              <div>
+                <div class="sub-col-label">Measurement</div>
+                <div class="sub-calc-val">Price Per Item</div>
+                <div class="sub-rate"><strong>1</strong> door · $450.00 flat</div>
+              </div>
+              <div class="sub-total">$450.00</div>
+            </div>
+            <div class="substrate-footer">
+              <span class="substrate-footer-label">Area subtotal</span>
+              <span class="substrate-footer-value">$3,200.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ Area 4: Kitchen ══ -->
+      <div class="area-item" id="area-4">
+        <div class="area-row-header" onclick="toggleArea(4)">
+          <div class="area-name-cell">
+            <div class="area-icon int"><i class="fas fa-utensils"></i></div>
+            <div>
+              <div class="area-name-label">Kitchen</div>
+              <div class="area-type-hint"><span class="badge-type badge-int">Interior</span></div>
+            </div>
+          </div>
+          <div class="area-dims">12 × 10 × 9 ft</div>
+          <div><span class="substrate-chip"><i class="fas fa-layer-group" style="font-size:10px;"></i> 2</span></div>
+          <div class="area-sqft">282 sq ft</div>
+          <div class="area-total">$1,500.00</div>
+          <div class="area-chevron-cell"><i class="fas fa-chevron-down chevron-icon" id="chevron-4"></i></div>
+        </div>
+        <div class="substrate-panel" id="panel-4">
+          <div class="substrate-panel-inner">
+            <div class="substrate-panel-title">
+              <i class="fas fa-layer-group"></i> Kitchen — Substrates
+              <span class="subtitle">· 2 substrates · 12 × 10 × 9 ft</span>
+            </div>
+            <div class="substrate-card">
+              <div>
+                <div class="sub-name">Walls</div>
+                <div class="sub-client-label"><span>Client label:</span> Kitchen Walls</div>
+                <div style="margin-top:5px;"><span class="badge-type badge-int">Walls (10×10)</span></div>
+              </div>
+              <div>
+                <div class="sub-col-label">Product</div>
+                <div class="sub-product-pill"><i class="fas fa-tint"></i> BM Aura Bath &amp; Spa</div>
+              </div>
+              <div>
+                <div class="sub-col-label">Measurement</div>
+                <div class="sub-calc-val">Sq Ft (Walls)</div>
+                <div class="sub-rate"><strong>162</strong> sq ft · $2.10 / sq ft</div>
+              </div>
+              <div class="sub-total">$340.20</div>
+            </div>
+            <div class="substrate-card">
+              <div>
+                <div class="sub-name">Ceiling</div>
+                <div class="sub-client-label"><span>Client label:</span> Ceiling</div>
+                <div style="margin-top:5px;"><span class="badge-type badge-int">Ceiling</span></div>
+              </div>
+              <div>
+                <div class="sub-col-label">Product</div>
+                <div class="sub-product-pill"><i class="fas fa-tint"></i> BM Ceiling White</div>
+              </div>
+              <div>
+                <div class="sub-col-label">Measurement</div>
+                <div class="sub-calc-val">Sq Ft (Floor)</div>
+                <div class="sub-rate"><strong>120</strong> sq ft · $1.65 / sq ft</div>
+              </div>
+              <div class="sub-total">$198.00</div>
+            </div>
+            <div class="substrate-footer">
+              <span class="substrate-footer-label">Area subtotal</span>
+              <span class="substrate-footer-value">$1,500.00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /areas-list -->
+
+    <div class="section-btns">
+      <button type="button" class="btn-add">Add Area</button>
+    </div>
+  </div>
+
+  <!-- Packages -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Packages</span>
+      <div class="section-rule"></div>
+    </div>
+    <div class="empty-state">
+      <i class="fas fa-info-circle"></i>
+      Start by adding a Package here...
+    </div>
+    <div class="section-btns">
+      <button type="button" class="btn-add">Add Package</button>
+      <button type="button" class="btn-how-it-works">
+        <i class="fas fa-question-circle" style="font-size:12px;"></i> How It Works
       </button>
     </div>
   </div>
 
-  <!-- Page Body -->
-  <div class="page-body">
+</div><!-- /content-main -->
 
-    <!-- Helper Banner -->
-    <div class="helper-banner">
-      <i class="fas fa-info-circle"></i>
-      <span>This proposal has been <strong>accepted</strong>. Editing is disabled to preserve the accepted scope. Click any <strong>area name</strong> below to view its substrates.</span>
-    </div>
+<!-- ── Settings Content (hidden by default) ── -->
+<div class="content-settings" id="content-settings">
+  <div class="settings-grid">
 
-    <!-- Proposal Header Card -->
-    <div class="proposal-header-card">
-      <div class="proposal-customer-avatar">MR</div>
-      <div class="proposal-meta">
-        <p class="proposal-customer-name">Michael Reynolds</p>
-        <p class="proposal-sub-meta">
-          <span><i class="fas fa-map-marker-alt" style="color:#9ca3af;font-size:11px;"></i> 2215 Oak Lane, Clearwater, FL 33755</span>
-          <span><i class="fas fa-hashtag" style="color:#9ca3af;font-size:11px;"></i> Proposal #2183884</span>
-          <span><i class="far fa-calendar-check" style="color:#9ca3af;font-size:11px;"></i> Accepted Jan 22, 2026</span>
-          <span><i class="fas fa-user" style="color:#9ca3af;font-size:11px;"></i> Jeremy Harrison</span>
-        </p>
+    <!-- Payment Settings -->
+    <div class="settings-card">
+      <div class="settings-card-title">Payment Settings</div>
+      <div class="settings-row">
+        <span class="settings-row-label">Deposit:</span>
+        <span class="settings-row-val" style="display:flex;align-items:center;gap:8px;">
+          0.00% ($0.00) <button type="button" class="btn-deposit-add">Add</button>
+        </span>
       </div>
-      <div class="proposal-amount-block">
-        <p class="proposal-amount-label">Total</p>
-        <p class="proposal-amount">$8,450.00</p>
+      <div class="settings-row">
+        <span class="settings-row-label">Allow Alternative Payment <i class="fas fa-info-circle"></i></span>
+        <button type="button" class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
       </div>
-    </div>
-
-    <!-- Action Bar -->
-    <div class="action-bar">
-      <button class="btn-action disabled" data-tooltip="Editing disabled on accepted proposals">
-        <i class="fas fa-pen"></i> Edit
-      </button>
-      <button class="btn-action">
-        <i class="far fa-copy"></i> Duplicate
-      </button>
-      <button class="btn-action">
-        <i class="fas fa-eye"></i> Preview as Customer
-      </button>
-      <button class="btn-action">
-        <i class="fas fa-download"></i> Download PDF
-      </button>
-      <div class="action-spacer"></div>
-      <span style="font-size:12px;color:#9ca3af;display:flex;align-items:center;gap:5px;">
-        <i class="fas fa-lock" style="font-size:11px;"></i> Accepted proposals are locked
-      </span>
-    </div>
-
-    <!-- Line Items Section -->
-    <div class="section-card">
-      <div class="section-card-header">
-        <p class="section-card-title">Line Items</p>
-        <span class="section-badge">4 Areas</span>
-        <div style="margin-left:auto;">
-          <span style="font-size:12px;color:#9ca3af;display:flex;align-items:center;gap:6px;">
-            <i class="fas fa-chevron-down" style="font-size:10px;color:#7C3AED;"></i>
-            Click an area name to expand substrates
-          </span>
-        </div>
+      <div class="settings-row">
+        <span class="settings-row-label">Company Tax Rate:</span>
+        <span class="settings-row-val">5.000%</span>
       </div>
-
-      <table class="line-items-table">
-        <thead>
-          <tr>
-            <th style="width:38%;">Area</th>
-            <th style="width:18%;">Dimensions</th>
-            <th style="width:14%;">Substrates</th>
-            <th style="width:12%;">Sq Ft</th>
-            <th style="width:18%;text-align:right;">Subtotal</th>
-          </tr>
-        </thead>
-        <tbody>
-
-          <!-- ══ AREA 1: Living Room ══ -->
-          <tr class="area-row" id="area-row-1" onclick="toggleArea(1)">
-            <td>
-              <div class="area-name-cell">
-                <div class="area-icon interior"><i class="fas fa-couch"></i></div>
-                <div>
-                  <div class="area-name-label">Living Room</div>
-                  <div class="area-name-hint">
-                    <i class="fas fa-chevron-down"></i>
-                    <span>Tap to view substrates</span>
-                    <span class="badge-area-type badge-interior" style="margin-left:4px;">Interior</span>
-                  </div>
-                </div>
-                <i class="fas fa-chevron-down area-chevron" id="chevron-1"></i>
-              </div>
-            </td>
-            <td>
-              <div class="area-dims-label">L × W × H</div>
-              <div class="area-dims">18 × 15 × 9 ft</div>
-            </td>
-            <td>
-              <span class="area-substrate-count">
-                <i class="fas fa-layer-group" style="font-size:10px;"></i> 3
-              </span>
-            </td>
-            <td style="font-size:13px;color:#374151;font-weight:600;">756 sq ft</td>
-            <td class="area-total">$2,100.00</td>
-          </tr>
-
-          <!-- Substrate panel 1 -->
-          <tr class="substrate-panel" id="panel-1">
-            <td colspan="5" style="padding:0;">
-              <div class="substrate-panel-inner">
-                <div class="substrate-panel-header">
-                  <p class="substrate-panel-title"><i class="fas fa-layer-group" style="margin-right:5px;"></i>Living Room — Substrates</p>
-                  <p class="substrate-panel-subtitle">3 substrates · Interior Area · 18 × 15 × 9 ft</p>
-                </div>
-                <table class="substrate-table">
-                  <thead>
-                    <tr>
-                      <th style="width:30%;">Substrate</th>
-                      <th style="width:28%;">Product</th>
-                      <th style="width:27%;">Measurement</th>
-                      <th>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="substrate-row">
-                      <td>
-                        <div class="substrate-name">Walls</div>
-                        <div class="substrate-client-label"><span>Client label:</span> Interior Walls</div>
-                        <span class="substrate-category-pill">Walls (10 × 10)</span>
-                      </td>
-                      <td>
-                        <div class="substrate-product-pill">
-                          <i class="fas fa-tint"></i> BM Aura Interior Matte
-                        </div>
-                      </td>
-                      <td>
-                        <div class="substrate-meas-label">Calc Type</div>
-                        <div class="substrate-calc-value">Sq Ft (Walls)</div>
-                        <div class="substrate-qty-rate"><strong>486</strong> sq ft &nbsp;·&nbsp; $1.85 / sq ft</div>
-                      </td>
-                      <td><div class="substrate-total-amount">$899.10</div></td>
-                    </tr>
-                    <tr class="substrate-row">
-                      <td>
-                        <div class="substrate-name">Ceiling</div>
-                        <div class="substrate-client-label"><span>Client label:</span> Ceiling (Flat)</div>
-                        <span class="substrate-category-pill">Ceiling</span>
-                      </td>
-                      <td>
-                        <div class="substrate-product-pill">
-                          <i class="fas fa-tint"></i> BM Ceiling White
-                        </div>
-                      </td>
-                      <td>
-                        <div class="substrate-meas-label">Calc Type</div>
-                        <div class="substrate-calc-value">Sq Ft (Floor)</div>
-                        <div class="substrate-qty-rate"><strong>270</strong> sq ft &nbsp;·&nbsp; $1.65 / sq ft</div>
-                      </td>
-                      <td><div class="substrate-total-amount">$445.50</div></td>
-                    </tr>
-                    <tr class="substrate-row">
-                      <td>
-                        <div class="substrate-name">Trim &amp; Doors</div>
-                        <div class="substrate-client-label"><span>Client label:</span> Trim, Baseboard &amp; Doors</div>
-                        <span class="substrate-category-pill">Trim</span>
-                      </td>
-                      <td>
-                        <div class="substrate-product-pill">
-                          <i class="fas fa-tint"></i> BM Advance Semi-Gloss
-                        </div>
-                      </td>
-                      <td>
-                        <div class="substrate-meas-label">Calc Type</div>
-                        <div class="substrate-calc-value">Price Per Item</div>
-                        <div class="substrate-qty-rate"><strong>1</strong> item &nbsp;·&nbsp; $755.40 flat</div>
-                      </td>
-                      <td><div class="substrate-total-amount">$755.40</div></td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div class="substrate-panel-footer">
-                  <span class="substrate-area-subtotal-label">Area subtotal</span>
-                  <span class="substrate-area-subtotal-value">$2,100.00</span>
-                </div>
-              </div>
-            </td>
-          </tr>
-
-          <!-- ══ AREA 2: Master Bedroom ══ -->
-          <tr class="area-row" id="area-row-2" onclick="toggleArea(2)">
-            <td>
-              <div class="area-name-cell">
-                <div class="area-icon interior"><i class="fas fa-bed"></i></div>
-                <div>
-                  <div class="area-name-label">Master Bedroom</div>
-                  <div class="area-name-hint">
-                    <i class="fas fa-chevron-down"></i>
-                    <span>Tap to view substrates</span>
-                    <span class="badge-area-type badge-interior" style="margin-left:4px;">Interior</span>
-                  </div>
-                </div>
-                <i class="fas fa-chevron-down area-chevron" id="chevron-2"></i>
-              </div>
-            </td>
-            <td>
-              <div class="area-dims-label">L × W × H</div>
-              <div class="area-dims">14 × 12 × 9 ft</div>
-            </td>
-            <td>
-              <span class="area-substrate-count">
-                <i class="fas fa-layer-group" style="font-size:10px;"></i> 3
-              </span>
-            </td>
-            <td style="font-size:13px;color:#374151;font-weight:600;">462 sq ft</td>
-            <td class="area-total">$1,650.00</td>
-          </tr>
-
-          <!-- Substrate panel 2 -->
-          <tr class="substrate-panel" id="panel-2">
-            <td colspan="5" style="padding:0;">
-              <div class="substrate-panel-inner">
-                <div class="substrate-panel-header">
-                  <p class="substrate-panel-title"><i class="fas fa-layer-group" style="margin-right:5px;"></i>Master Bedroom — Substrates</p>
-                  <p class="substrate-panel-subtitle">3 substrates · Interior Area · 14 × 12 × 9 ft</p>
-                </div>
-                <table class="substrate-table">
-                  <thead>
-                    <tr>
-                      <th style="width:30%;">Substrate</th>
-                      <th style="width:28%;">Product</th>
-                      <th style="width:27%;">Measurement</th>
-                      <th>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="substrate-row">
-                      <td>
-                        <div class="substrate-name">Walls</div>
-                        <div class="substrate-client-label"><span>Client label:</span> Bedroom Walls</div>
-                        <span class="substrate-category-pill">Walls (10 × 10)</span>
-                      </td>
-                      <td>
-                        <div class="substrate-product-pill">
-                          <i class="fas fa-tint"></i> BM Aura Interior Matte
-                        </div>
-                      </td>
-                      <td>
-                        <div class="substrate-meas-label">Calc Type</div>
-                        <div class="substrate-calc-value">Sq Ft (Walls)</div>
-                        <div class="substrate-qty-rate"><strong>378</strong> sq ft &nbsp;·&nbsp; $1.85 / sq ft</div>
-                      </td>
-                      <td><div class="substrate-total-amount">$699.30</div></td>
-                    </tr>
-                    <tr class="substrate-row">
-                      <td>
-                        <div class="substrate-name">Ceiling</div>
-                        <div class="substrate-client-label"><span>Client label:</span> Ceiling (Flat)</div>
-                        <span class="substrate-category-pill">Ceiling</span>
-                      </td>
-                      <td>
-                        <div class="substrate-product-pill">
-                          <i class="fas fa-tint"></i> BM Ceiling White
-                        </div>
-                      </td>
-                      <td>
-                        <div class="substrate-meas-label">Calc Type</div>
-                        <div class="substrate-calc-value">Sq Ft (Floor)</div>
-                        <div class="substrate-qty-rate"><strong>168</strong> sq ft &nbsp;·&nbsp; $1.65 / sq ft</div>
-                      </td>
-                      <td><div class="substrate-total-amount">$277.20</div></td>
-                    </tr>
-                    <tr class="substrate-row">
-                      <td>
-                        <div class="substrate-name">Doors</div>
-                        <div class="substrate-client-label"><span>Client label:</span> Interior Doors</div>
-                        <span class="substrate-category-pill">Doors</span>
-                      </td>
-                      <td>
-                        <div class="substrate-product-pill">
-                          <i class="fas fa-tint"></i> BM Advance Semi-Gloss
-                        </div>
-                      </td>
-                      <td>
-                        <div class="substrate-meas-label">Calc Type</div>
-                        <div class="substrate-calc-value">Price Per Item</div>
-                        <div class="substrate-qty-rate"><strong>2</strong> doors &nbsp;·&nbsp; $336.75 ea</div>
-                      </td>
-                      <td><div class="substrate-total-amount">$673.50</div></td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div class="substrate-panel-footer">
-                  <span class="substrate-area-subtotal-label">Area subtotal</span>
-                  <span class="substrate-area-subtotal-value">$1,650.00</span>
-                </div>
-              </div>
-            </td>
-          </tr>
-
-          <!-- ══ AREA 3: Exterior Front ══ -->
-          <tr class="area-row" id="area-row-3" onclick="toggleArea(3)">
-            <td>
-              <div class="area-name-cell">
-                <div class="area-icon exterior"><i class="fas fa-home"></i></div>
-                <div>
-                  <div class="area-name-label">Exterior Front</div>
-                  <div class="area-name-hint">
-                    <i class="fas fa-chevron-down"></i>
-                    <span>Tap to view substrates</span>
-                    <span class="badge-area-type badge-exterior" style="margin-left:4px;">Exterior</span>
-                  </div>
-                </div>
-                <i class="fas fa-chevron-down area-chevron" id="chevron-3"></i>
-              </div>
-            </td>
-            <td>
-              <div class="area-dims-label">L × W × H</div>
-              <div class="area-dims">45 × — × 18 ft</div>
-            </td>
-            <td>
-              <span class="area-substrate-count">
-                <i class="fas fa-layer-group" style="font-size:10px;"></i> 4
-              </span>
-            </td>
-            <td style="font-size:13px;color:#374151;font-weight:600;">810 sq ft</td>
-            <td class="area-total">$3,200.00</td>
-          </tr>
-
-          <!-- Substrate panel 3 -->
-          <tr class="substrate-panel" id="panel-3">
-            <td colspan="5" style="padding:0;">
-              <div class="substrate-panel-inner">
-                <div class="substrate-panel-header">
-                  <p class="substrate-panel-title"><i class="fas fa-layer-group" style="margin-right:5px;"></i>Exterior Front — Substrates</p>
-                  <p class="substrate-panel-subtitle">4 substrates · Exterior Area · 45 ft wide × 18 ft tall</p>
-                </div>
-                <table class="substrate-table">
-                  <thead>
-                    <tr>
-                      <th style="width:30%;">Substrate</th>
-                      <th style="width:28%;">Product</th>
-                      <th style="width:27%;">Measurement</th>
-                      <th>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="substrate-row">
-                      <td>
-                        <div class="substrate-name">Siding</div>
-                        <div class="substrate-client-label"><span>Client label:</span> Exterior Siding</div>
-                        <span class="substrate-category-pill">Exterior Paint</span>
-                      </td>
-                      <td>
-                        <div class="substrate-product-pill">
-                          <i class="fas fa-tint"></i> BM Aura Exterior Satin
-                        </div>
-                      </td>
-                      <td>
-                        <div class="substrate-meas-label">Calc Type</div>
-                        <div class="substrate-calc-value">Sq Ft (Walls)</div>
-                        <div class="substrate-qty-rate"><strong>650</strong> sq ft &nbsp;·&nbsp; $2.20 / sq ft</div>
-                      </td>
-                      <td><div class="substrate-total-amount">$1,430.00</div></td>
-                    </tr>
-                    <tr class="substrate-row">
-                      <td>
-                        <div class="substrate-name">Fascia &amp; Soffit</div>
-                        <div class="substrate-client-label"><span>Client label:</span> Fascia Board &amp; Soffit</div>
-                        <span class="substrate-category-pill">Fascia</span>
-                      </td>
-                      <td>
-                        <div class="substrate-product-pill">
-                          <i class="fas fa-tint"></i> BM Advance Satin
-                        </div>
-                      </td>
-                      <td>
-                        <div class="substrate-meas-label">Calc Type</div>
-                        <div class="substrate-calc-value">Linear Foot</div>
-                        <div class="substrate-qty-rate"><strong>90</strong> lin ft &nbsp;·&nbsp; $6.00 / ln ft</div>
-                      </td>
-                      <td><div class="substrate-total-amount">$540.00</div></td>
-                    </tr>
-                    <tr class="substrate-row">
-                      <td>
-                        <div class="substrate-name">Trim &amp; Window Casings</div>
-                        <div class="substrate-client-label"><span>Client label:</span> Exterior Trim</div>
-                        <span class="substrate-category-pill">Trim</span>
-                      </td>
-                      <td>
-                        <div class="substrate-product-pill">
-                          <i class="fas fa-tint"></i> BM Advance Semi-Gloss
-                        </div>
-                      </td>
-                      <td>
-                        <div class="substrate-meas-label">Calc Type</div>
-                        <div class="substrate-calc-value">Price Per Item</div>
-                        <div class="substrate-qty-rate"><strong>1</strong> item &nbsp;·&nbsp; $780.00 flat</div>
-                      </td>
-                      <td><div class="substrate-total-amount">$780.00</div></td>
-                    </tr>
-                    <tr class="substrate-row">
-                      <td>
-                        <div class="substrate-name">Front Door</div>
-                        <div class="substrate-client-label"><span>Client label:</span> Entry Door (2 Sides)</div>
-                        <span class="substrate-category-pill">Doors</span>
-                      </td>
-                      <td>
-                        <div class="substrate-product-pill">
-                          <i class="fas fa-tint"></i> BM Aura Grand Entrance
-                        </div>
-                      </td>
-                      <td>
-                        <div class="substrate-meas-label">Calc Type</div>
-                        <div class="substrate-calc-value">Price Per Item</div>
-                        <div class="substrate-qty-rate"><strong>1</strong> door &nbsp;·&nbsp; $450.00 flat</div>
-                      </td>
-                      <td><div class="substrate-total-amount">$450.00</div></td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div class="substrate-panel-footer">
-                  <span class="substrate-area-subtotal-label">Area subtotal</span>
-                  <span class="substrate-area-subtotal-value">$3,200.00</span>
-                </div>
-              </div>
-            </td>
-          </tr>
-
-          <!-- ══ AREA 4: Kitchen ══ -->
-          <tr class="area-row" id="area-row-4" onclick="toggleArea(4)">
-            <td>
-              <div class="area-name-cell">
-                <div class="area-icon interior"><i class="fas fa-utensils"></i></div>
-                <div>
-                  <div class="area-name-label">Kitchen</div>
-                  <div class="area-name-hint">
-                    <i class="fas fa-chevron-down"></i>
-                    <span>Tap to view substrates</span>
-                    <span class="badge-area-type badge-interior" style="margin-left:4px;">Interior</span>
-                  </div>
-                </div>
-                <i class="fas fa-chevron-down area-chevron" id="chevron-4"></i>
-              </div>
-            </td>
-            <td>
-              <div class="area-dims-label">L × W × H</div>
-              <div class="area-dims">12 × 10 × 9 ft</div>
-            </td>
-            <td>
-              <span class="area-substrate-count">
-                <i class="fas fa-layer-group" style="font-size:10px;"></i> 2
-              </span>
-            </td>
-            <td style="font-size:13px;color:#374151;font-weight:600;">282 sq ft</td>
-            <td class="area-total">$1,500.00</td>
-          </tr>
-
-          <!-- Substrate panel 4 -->
-          <tr class="substrate-panel" id="panel-4">
-            <td colspan="5" style="padding:0;">
-              <div class="substrate-panel-inner">
-                <div class="substrate-panel-header">
-                  <p class="substrate-panel-title"><i class="fas fa-layer-group" style="margin-right:5px;"></i>Kitchen — Substrates</p>
-                  <p class="substrate-panel-subtitle">2 substrates · Interior Area · 12 × 10 × 9 ft</p>
-                </div>
-                <table class="substrate-table">
-                  <thead>
-                    <tr>
-                      <th style="width:30%;">Substrate</th>
-                      <th style="width:28%;">Product</th>
-                      <th style="width:27%;">Measurement</th>
-                      <th>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr class="substrate-row">
-                      <td>
-                        <div class="substrate-name">Walls</div>
-                        <div class="substrate-client-label"><span>Client label:</span> Kitchen Walls</div>
-                        <span class="substrate-category-pill">Walls (10 × 10)</span>
-                      </td>
-                      <td>
-                        <div class="substrate-product-pill">
-                          <i class="fas fa-tint"></i> BM Aura Bath &amp; Spa
-                        </div>
-                      </td>
-                      <td>
-                        <div class="substrate-meas-label">Calc Type</div>
-                        <div class="substrate-calc-value">Sq Ft (Walls)</div>
-                        <div class="substrate-qty-rate"><strong>162</strong> sq ft &nbsp;·&nbsp; $2.10 / sq ft</div>
-                      </td>
-                      <td><div class="substrate-total-amount">$340.20</div></td>
-                    </tr>
-                    <tr class="substrate-row">
-                      <td>
-                        <div class="substrate-name">Ceiling</div>
-                        <div class="substrate-client-label"><span>Client label:</span> Ceiling</div>
-                        <span class="substrate-category-pill">Ceiling</span>
-                      </td>
-                      <td>
-                        <div class="substrate-product-pill">
-                          <i class="fas fa-tint"></i> BM Ceiling White
-                        </div>
-                      </td>
-                      <td>
-                        <div class="substrate-meas-label">Calc Type</div>
-                        <div class="substrate-calc-value">Sq Ft (Floor)</div>
-                        <div class="substrate-qty-rate"><strong>120</strong> sq ft &nbsp;·&nbsp; $1.65 / sq ft</div>
-                      </td>
-                      <td><div class="substrate-total-amount">$198.00</div></td>
-                    </tr>
-                  </tbody>
-                </table>
-                <div class="substrate-panel-footer">
-                  <span class="substrate-area-subtotal-label">Area subtotal</span>
-                  <span class="substrate-area-subtotal-value">$1,500.00</span>
-                </div>
-              </div>
-            </td>
-          </tr>
-
-        </tbody>
-      </table>
-
-      <!-- Totals -->
-      <div class="totals-section">
-        <div class="totals-row">
-          <span class="totals-label">Subtotal</span>
-          <span class="totals-value">$8,450.00</span>
-        </div>
-        <div class="totals-row">
-          <span class="totals-label">Discount</span>
-          <span class="totals-value" style="color:#15803d;">— $0.00</span>
-        </div>
-        <div class="totals-divider"></div>
-        <div class="totals-row grand">
-          <span class="totals-label">Total</span>
-          <span class="totals-value">$8,450.00</span>
-        </div>
+      <div class="settings-row">
+        <span class="settings-row-label">Line Item Quantity Only <i class="fas fa-info-circle"></i></span>
+        <button type="button" class="toggle off" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+      <div class="settings-row">
+        <span class="settings-row-label">Hide Bottom Proposal Total <i class="fas fa-info-circle"></i></span>
+        <button type="button" class="toggle off" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+      <div class="settings-row">
+        <span class="settings-row-label">Hide Top Proposal Deposit <i class="fas fa-info-circle"></i></span>
+        <button type="button" class="toggle off" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+      </div>
+      <div class="settings-row">
+        <span class="settings-row-label">Hide Bottom Proposal Deposit <i class="fas fa-info-circle"></i></span>
+        <button type="button" class="toggle off" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
       </div>
     </div>
 
-    <!-- Terms Section -->
-    <div class="terms-section">
-      <p class="terms-title">Terms &amp; Conditions</p>
-      <p style="margin:0;">Payment is due upon completion of work. A 50% deposit may be required prior to project start. All work is guaranteed for 12 months from the date of completion. Any changes to the scope of work will require a written change order and may affect the total price. DripJobs Painting LLC is fully licensed and insured in the state of Florida.</p>
+    <!-- Proposal Settings -->
+    <div>
+      <div class="settings-card">
+        <div class="settings-card-title">Proposal Settings</div>
+        <div class="settings-row">
+          <span class="settings-row-label">Enable Countersign <i class="fas fa-info-circle"></i></span>
+          <button type="button" class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+        </div>
+        <div class="settings-row">
+          <span class="settings-row-label">Countersign Signatory <i class="fas fa-info-circle"></i></span>
+          <select class="select-field">
+            <option>Jeremy Harrison</option>
+          </select>
+        </div>
+        <div class="settings-note">
+          <i class="fas fa-sticky-note" style="color:#10B981;flex-shrink:0;margin-top:1px;"></i>
+          <span><strong>Note:</strong> The options below appear to customer after proposal has been sent.</span>
+        </div>
+        <div class="settings-row">
+          <span class="settings-row-label">Allow Customer Proposal Rejection <i class="fas fa-info-circle"></i></span>
+          <button type="button" class="toggle off" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+        </div>
+        <div class="settings-row">
+          <span class="settings-row-label">Allow Customer Change Requests <i class="fas fa-info-circle"></i></span>
+          <button type="button" class="toggle off" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button>
+        </div>
+      </div>
+
+      <div class="acorn-card">
+        <div class="acorn-logo" style="display:flex;align-items:center;justify-content:center;gap:8px;">
+          <i class="fas fa-leaf" style="color:#10B981;font-size:20px;"></i>
+          <span style="font-size:20px;font-weight:800;">Acorn <span style="color:#10B981;">Finance</span></span>
+        </div>
+        <div class="acorn-note">Acorn Financing widget won't show unless the amount is greater than $1000.</div>
+      </div>
     </div>
 
-  </div><!-- end page-body -->
-</div><!-- end main-content -->
+  </div>
+</div>
+
+<!-- ── Bottom Bar ── -->
+<div class="bottom-bar">
+  <a class="setup-payments-link" href="#">Click here to setup online payments &rsaquo;</a>
+  <div class="cannot-send-banner">
+    <i class="fas fa-exclamation-triangle"></i>
+    <span><strong>Cannot Send:</strong> Proposal has a $0 total. Please adjust pricing before sending.</span>
+  </div>
+  <div class="bottom-actions">
+    <button type="button" class="btn-send-proposal">Send Proposal</button>
+    <button type="button" class="btn-bottom">View/ Edit T&amp;C's</button>
+    <button type="button" class="btn-bottom disabled" disabled>Approve Without Signature</button>
+    <button type="button" class="btn-bottom">Duplicate Proposal</button>
+    <button type="button" class="btn-bottom">Archive</button>
+    <button type="button" class="btn-bottom danger">Delete Proposal</button>
+  </div>
+</div>
 
 <script>
-  function openSidebar() {
-    document.getElementById('sidebar').classList.add('open');
-    document.getElementById('sidebar-overlay').classList.add('open');
-  }
-  function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebar-overlay').classList.remove('open');
+  // Tab switching
+  var MAIN_TABS = ['settings']; // tabs that show main content
+  function switchTab(name) {
+    document.querySelectorAll('.tab-item').forEach(function(t) { t.classList.remove('active'); });
+    var clicked = event.target;
+    clicked.classList.add('active');
+
+    var main = document.getElementById('content-main');
+    var settings = document.getElementById('content-settings');
+    if (name === 'settings') {
+      main.style.display = 'none';
+      settings.classList.add('visible');
+    } else {
+      main.style.display = 'block';
+      settings.classList.remove('visible');
+    }
   }
 
+  // Area expand/collapse
   function toggleArea(id) {
+    var item = document.getElementById('area-' + id);
     var panel = document.getElementById('panel-' + id);
-    var row = document.getElementById('area-row-' + id);
     var isOpen = panel.classList.contains('open');
 
     // Collapse all
-    [1,2,3,4].forEach(function(i) {
+    [1, 2, 3, 4].forEach(function(i) {
       document.getElementById('panel-' + i).classList.remove('open');
-      document.getElementById('area-row-' + i).classList.remove('expanded');
+      document.getElementById('area-' + i).classList.remove('expanded');
     });
 
-    // If it wasn't already open, open this one
+    // Open this one if it wasn't already
     if (!isOpen) {
       panel.classList.add('open');
-      row.classList.add('expanded');
-
-      // Smooth scroll so the user sees the expanded content
+      item.classList.add('expanded');
       setTimeout(function() {
-        row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }, 50);
     }
   }
