@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DripJobs – Area Item Modal Prototype</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #f4f5f7;
+    color: #1e1e2d;
+    font-size: 14px;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    width: 220px;
+    min-height: 100vh;
+    background: #1e1e2d;
+    position: fixed;
+    top: 0; left: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+  }
+  .sidebar-logo {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .sidebar-logo svg { width: 110px; }
+  .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.35);
+    padding: 14px 20px 4px;
+    text-transform: uppercase;
+  }
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 20px;
+    color: rgba(255,255,255,0.6);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    border-radius: 0;
+    text-decoration: none;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.06); color: #fff; text-decoration: none; }
+  .sidebar-item.active { background: rgba(124,58,237,0.25); color: #c4b5fd; }
+  .sidebar-item i { width: 16px; text-align: center; font-size: 13px; }
+
+  /* ── Main ── */
+  .main-content { margin-left: 220px; padding: 0; }
+
+  /* ── Top Bar ── */
+  .topbar {
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  .topbar-back {
+    color: #7C3AED;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+  .topbar-back:hover { color: #5b21b6; text-decoration: none; }
+  .topbar-divider { color: #d1d5db; }
+  .topbar-title { font-size: 14px; font-weight: 700; color: #1e1e2d; }
+  .topbar-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+
+  /* ── Status Badge ── */
+  .badge-accepted {
+    background: #dcfce7;
+    color: #15803d;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+  .badge-area-type {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .badge-interior { background: #ede9fe; color: #6d28d9; }
+  .badge-exterior { background: #e0f2fe; color: #0369a1; }
+
+  /* ── Page Layout ── */
+  .page-body { padding: 24px; }
+
+  /* ── Proposal Header Card ── */
+  .proposal-header-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .proposal-customer-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: #ede9fe;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700; color: #7C3AED;
+    flex-shrink: 0;
+  }
+  .proposal-meta { flex: 1; }
+  .proposal-customer-name { font-size: 17px; font-weight: 700; color: #1e1e2d; margin: 0 0 2px; }
+  .proposal-sub-meta { font-size: 12px; color: #6b7280; display: flex; gap: 16px; flex-wrap: wrap; margin: 0; }
+  .proposal-sub-meta span { display: flex; align-items: center; gap: 5px; }
+  .proposal-amount-block { text-align: right; }
+  .proposal-amount { font-size: 24px; font-weight: 700; color: #1e1e2d; margin: 0; }
+  .proposal-amount-label { font-size: 11px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.06em; margin: 0; }
+
+  /* ── Action Bar ── */
+  .action-bar {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px 20px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .btn-action {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px;
+    border-radius: 7px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #e5e7eb;
+    background: #fff; color: #374151;
+    transition: background 0.15s, border-color 0.15s;
+    font-family: 'Nunito', sans-serif;
+  }
+  .btn-action:hover { background: #f9fafb; border-color: #d1d5db; }
+  .btn-action.primary { background: #7C3AED; color: #fff; border-color: #7C3AED; }
+  .btn-action.primary:hover { background: #6d28d9; border-color: #6d28d9; }
+  .btn-action.disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
+  .action-spacer { flex: 1; }
+
+  /* ── Helper Banner ── */
+  .helper-banner {
+    background: #f0fafa;
+    border-left: 4px solid #0DCECE;
+    border-radius: 0 8px 8px 0;
+    padding: 10px 16px;
+    font-size: 13px; color: #374151;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .helper-banner i { color: #0DCECE; font-size: 14px; flex-shrink: 0; }
+
+  /* ── Section Card ── */
+  .section-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .section-card-header {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f3f4f6;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-card-title { font-size: 14px; font-weight: 700; color: #1e1e2d; margin: 0; }
+  .section-badge {
+    background: #f3f4f6; color: #6b7280;
+    font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 12px;
+  }
+
+  /* ── Line Items Table ── */
+  .line-items-table { width: 100%; border-collapse: collapse; }
+  .line-items-table thead th {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: #9ca3af;
+    padding: 10px 16px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+  }
+  .line-items-table thead th:first-child { padding-left: 20px; }
+  .line-items-table thead th:last-child { padding-right: 20px; text-align: right; }
+
+  /* ── Area Row ── */
+  .area-row {
+    background: #fff;
+    border-bottom: 1px solid #f3f4f6;
+    transition: background 0.12s;
+  }
+  .area-row td { padding: 13px 16px; vertical-align: middle; }
+  .area-row td:first-child { padding-left: 20px; }
+  .area-row td:last-child { padding-right: 20px; }
+
+  .area-name-cell {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .area-icon {
+    width: 30px; height: 30px; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .area-icon.interior { background: #ede9fe; color: #7C3AED; }
+  .area-icon.exterior { background: #e0f2fe; color: #0369a1; }
+  .area-icon i { font-size: 13px; }
+
+  .area-name-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: none; border: none; padding: 0;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    color: #7C3AED;
+    font-size: 14px; font-weight: 700;
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .area-name-btn:hover { color: #5b21b6; text-decoration: underline; }
+  .area-name-btn i { font-size: 11px; }
+
+  .area-name-hint {
+    font-size: 11px; color: #9ca3af;
+    display: flex; align-items: center; gap: 4px;
+    margin-top: 1px;
+  }
+  .area-name-hint i { font-size: 10px; color: #7C3AED; }
+
+  .area-dims { font-size: 13px; color: #374151; }
+  .area-dims-label { font-size: 11px; color: #9ca3af; margin-bottom: 1px; }
+
+  .area-substrate-count {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #ede9fe; color: #7C3AED;
+    font-size: 11px; font-weight: 700;
+    padding: 3px 9px; border-radius: 12px;
+  }
+  .area-total { font-size: 14px; font-weight: 700; color: #1e1e2d; text-align: right; }
+
+  /* ── Totals ── */
+  .totals-section {
+    padding: 16px 20px;
+    border-top: 1px solid #e5e7eb;
+    background: #fafafa;
+  }
+  .totals-row {
+    display: flex; justify-content: flex-end; align-items: center;
+    gap: 24px; margin-bottom: 6px;
+  }
+  .totals-label { font-size: 13px; color: #6b7280; min-width: 120px; text-align: right; }
+  .totals-value { font-size: 13px; font-weight: 600; color: #374151; min-width: 90px; text-align: right; }
+  .totals-row.grand .totals-label { font-size: 14px; font-weight: 700; color: #1e1e2d; }
+  .totals-row.grand .totals-value { font-size: 18px; font-weight: 700; color: #1e1e2d; }
+  .totals-divider { height: 1px; background: #e5e7eb; margin: 8px 20px; }
+
+  /* ── Terms ── */
+  .terms-section {
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 10px;
+    padding: 16px 20px; margin-bottom: 16px;
+    font-size: 13px; color: #6b7280; line-height: 1.6;
+  }
+  .terms-title { font-size: 13px; font-weight: 700; color: #374151; margin: 0 0 6px; }
+
+  .accepted-note {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #dcfce7; color: #15803d;
+    font-size: 12px; font-weight: 600;
+    padding: 5px 12px; border-radius: 20px;
+  }
+  .accepted-note i { font-size: 11px; }
+
+  /* Tooltip */
+  [data-tooltip] { position: relative; }
+  [data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute; bottom: calc(100% + 6px);
+    left: 50%; transform: translateX(-50%);
+    background: #1e1e2d; color: #fff;
+    font-size: 11px; font-weight: 600;
+    padding: 4px 9px; border-radius: 5px;
+    white-space: nowrap; z-index: 999; pointer-events: none;
+  }
+
+  /* ════════════════════════════════════════
+     AREA ITEM MODAL
+  ════════════════════════════════════════ */
+
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(30,30,45,0.45);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .area-modal {
+    background: #fff;
+    border-radius: 12px;
+    width: 760px;
+    max-width: calc(100vw - 32px);
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 40px rgba(30,30,45,0.22);
+    animation: modal-in 0.18s ease;
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Modal Header */
+  .area-modal-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
+  }
+  .area-modal-title-row { flex: 1; }
+  .area-modal-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: #9ca3af; margin: 0 0 2px;
+  }
+  .area-modal-name {
+    font-size: 18px; font-weight: 700; color: #1e1e2d; margin: 0;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .area-modal-close {
+    width: 32px; height: 32px;
+    background: none; border: none;
+    color: #9ca3af; font-size: 18px;
+    cursor: pointer; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+  }
+  .area-modal-close:hover { background: #f3f4f6; color: #374151; }
+
+  /* Area Summary Stats Bar */
+  .area-stats-bar {
+    display: flex; gap: 0;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    flex-shrink: 0;
+  }
+  .area-stat {
+    flex: 1;
+    padding: 10px 16px;
+    border-right: 1px solid #e5e7eb;
+    display: flex; flex-direction: column; gap: 1px;
+  }
+  .area-stat:last-child { border-right: none; }
+  .area-stat-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: #9ca3af;
+  }
+  .area-stat-value {
+    font-size: 14px; font-weight: 700; color: #1e1e2d;
+  }
+  .area-stat-value.highlight { color: #7C3AED; }
+
+  /* Modal Body scroll */
+  .area-modal-body {
+    flex: 1; overflow-y: auto;
+    padding: 0;
+  }
+
+  /* Items table inside modal */
+  .modal-items-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .modal-items-table thead th {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.07em;
+    color: #b5b5c3;
+    padding: 9px 14px 7px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+    position: sticky; top: 0; z-index: 5;
+  }
+  .modal-items-table thead th:first-child { padding-left: 20px; width: 36px; }
+  .modal-items-table thead th.item-name-col { width: 30%; }
+  .modal-items-table thead th:last-child { padding-right: 20px; text-align: right; }
+
+  /* Item row */
+  .item-row {
+    border-bottom: 1px solid #f3f4f6;
+    background: #fff;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.1s;
+  }
+  .item-row:hover { background: #faf8ff; }
+  .item-row.expanded { background: #faf8ff; border-bottom: none; }
+  .item-row td {
+    padding: 11px 14px;
+    vertical-align: middle;
+    font-size: 13px; color: #374151;
+  }
+  .item-row td:first-child { padding-left: 20px; }
+  .item-row td:last-child { padding-right: 20px; text-align: right; font-weight: 700; color: #1e1e2d; }
+
+  .item-chevron-cell { width: 28px; }
+  .item-chevron {
+    width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px;
+    color: #9ca3af; font-size: 11px;
+    transition: transform 0.18s, color 0.15s, background 0.15s;
+  }
+  .item-row:hover .item-chevron { color: #7C3AED; background: #ede9fe; }
+  .item-row.expanded .item-chevron { transform: rotate(180deg); color: #7C3AED; background: #ede9fe; }
+
+  .item-name-wrap {}
+  .item-name-main {
+    font-size: 13px; font-weight: 600; color: #1e1e2d;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .item-category-tag {
+    font-size: 10px; font-weight: 700;
+    background: #f3f4f6; color: #6b7280;
+    padding: 2px 7px; border-radius: 8px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .item-name-sub {
+    font-size: 11px; color: #9ca3af; margin-top: 1px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .item-name-sub i { font-size: 10px; color: #0DCECE; }
+
+  .item-val { font-size: 13px; font-weight: 600; color: #374151; }
+  .item-val-unit { font-size: 11px; color: #9ca3af; font-weight: 400; }
+
+  /* Expand detail row */
+  .item-detail-row {
+    display: none;
+    background: #f5f3ff;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .item-detail-row.open { display: table-row; }
+  .item-detail-row td {
+    padding: 0;
+  }
+
+  .item-detail-inner {
+    padding: 14px 20px 14px 56px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    animation: detail-in 0.18s ease;
+  }
+  @keyframes detail-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .detail-block {}
+  .detail-block-label {
+    font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.07em;
+    color: #9ca3af; margin-bottom: 4px;
+  }
+  .detail-block-value {
+    font-size: 13px; font-weight: 600; color: #1e1e2d;
+  }
+  .detail-block-value.total-val { color: #7C3AED; font-size: 14px; }
+  .detail-product-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; color: #374151;
+    background: #fff; border: 1px solid #e5e7eb;
+    border-radius: 6px; padding: 3px 9px;
+    font-weight: 600;
+  }
+  .detail-product-pill i { color: #0DCECE; font-size: 10px; }
+
+  /* Modal totals row */
+  .modal-totals-row {
+    display: flex;
+    background: #f9fafb;
+    border-top: 2px solid #e5e7eb;
+    padding: 11px 20px;
+    gap: 0;
+    flex-shrink: 0;
+  }
+  .modal-total-cell {
+    flex: 1;
+    display: flex; flex-direction: column; gap: 1px;
+    padding: 0 8px;
+    border-right: 1px solid #e5e7eb;
+  }
+  .modal-total-cell:first-child { padding-left: 28px; }
+  .modal-total-cell:last-child { border-right: none; padding-right: 0; }
+  .modal-total-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: #9ca3af;
+  }
+  .modal-total-value {
+    font-size: 13px; font-weight: 700; color: #1e1e2d;
+  }
+  .modal-total-value.highlight { color: #7C3AED; font-size: 14px; }
+
+  /* Modal Footer */
+  .area-modal-footer {
+    display: flex; justify-content: flex-end; align-items: center;
+    padding: 12px 20px;
+    border-top: 1px solid #e5e7eb;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <svg viewBox="0 0 120 28" fill="none">
+      <circle cx="10" cy="14" r="7" fill="#7C3AED"/>
+      <circle cx="10" cy="14" r="3.5" fill="#fff"/>
+      <text x="22" y="19" fill="#fff" font-family="Nunito,sans-serif" font-weight="700" font-size="15">dripjobs</text>
+    </svg>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Sales</div>
+    <a class="sidebar-item" href="#"><i class="fas fa-exchange-alt"></i> Sales Pipeline</a>
+    <a class="sidebar-item" href="#"><i class="fas fa-list"></i> Sales List</a>
+    <a class="sidebar-item" href="#"><i class="fas fa-briefcase"></i> Jobs List</a>
+    <a class="sidebar-item" href="#"><i class="fas fa-columns"></i> Jobs Pipeline</a>
+    <a class="sidebar-item" href="#"><i class="far fa-clipboard"></i> Work Orders</a>
+
+    <div class="sidebar-section-label">Daily Ops</div>
+    <a class="sidebar-item" href="#"><i class="far fa-calendar-alt"></i> Appointments</a>
+    <a class="sidebar-item" href="#"><i class="far fa-comment-alt"></i> Chat</a>
+    <a class="sidebar-item" href="#"><i class="fas fa-tasks"></i> Tasks</a>
+
+    <div class="sidebar-section-label">Documents</div>
+    <a class="sidebar-item" href="#"><i class="far fa-file-invoice-dollar"></i> Invoices</a>
+    <a class="sidebar-item active" href="#"><i class="far fa-file-alt"></i> Proposals</a>
+
+    <div class="sidebar-section-label">Financials</div>
+    <a class="sidebar-item" href="#"><i class="fas fa-hard-hat"></i> Job Costing</a>
+    <a class="sidebar-item" href="#"><i class="fas fa-chart-line"></i> Production Rates</a>
+    <a class="sidebar-item" href="#"><i class="fas fa-tachometer-alt"></i> Metrics</a>
+  </nav>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+  <div class="topbar">
+    <a class="topbar-back" href="#">
+      <i class="fas fa-arrow-left" style="font-size:11px;"></i> Proposals
+    </a>
+    <span class="topbar-divider">/</span>
+    <span class="topbar-title">Michael Reynolds — 2215 Oak Lane</span>
+    <div class="topbar-actions">
+      <span class="accepted-note"><i class="fas fa-check-circle"></i> Accepted</span>
+      <button class="btn-action" style="font-size:12px;"><i class="fas fa-envelope"></i> Resend</button>
+      <button class="btn-action primary" style="font-size:12px;"><i class="fas fa-file-invoice-dollar"></i> Create Invoice</button>
+    </div>
+  </div>
+
+  <div class="page-body">
+
+    <div class="helper-banner">
+      <i class="fas fa-info-circle"></i>
+      <span>This proposal has been <strong>accepted</strong>. Editing is disabled. Click any <strong>area name</strong> to view its Area Item detail.</span>
+    </div>
+
+    <!-- Proposal Header Card -->
+    <div class="proposal-header-card">
+      <div class="proposal-customer-avatar">MR</div>
+      <div class="proposal-meta">
+        <p class="proposal-customer-name">Michael Reynolds</p>
+        <p class="proposal-sub-meta">
+          <span><i class="fas fa-map-marker-alt" style="color:#9ca3af;font-size:11px;"></i> 2215 Oak Lane, Clearwater, FL 33755</span>
+          <span><i class="fas fa-hashtag" style="color:#9ca3af;font-size:11px;"></i> Proposal #2183884</span>
+          <span><i class="far fa-calendar-check" style="color:#9ca3af;font-size:11px;"></i> Accepted Jan 22, 2026</span>
+          <span><i class="fas fa-user" style="color:#9ca3af;font-size:11px;"></i> Jeremy Harrison</span>
+        </p>
+      </div>
+      <div class="proposal-amount-block">
+        <p class="proposal-amount-label">Total</p>
+        <p class="proposal-amount">$8,450.00</p>
+      </div>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <button class="btn-action disabled" data-tooltip="Editing disabled on accepted proposals"><i class="fas fa-pen"></i> Edit</button>
+      <button class="btn-action"><i class="far fa-copy"></i> Duplicate</button>
+      <button class="btn-action"><i class="fas fa-eye"></i> Preview as Customer</button>
+      <button class="btn-action"><i class="fas fa-download"></i> Download PDF</button>
+      <div class="action-spacer"></div>
+      <span style="font-size:12px;color:#9ca3af;display:flex;align-items:center;gap:5px;">
+        <i class="fas fa-lock" style="font-size:11px;"></i> Accepted proposals are locked
+      </span>
+    </div>
+
+    <!-- Line Items Section -->
+    <div class="section-card">
+      <div class="section-card-header">
+        <p class="section-card-title">Line Items</p>
+        <span class="section-badge">4 Areas</span>
+        <div style="margin-left:auto;">
+          <span style="font-size:12px;color:#9ca3af;display:flex;align-items:center;gap:6px;">
+            <i class="fas fa-arrow-up-right-from-square" style="font-size:10px;color:#7C3AED;"></i>
+            Click an area name to open details
+          </span>
+        </div>
+      </div>
+
+      <table class="line-items-table">
+        <thead>
+          <tr>
+            <th style="width:40%;">Area</th>
+            <th style="width:18%;">Dimensions</th>
+            <th style="width:13%;">Substrates</th>
+            <th style="width:11%;">Sq Ft</th>
+            <th style="width:18%;text-align:right;">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- AREA 1: Living Room -->
+          <tr class="area-row">
+            <td>
+              <div class="area-name-cell">
+                <div class="area-icon interior"><i class="fas fa-couch"></i></div>
+                <div>
+                  <button class="area-name-btn" onclick="openModal('living-room')">
+                    Living Room
+                    <i class="fas fa-arrow-up-right-from-square"></i>
+                  </button>
+                  <div class="area-name-hint">
+                    <span class="badge-area-type badge-interior">Interior</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="area-dims-label">L × W × H</div>
+              <div class="area-dims">18 × 15 × 9 ft</div>
+            </td>
+            <td>
+              <span class="area-substrate-count">
+                <i class="fas fa-layer-group" style="font-size:10px;"></i> 3
+              </span>
+            </td>
+            <td style="font-size:13px;color:#374151;font-weight:600;">756 sq ft</td>
+            <td class="area-total">$2,100.00</td>
+          </tr>
+
+          <!-- AREA 2: Master Bedroom -->
+          <tr class="area-row">
+            <td>
+              <div class="area-name-cell">
+                <div class="area-icon interior"><i class="fas fa-bed"></i></div>
+                <div>
+                  <button class="area-name-btn" onclick="openModal('master-bedroom')">
+                    Master Bedroom
+                    <i class="fas fa-arrow-up-right-from-square"></i>
+                  </button>
+                  <div class="area-name-hint">
+                    <span class="badge-area-type badge-interior">Interior</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="area-dims-label">L × W × H</div>
+              <div class="area-dims">14 × 12 × 9 ft</div>
+            </td>
+            <td>
+              <span class="area-substrate-count">
+                <i class="fas fa-layer-group" style="font-size:10px;"></i> 3
+              </span>
+            </td>
+            <td style="font-size:13px;color:#374151;font-weight:600;">462 sq ft</td>
+            <td class="area-total">$1,650.00</td>
+          </tr>
+
+          <!-- AREA 3: Exterior Front -->
+          <tr class="area-row">
+            <td>
+              <div class="area-name-cell">
+                <div class="area-icon exterior"><i class="fas fa-home"></i></div>
+                <div>
+                  <button class="area-name-btn" onclick="openModal('exterior-front')">
+                    Exterior Front
+                    <i class="fas fa-arrow-up-right-from-square"></i>
+                  </button>
+                  <div class="area-name-hint">
+                    <span class="badge-area-type badge-exterior">Exterior</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="area-dims-label">W × H</div>
+              <div class="area-dims">45 × 18 ft</div>
+            </td>
+            <td>
+              <span class="area-substrate-count">
+                <i class="fas fa-layer-group" style="font-size:10px;"></i> 4
+              </span>
+            </td>
+            <td style="font-size:13px;color:#374151;font-weight:600;">810 sq ft</td>
+            <td class="area-total">$3,200.00</td>
+          </tr>
+
+          <!-- AREA 4: Kitchen -->
+          <tr class="area-row">
+            <td>
+              <div class="area-name-cell">
+                <div class="area-icon interior"><i class="fas fa-utensils"></i></div>
+                <div>
+                  <button class="area-name-btn" onclick="openModal('kitchen')">
+                    Kitchen
+                    <i class="fas fa-arrow-up-right-from-square"></i>
+                  </button>
+                  <div class="area-name-hint">
+                    <span class="badge-area-type badge-interior">Interior</span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="area-dims-label">L × W × H</div>
+              <div class="area-dims">12 × 10 × 9 ft</div>
+            </td>
+            <td>
+              <span class="area-substrate-count">
+                <i class="fas fa-layer-group" style="font-size:10px;"></i> 2
+              </span>
+            </td>
+            <td style="font-size:13px;color:#374151;font-weight:600;">282 sq ft</td>
+            <td class="area-total">$1,500.00</td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      <!-- Totals -->
+      <div class="totals-section">
+        <div class="totals-row">
+          <span class="totals-label">Subtotal</span>
+          <span class="totals-value">$8,450.00</span>
+        </div>
+        <div class="totals-row">
+          <span class="totals-label">Discount</span>
+          <span class="totals-value" style="color:#15803d;">— $0.00</span>
+        </div>
+        <div class="totals-divider"></div>
+        <div class="totals-row grand">
+          <span class="totals-label">Total</span>
+          <span class="totals-value">$8,450.00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="terms-section">
+      <p class="terms-title">Terms &amp; Conditions</p>
+      <p style="margin:0;">Payment is due upon completion of work. A 50% deposit may be required prior to project start. All work is guaranteed for 12 months from the date of completion. Any changes to the scope of work will require a written change order. DripJobs Painting LLC is fully licensed and insured in the state of Florida.</p>
+    </div>
+
+  </div><!-- end page-body -->
+</div><!-- end main-content -->
+
+
+<!-- ════════════════════════════════════════
+     AREA ITEM MODAL
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="area-modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="area-modal" id="area-modal">
+
+    <!-- Modal Header -->
+    <div class="area-modal-header">
+      <div class="area-modal-title-row">
+        <p class="area-modal-label">Area Item</p>
+        <p class="area-modal-name" id="modal-area-name">
+          <!-- filled by JS -->
+        </p>
+      </div>
+      <button class="area-modal-close" onclick="closeModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+
+    <!-- Area Summary Stats Bar -->
+    <div class="area-stats-bar">
+      <div class="area-stat">
+        <span class="area-stat-label">Dimensions</span>
+        <span class="area-stat-value" id="modal-stat-dims">—</span>
+      </div>
+      <div class="area-stat">
+        <span class="area-stat-label">Substrates</span>
+        <span class="area-stat-value" id="modal-stat-substrates">—</span>
+      </div>
+      <div class="area-stat">
+        <span class="area-stat-label">Total Sq Ft</span>
+        <span class="area-stat-value" id="modal-stat-sqft">—</span>
+      </div>
+      <div class="area-stat">
+        <span class="area-stat-label">Area Subtotal</span>
+        <span class="area-stat-value highlight" id="modal-stat-subtotal">—</span>
+      </div>
+    </div>
+
+    <!-- Modal Body: scrollable items table -->
+    <div class="area-modal-body">
+      <table class="modal-items-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="item-name-col">Item</th>
+            <th>Quantity</th>
+            <th>Hours</th>
+            <th>Materials</th>
+            <th>Labor</th>
+            <th>Sales Tax</th>
+            <th style="text-align:right;">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody id="modal-items-tbody">
+          <!-- filled by JS -->
+        </tbody>
+      </table>
+
+      <!-- Modal Totals Row -->
+      <div class="modal-totals-row" id="modal-totals-row">
+        <div class="modal-total-cell">
+          <span class="modal-total-label">Total Hours</span>
+          <span class="modal-total-value" id="modal-tot-hours">—</span>
+        </div>
+        <div class="modal-total-cell">
+          <span class="modal-total-label">Total Materials</span>
+          <span class="modal-total-value" id="modal-tot-materials">—</span>
+        </div>
+        <div class="modal-total-cell">
+          <span class="modal-total-label">Total Labor</span>
+          <span class="modal-total-value" id="modal-tot-labor">—</span>
+        </div>
+        <div class="modal-total-cell">
+          <span class="modal-total-label">Sales Tax</span>
+          <span class="modal-total-value" id="modal-tot-tax">—</span>
+        </div>
+        <div class="modal-total-cell">
+          <span class="modal-total-label">Project Total</span>
+          <span class="modal-total-value highlight" id="modal-tot-total">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="area-modal-footer">
+      <button class="btn-action" onclick="closeModal()">Close</button>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+// ── Area data ──────────────────────────────────────────────────
+var areaData = {
+  'living-room': {
+    name: 'Living Room',
+    type: 'Interior',
+    typeClass: 'badge-interior',
+    dims: '18 × 15 × 9 ft',
+    substrates: 3,
+    sqft: '756 sq ft',
+    subtotal: '$2,100.00',
+    totals: { hours: '38.0', materials: '$550.60', labor: '$1,434.15', tax: '$115.25', total: '$2,100.00' },
+    items: [
+      {
+        name: '(Roll) Walls',
+        category: 'Walls',
+        qty: 1, hours: 20.0,
+        materials: '$250.40', labor: '$899.10', tax: '$62.45', subtotal: '$1,211.95',
+        substrate: 'Walls',
+        product: 'BM Aura Interior Matte',
+        measurement: 'Sq Ft (Walls) — 486 sq ft',
+        total: '$1,211.95'
+      },
+      {
+        name: '(Roll) Ceiling',
+        category: 'Ceiling',
+        qty: 1, hours: 10.0,
+        materials: '$180.20', labor: '$445.50', tax: '$31.20', subtotal: '$656.90',
+        substrate: 'Ceiling',
+        product: 'BM Waterborne Ceiling White',
+        measurement: 'Sq Ft (Floor) — 270 sq ft',
+        total: '$656.90'
+      },
+      {
+        name: '(Brush) Trim & Doors',
+        category: 'Trim',
+        qty: 1, hours: 8.0,
+        materials: '$120.00', labor: '$89.70', tax: '$21.60', subtotal: '$231.30',
+        substrate: 'Trim & Doors',
+        product: 'BM Advance Semi-Gloss',
+        measurement: 'Price Per Item — 1 item',
+        total: '$231.30'
+      }
+    ]
+  },
+  'master-bedroom': {
+    name: 'Master Bedroom',
+    type: 'Interior',
+    typeClass: 'badge-interior',
+    dims: '14 × 12 × 9 ft',
+    substrates: 3,
+    sqft: '462 sq ft',
+    subtotal: '$1,650.00',
+    totals: { hours: '28.5', materials: '$420.00', labor: '$1,102.30', tax: '$127.70', total: '$1,650.00' },
+    items: [
+      {
+        name: '(Roll) Walls',
+        category: 'Walls',
+        qty: 1, hours: 14.0,
+        materials: '$210.00', labor: '$699.30', tax: '$58.80', subtotal: '$968.10',
+        substrate: 'Walls',
+        product: 'BM Aura Interior Matte',
+        measurement: 'Sq Ft (Walls) — 378 sq ft',
+        total: '$968.10'
+      },
+      {
+        name: '(Roll) Ceiling',
+        category: 'Ceiling',
+        qty: 1, hours: 8.5,
+        materials: '$130.00', labor: '$277.20', tax: '$40.50', subtotal: '$447.70',
+        substrate: 'Ceiling',
+        product: 'BM Waterborne Ceiling White',
+        measurement: 'Sq Ft (Floor) — 168 sq ft',
+        total: '$447.70'
+      },
+      {
+        name: '(Brush) Doors',
+        category: 'Doors',
+        qty: 2, hours: 6.0,
+        materials: '$80.00', labor: '$125.90', tax: '$28.40', subtotal: '$234.30',
+        substrate: 'Doors',
+        product: 'BM Advance Semi-Gloss',
+        measurement: 'Price Per Item — 2 doors',
+        total: '$234.30'
+      }
+    ]
+  },
+  'exterior-front': {
+    name: 'Exterior Front',
+    type: 'Exterior',
+    typeClass: 'badge-exterior',
+    dims: '45 × 18 ft',
+    substrates: 4,
+    sqft: '810 sq ft',
+    subtotal: '$3,200.00',
+    totals: { hours: '52.0', materials: '$980.00', labor: '$1,973.28', tax: '$246.72', total: '$3,200.00' },
+    items: [
+      {
+        name: '(Roll) Siding',
+        category: 'Exterior Paint',
+        qty: 1, hours: 26.0,
+        materials: '$520.00', labor: '$1,430.00', tax: '$121.00', subtotal: '$2,071.00',
+        substrate: 'Siding',
+        product: 'BM Aura Exterior Satin',
+        measurement: 'Sq Ft (Walls) — 650 sq ft',
+        total: '$2,071.00'
+      },
+      {
+        name: '(Brush) Fascia & Soffit',
+        category: 'Fascia',
+        qty: 1, hours: 12.0,
+        materials: '$240.00', labor: '$540.00', tax: '$58.50', subtotal: '$838.50',
+        substrate: 'Fascia & Soffit',
+        product: 'BM Advance Satin',
+        measurement: 'Linear Foot — 90 lin ft',
+        total: '$838.50'
+      },
+      {
+        name: '(Brush) Trim & Window Casings',
+        category: 'Trim',
+        qty: 1, hours: 10.0,
+        materials: '$160.00', labor: '$780.00', tax: '$52.50', subtotal: '$992.50',
+        substrate: 'Trim & Window Casings',
+        product: 'BM Advance Semi-Gloss',
+        measurement: 'Price Per Item — 1 item',
+        total: '$992.50'
+      },
+      {
+        name: '(Brush) Front Door',
+        category: 'Doors',
+        qty: 1, hours: 4.0,
+        materials: '$60.00', labor: '$450.00', tax: '$14.72', subtotal: '$524.72',
+        substrate: 'Front Door',
+        product: 'BM Aura Grand Entrance',
+        measurement: 'Price Per Item — 1 door',
+        total: '$524.72'
+      }
+    ]
+  },
+  'kitchen': {
+    name: 'Kitchen',
+    type: 'Interior',
+    typeClass: 'badge-interior',
+    dims: '12 × 10 × 9 ft',
+    substrates: 2,
+    sqft: '282 sq ft',
+    subtotal: '$1,500.00',
+    totals: { hours: '18.0', materials: '$310.00', labor: '$538.20', tax: '$151.80', total: '$1,500.00' },
+    items: [
+      {
+        name: '(Roll) Walls',
+        category: 'Walls',
+        qty: 1, hours: 10.0,
+        materials: '$180.00', labor: '$340.20', tax: '$87.80', subtotal: '$608.00',
+        substrate: 'Walls',
+        product: 'BM Aura Bath & Spa',
+        measurement: 'Sq Ft (Walls) — 162 sq ft',
+        total: '$608.00'
+      },
+      {
+        name: '(Roll) Ceiling',
+        category: 'Ceiling',
+        qty: 1, hours: 8.0,
+        materials: '$130.00', labor: '$198.00', tax: '$64.00', subtotal: '$392.00',
+        substrate: 'Ceiling',
+        product: 'BM Waterborne Ceiling White',
+        measurement: 'Sq Ft (Floor) — 120 sq ft',
+        total: '$392.00'
+      }
+    ]
+  }
+};
+
+// ── Open / Close ────────────────────────────────────────────────
+function openModal(areaId) {
+  var area = areaData[areaId];
+  if (!area) return;
+
+  // Header
+  document.getElementById('modal-area-name').innerHTML =
+    area.name + ' <span class="badge-area-type ' + area.typeClass + '" style="font-size:11px;">' + area.type + '</span>';
+
+  // Stats bar
+  document.getElementById('modal-stat-dims').textContent = area.dims;
+  document.getElementById('modal-stat-substrates').textContent = area.substrates + ' substrates';
+  document.getElementById('modal-stat-sqft').textContent = area.sqft;
+  document.getElementById('modal-stat-subtotal').textContent = area.subtotal;
+
+  // Totals row
+  document.getElementById('modal-tot-hours').textContent = area.totals.hours;
+  document.getElementById('modal-tot-materials').textContent = area.totals.materials;
+  document.getElementById('modal-tot-labor').textContent = area.totals.labor;
+  document.getElementById('modal-tot-tax').textContent = area.totals.tax;
+  document.getElementById('modal-tot-total').textContent = area.totals.total;
+
+  // Build items
+  var tbody = document.getElementById('modal-items-tbody');
+  tbody.innerHTML = '';
+  area.items.forEach(function(item, idx) {
+    var itemId = areaId + '-item-' + idx;
+
+    // Main row
+    var tr = document.createElement('tr');
+    tr.className = 'item-row';
+    tr.id = 'item-row-' + itemId;
+    tr.setAttribute('onclick', 'toggleItem("' + itemId + '")');
+    tr.innerHTML =
+      '<td class="item-chevron-cell"><div class="item-chevron" id="chev-' + itemId + '"><i class="fas fa-chevron-down"></i></div></td>' +
+      '<td>' +
+        '<div class="item-name-wrap">' +
+          '<div class="item-name-main">' + item.name + ' <span class="item-category-tag">' + item.category + '</span></div>' +
+          '<div class="item-name-sub"><i class="fas fa-expand-alt"></i> Click to expand substrate detail</div>' +
+        '</div>' +
+      '</td>' +
+      '<td><span class="item-val">' + item.qty + '</span></td>' +
+      '<td><span class="item-val">' + item.hours + ' <span class="item-val-unit">hrs</span></span></td>' +
+      '<td><span class="item-val">' + item.materials + '</span></td>' +
+      '<td><span class="item-val">' + item.labor + '</span></td>' +
+      '<td><span class="item-val">' + item.tax + '</span></td>' +
+      '<td>' + item.subtotal + '</td>';
+    tbody.appendChild(tr);
+
+    // Detail row
+    var detailTr = document.createElement('tr');
+    detailTr.className = 'item-detail-row';
+    detailTr.id = 'detail-' + itemId;
+    detailTr.innerHTML =
+      '<td colspan="8">' +
+        '<div class="item-detail-inner">' +
+          '<div class="detail-block">' +
+            '<div class="detail-block-label">Substrate</div>' +
+            '<div class="detail-block-value">' + item.substrate + '</div>' +
+          '</div>' +
+          '<div class="detail-block">' +
+            '<div class="detail-block-label">Product</div>' +
+            '<div class="detail-block-value">' +
+              '<span class="detail-product-pill"><i class="fas fa-tint"></i>' + item.product + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="detail-block">' +
+            '<div class="detail-block-label">Measurement</div>' +
+            '<div class="detail-block-value">' + item.measurement + '</div>' +
+          '</div>' +
+          '<div class="detail-block">' +
+            '<div class="detail-block-label">Total</div>' +
+            '<div class="detail-block-value total-val">' + item.total + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</td>';
+    tbody.appendChild(detailTr);
+  });
+
+  document.getElementById('area-modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('area-modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('area-modal-overlay')) closeModal();
+}
+
+// ── Item expand ──────────────────────────────────────────────────
+function toggleItem(itemId) {
+  var row = document.getElementById('item-row-' + itemId);
+  var detail = document.getElementById('detail-' + itemId);
+  var chev = document.getElementById('chev-' + itemId);
+  var isOpen = detail.classList.contains('open');
+
+  if (isOpen) {
+    detail.classList.remove('open');
+    row.classList.remove('expanded');
+  } else {
+    detail.classList.add('open');
+    row.classList.add('expanded');
+  }
+}
+
+// Keyboard: Escape closes modal
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+
+</body>
+</html>
