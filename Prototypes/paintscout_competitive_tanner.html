@@ -268,11 +268,38 @@
 
   /* ── RESPONSIVE ── */
   @media (max-width: 720px) {
-    .body { grid-template-columns: 1fr; }
-    .col:last-child { border-left: none; border-top: 1px solid var(--border); }
-    .actions-grid { grid-template-columns: 1fr 1fr; }
+    body { padding: 0; }
+    .page { border-radius: 0; box-shadow: none; }
+
+    .header { padding: 14px 16px; gap: 12px; }
+    .dj-logo { width: 30px; height: 30px; }
+    .header-left { gap: 10px; }
+    .header-titles h1 { font-size: 13.5px; }
+    .header-titles p { font-size: 10px; }
     .legend { display: none; }
-    .expand-inner { grid-template-columns: 1fr; }
+
+    .body { grid-template-columns: 1fr; background: var(--white); }
+    .col { padding: 16px 14px 14px; }
+    .col:last-child { border-left: none; border-top: 6px solid var(--dj-lavender2); }
+
+    .card-header-row { padding: 11px 12px; }
+    .adv-header-row { padding: 11px 12px; }
+    .card-text h3, .adv-content h3 { font-size: 13px; }
+    .card-text p, .adv-content p { font-size: 11.5px; }
+    .expand-inner { grid-template-columns: 1fr; padding: 0 12px 12px; }
+    .expand-text { font-size: 11.5px; }
+
+    .next-actions { padding: 14px 16px; }
+    .actions-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .action-text { font-size: 11px; }
+
+    .footer { padding: 10px 16px; flex-direction: column; gap: 3px; align-items: flex-start; }
+  }
+
+  @media (max-width: 420px) {
+    .header-titles p { display: none; }
+    .actions-grid { grid-template-columns: 1fr; }
+    .col { padding: 14px 12px; }
   }
 </style>
 </head>
