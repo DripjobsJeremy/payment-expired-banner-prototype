@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PaintScout Competitive Response — DripJobs</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --dj-purple:    #6B4C9A;
+    --dj-purple-d:  #4A2D7A;
+    --dj-purple-dd: #2A1B40;
+    --dj-accent:    #8B85EA;
+    --dj-lavender:  #EDE7F6;
+    --dj-lavender2: #F8F5FD;
+    --green:        #22C55E;
+    --green-bg:     #F0FDF4;
+    --green-border: #BBF7D0;
+    --blue:         #3B82F6;
+    --blue-bg:      #EFF6FF;
+    --amber:        #F59E0B;
+    --amber-bg:     #FFFBEB;
+    --dark:         #32415B;
+    --mid:          #80879A;
+    --muted:        #80879A;
+    --border:       #DAD8E3;
+    --white:        #FFFFFF;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dj-lavender2);
+    color: var(--dark);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px 40px;
+  }
+
+  .page {
+    width: 100%;
+    max-width: 1200px;
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(59,26,100,0.13), 0 2px 8px rgba(59,26,100,0.06);
+    animation: pageIn 0.5s ease both;
+  }
+
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--dj-purple-dd);
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .dj-logo {
+    width: 38px; height: 38px;
+    flex-shrink: 0;
+  }
+  .header-titles h1 {
+    font-family: 'DM Serif Display', serif; font-weight: 400; font-size: 17px;
+    color: white; letter-spacing: -0.2px;
+  }
+  .header-titles h1 span { color: var(--dj-accent); }
+  .header-titles p { font-size: 11px; color: #B8A8D4; margin-top: 2px; letter-spacing: 0.3px; }
+  .legend { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+  .pill {
+    display: inline-flex; align-items: center; padding: 4px 11px;
+    border-radius: 20px; font-size: 10px; font-weight: 700;
+    letter-spacing: 0.8px; text-transform: uppercase; color: white; white-space: nowrap;
+  }
+  .pill.green  { background: var(--green); }
+  .pill.blue   { background: var(--blue); }
+  .pill.amber  { background: var(--amber); }
+
+  /* ── BODY GRID ── */
+  .body {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0; background: var(--dj-lavender2);
+  }
+  .col { padding: 24px 24px 20px; animation: colIn 0.55s ease both; }
+  .col:first-child { animation-delay: 0.08s; }
+  .col:last-child  { animation-delay: 0.16s; border-left: 1px solid var(--border); }
+  @keyframes colIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .col-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 6px; }
+  .col-accent {
+    width: 4px; height: 34px; border-radius: 2px;
+    background: var(--dj-accent); flex-shrink: 0; margin-top: 2px;
+  }
+  .col-title-block h2 {
+    font-family: 'DM Sans', sans-serif; font-size: 11.5px; font-weight: 700;
+    letter-spacing: 1.8px; text-transform: uppercase; color: var(--dj-purple-d);
+  }
+  .col-title-block p { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .cards { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+
+  /* ── CLICKABLE CARD BASE ── */
+  .card, .adv-card {
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    box-shadow: 0 1px 3px rgba(107,76,154,0.06);
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+    overflow: hidden;
+  }
+  .card:hover, .adv-card:hover {
+    box-shadow: 0 4px 16px rgba(107,76,154,0.14);
+    transform: translateY(-1px);
+  }
+  .card.open, .adv-card.open {
+    border-color: var(--dj-accent);
+    box-shadow: 0 4px 20px rgba(107,76,154,0.16);
+    transform: translateY(0);
+  }
+  .card.shipped { background: var(--green-bg); border-color: var(--green-border); }
+  .card.shipped.open { border-color: var(--green); }
+  .card.scoping { background: var(--amber-bg); border-color: #FDE68A; }
+  .card.scoping.open { border-color: var(--amber); }
+
+  /* ── CARD HEADER ROW ── */
+  .card-header-row {
+    padding: 12px 14px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .adv-header-row {
+    padding: 12px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .card-text { flex: 1; min-width: 0; }
+  .card-text h3 { font-size: 12.5px; font-weight: 700; color: var(--dark); line-height: 1.3; }
+  .card-text p  { font-size: 11px; color: var(--mid); margin-top: 3px; line-height: 1.45; }
+  .card-text .ticket-id {
+    font-size: 10px; color: var(--dj-accent);
+    margin-top: 5px; font-weight: 600; letter-spacing: 0.2px;
+  }
+
+  .card-right {
+    display: flex; flex-direction: column; align-items: flex-end;
+    gap: 8px; flex-shrink: 0; padding-top: 1px;
+  }
+
+  /* ── CHEVRON ── */
+  .chevron {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--dj-lavender);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, transform 0.25s;
+    flex-shrink: 0;
+  }
+  .chevron svg { display: block; transition: transform 0.25s; }
+  .chevron svg path { stroke: var(--dj-purple); transition: stroke 0.2s; }
+  .open .chevron { background: var(--dj-accent); }
+  .open .chevron svg path { stroke: white; }
+  .open .chevron svg { transform: rotate(180deg); }
+
+  /* ── ADV CARD INTERNALS ── */
+  .adv-bar { width: 4px; border-radius: 2px; flex-shrink: 0; align-self: stretch; min-height: 40px; }
+  .adv-bar.purple { background: var(--dj-purple); }
+  .adv-bar.green  { background: var(--green); }
+  .adv-bar.accent { background: var(--dj-accent); }
+  .adv-content { flex: 1; min-width: 0; }
+  .adv-content h3 { font-size: 12.5px; font-weight: 700; color: var(--dark); line-height: 1.3; }
+  .adv-content p  { font-size: 11px; color: var(--mid); margin-top: 3px; line-height: 1.45; }
+  .adv-right {
+    display: flex; flex-direction: column; align-items: flex-end;
+    gap: 6px; flex-shrink: 0; margin-left: auto;
+  }
+
+  .beyond-tag {
+    display: inline-flex; align-items: center; gap: 4px; margin-top: 6px;
+    background: linear-gradient(135deg, var(--dj-purple-d), var(--dj-accent));
+    color: white; padding: 2px 8px; border-radius: 20px;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.7px; text-transform: uppercase;
+  }
+  .ticket-tag {
+    display: inline-block; margin-top: 5px;
+    font-size: 10px; color: var(--dj-accent); font-weight: 600;
+  }
+
+  /* ── EXPAND PANEL ── */
+  .expand-panel {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .expand-inner {
+    padding: 0 14px 14px;
+    border-top: 1px dashed var(--border);
+    margin: 0 0 0 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .expand-inner.single { grid-template-columns: 1fr; }
+  .expand-section { padding-top: 12px; }
+  .expand-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 1.6px; text-transform: uppercase;
+    color: var(--dj-accent); margin-bottom: 6px;
+  }
+  .expand-text {
+    font-size: 11px; color: var(--mid); line-height: 1.6;
+  }
+  .expand-text em {
+    color: var(--dark); font-style: normal; font-weight: 600;
+  }
+  .no-ticket-note {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 10px; color: var(--muted);
+    background: var(--dj-lavender);
+    padding: 4px 10px; border-radius: 6px; margin-top: 4px;
+  }
+
+  /* ── NEXT ACTIONS ── */
+  .next-actions {
+    background: var(--dj-purple-dd); padding: 18px 28px;
+    animation: colIn 0.6s ease 0.28s both;
+  }
+  .next-actions h3 {
+    font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--dj-lavender); margin-bottom: 14px; opacity: 0.8;
+  }
+  .actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .action-item { display: flex; align-items: flex-start; gap: 10px; }
+  .action-num {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--dj-accent); color: white;
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .action-text { font-size: 11px; color: #C8B8E8; line-height: 1.4; }
+
+  /* ── FOOTER ── */
+  .footer {
+    background: #1E1430; padding: 10px 28px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer p { font-size: 9.5px; color: #7A6A9A; letter-spacing: 0.3px; }
+  .footer .conf {
+    font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    font-size: 9px; color: #5A4A7A;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 720px) {
+    .body { grid-template-columns: 1fr; }
+    .col:last-child { border-left: none; border-top: 1px solid var(--border); }
+    .actions-grid { grid-template-columns: 1fr 1fr; }
+    .legend { display: none; }
+    .expand-inner { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <svg class="dj-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd">
+        <path fill="white" d="M 42.580,16.819 L 46.461,4.136 L 53.539,4.136 L 57.420,16.819 L 68.216,21.291 L 79.928,15.067 L 84.933,20.072 L 78.709,31.784 L 83.181,42.580 L 95.864,46.461 L 95.864,53.539 L 83.181,57.420 L 78.709,68.216 L 84.933,79.928 L 79.928,84.933 L 68.216,78.709 L 57.420,83.181 L 53.539,95.864 L 46.461,95.864 L 42.580,83.181 L 31.784,78.709 L 20.072,84.933 L 15.067,79.928 L 21.291,68.216 L 16.819,57.420 L 4.136,53.539 L 4.136,46.461 L 16.819,42.580 L 21.291,31.784 L 15.067,20.072 L 20.072,15.067 L 31.784,21.291 Z M 67.000,50 A 17,17 0 1 0 33.000,50 A 17,17 0 1 0 67.000,50 Z"/>
+      </svg>
+      <div class="header-titles">
+        <h1>DripJobs &nbsp;·&nbsp; <span>PaintScout Competitive Response</span></h1>
+        <p>Product Management &nbsp;·&nbsp; May 2026 &nbsp;·&nbsp; Prepared by Jeremy Harrison, PM</p>
+      </div>
+    </div>
+    <div class="legend">
+      <span class="pill green">Shipped</span>
+      <span class="pill blue">Triage</span>
+      <span class="pill amber">Scoping</span>
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- LEFT: CLOSING THE GAPS -->
+    <div class="col">
+      <div class="col-header">
+        <div class="col-accent"></div>
+        <div class="col-title-block">
+          <h2>Closing the Gaps</h2>
+          <p>Features PaintScout has today — DripJobs response</p>
+        </div>
+      </div>
+      <div class="cards">
+
+        <!-- Tax Rate Entry -->
+        <div class="card" onclick="toggle(this)">
+          <div class="card-header-row">
+            <div class="card-text">
+              <h3>Tax Rate Entry</h3>
+              <p>Inline per-proposal modal with template inheritance &amp; source toggle. Tax flows to Customer Portal, PDF, and invoices.</p>
+              <div class="ticket-id">86b7u2fr9</div>
+            </div>
+            <div class="card-right">
+              <span class="pill blue">Triage</span>
+              <div class="chevron"><svg width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1L4.5 5L8 1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-inner">
+              <div class="expand-section">
+                <div class="expand-label">Summary</div>
+                <div class="expand-text">Replace the Company Settings-level tax rate system with a simplified modal-based tax entry experience. The Tax Rate row in the Payment Settings card displays the current saved rate alongside an <em>Edit</em> button. Clicking Edit opens a modal where the user enters a percentage, validates it, and saves. Totals update only on Save. Proposal Templates support the same pattern. There is no Tax Name field — the tax line in Totals always displays as <em>"Tax."</em></div>
+              </div>
+              <div class="expand-section">
+                <div class="expand-label">User Story</div>
+                <div class="expand-text"><em>As a user viewing the Proposal Builder,</em> I want to click Edit next to the Tax Rate setting and enter a percentage in a modal, so that I can set tax for this job without accidentally changing it while browsing settings.<br><br><em>As a user creating or editing a Proposal Template,</em> I want to set a Tax Rate via the same Edit modal experience, so that I can pre-configure a reusable template for a specific tax rate.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Named Discount Library -->
+        <div class="card" onclick="toggle(this)">
+          <div class="card-header-row">
+            <div class="card-text">
+              <h3>Named Discount Library</h3>
+              <p>Company-level discount library selectable in Apply Discount modal. Replaces ad-hoc entry with consistent, labeled discounts.</p>
+              <div class="ticket-id">86ba231jg</div>
+            </div>
+            <div class="card-right">
+              <span class="pill blue">Triage</span>
+              <div class="chevron"><svg width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1L4.5 5L8 1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-inner">
+              <div class="expand-section">
+                <div class="expand-label">Summary</div>
+                <div class="expand-text">Allow contractors to define a reusable library of named discount types in Company Settings. Each entry includes a label and a percentage rate. When applying a discount, users select from their saved library rather than entering a rate manually. Manual ad-hoc entry remains available alongside library selection. Library discounts carry their label to the Customer Portal and PDF.</div>
+              </div>
+              <div class="expand-section">
+                <div class="expand-label">User Story</div>
+                <div class="expand-text"><em>As a contractor configuring my account,</em> I want to define a list of named discounts (e.g., "Scheduling Incentive — 10%", "Veteran Appreciation — 10%"), so that my team can apply consistent, correctly-labeled discounts to every proposal without memorizing or mistyping rates.<br><br><em>As a user applying a discount in the Proposal Builder,</em> I want to select a discount from my saved library, so that the name and rate are applied automatically with the correct label visible to the customer.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Proposal Expiry Enforcement -->
+        <div class="card" onclick="toggle(this)">
+          <div class="card-header-row">
+            <div class="card-text">
+              <h3>Proposal Expiry Enforcement</h3>
+              <p>Block customer signing on expired proposals. Re-Open flow mirrors rejected proposal pattern. UI placement already solved in new Proposal UI.</p>
+              <div class="ticket-id">86b2xn7hx</div>
+            </div>
+            <div class="card-right">
+              <span class="pill blue">Triage</span>
+              <div class="chevron"><svg width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1L4.5 5L8 1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-inner">
+              <div class="expand-section">
+                <div class="expand-label">Summary</div>
+                <div class="expand-text">The expiration date field exists and is surfaced in the new Proposal UI header row. Currently it is informational only. This ticket makes enforcement real: expired proposals block customer signing in the Customer Portal, restrict contractor edits and resends, and surface a clear expired state with a <em>Re-Open flow</em> (set new date → edit → re-send) mirroring the existing rejected proposal pattern.</div>
+              </div>
+              <div class="expand-section">
+                <div class="expand-label">User Story</div>
+                <div class="expand-text"><em>As a contractor who set an expiration date,</em> I want the system to enforce that deadline automatically, so that pricing is protected and customers understand the offer is no longer valid without my re-approval.<br><br><em>As a customer viewing an expired proposal,</em> I want to see a clear message explaining the proposal has expired, so that I know to contact the contractor rather than attempting to sign.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Round Gallons -->
+        <div class="card shipped" onclick="toggle(this)">
+          <div class="card-header-row">
+            <div class="card-text">
+              <h3>Round Gallons + Overage Monetization</h3>
+              <p>Shows Rd. Gallons, Overage (gallons delta + dollar cost), and row-selection in the Product Report. Contractors select rows and add overage costs directly to the proposal as individual or combined touch-up line items. Locks at data layer for future Change Orders.</p>
+              <div class="ticket-id">86azcxv4c &nbsp;·&nbsp; Shipped May 11, 2026</div>
+            </div>
+            <div class="card-right">
+              <span class="pill green">Shipped</span>
+              <div class="chevron"><svg width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1L4.5 5L8 1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-inner">
+              <div class="expand-section">
+                <div class="expand-label">Summary</div>
+                <div class="expand-text">A "Show Round Gallons" toggle in the Product Report reveals three unified columns: <em>Rd. Gallons</em>, <em>Overage</em> (gallons delta + dollar cost stacked), and a row-selection checkbox. Selecting rows surfaces a floating action panel with two options: <em>Add as Individual Line Items</em> or <em>Add as Single Touch-Up Line Item.</em> Committed rows lock with a ✓ Added badge. Packages mode disables the toggle. Once overage is added, rounding is locked at the data layer for any future Change Orders.</div>
+              </div>
+              <div class="expand-section">
+                <div class="expand-label">User Story</div>
+                <div class="expand-text"><em>As a painting contractor,</em> I want the Product Report in my proposal to show how many whole gallons of each product I actually need to purchase, and the cost of that overage, so that I can accurately order materials and optionally recover those costs in the proposal without manual calculation.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hour & Price Rounding -->
+        <div class="card scoping" onclick="toggle(this)">
+          <div class="card-header-row">
+            <div class="card-text">
+              <h3>Hour &amp; Price Rounding Controls</h3>
+              <p>Configurable rounding for hours (0.5 / 0.25 / 1hr) and proposal price totals (nearest dollar / always up). Sequence post–Round Gallons.</p>
+            </div>
+            <div class="card-right">
+              <span class="pill amber">Scoping</span>
+              <div class="chevron"><svg width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1L4.5 5L8 1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-inner single">
+              <div class="expand-section">
+                <div class="expand-label">Status</div>
+                <div class="expand-text">No ticket created yet. Confirmed gap from Daniel Lee's PaintScout walkthrough — PaintScout offers separate settings-level rounding controls for hours (0.5 / 0.25 / 1hr / don't round) and price (nearest dollar / always round up / no rounding). Scoping will begin post–Round Gallons ship learnings. Price rounding is higher priority of the two given it is customer-facing on the estimate.</div>
+                <div class="no-ticket-note">⚠ Ticket not yet created — awaiting scope session</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT: DRIPJOBS ADVANTAGES -->
+    <div class="col">
+      <div class="col-header">
+        <div class="col-accent"></div>
+        <div class="col-title-block">
+          <h2>DripJobs Advantages</h2>
+          <p>What PaintScout doesn't have</p>
+        </div>
+      </div>
+      <div class="cards">
+
+        <!-- Discount Line Item Expiry -->
+        <div class="adv-card" onclick="toggle(this)">
+          <div class="adv-header-row">
+            <div class="adv-bar purple"></div>
+            <div class="adv-content">
+              <h3>Discount Line Item Expiry + Countdown Timer</h3>
+              <p>Per-discount expiry dates with a live countdown in the Customer Portal. Proposal stays live — only the incentive expires. Proposal total recalculates automatically.</p>
+              <div><span class="beyond-tag">★ Beyond PaintScout</span></div>
+              <div class="ticket-tag">86ba25xnm</div>
+            </div>
+            <div class="adv-right">
+              <div class="chevron"><svg width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1L4.5 5L8 1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-inner">
+              <div class="expand-section">
+                <div class="expand-label">Summary</div>
+                <div class="expand-text">Allow contractors to set an optional expiration date on individual discount line items. When a discount expires, it grays out in the Customer Portal with a visible <em>countdown timer</em> (days, hours, minutes) while the proposal itself remains live and signable. The proposal total recalculates to remove the expired discount. The contractor receives an in-app notification when a discount on a sent proposal lapses. Multiple discounts each expire independently. Gated on 86b2xn7hx shipping first.</div>
+              </div>
+              <div class="expand-section">
+                <div class="expand-label">User Story</div>
+                <div class="expand-text"><em>As a contractor applying a discount,</em> I want to set an expiration date on that discount so that customers feel urgency to sign before the incentive disappears, without making the whole proposal inaccessible.<br><br><em>As a customer viewing a proposal,</em> I want to see how long a discount is valid so that I understand the cost of waiting to approve.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Proposal Timeline Fields -->
+        <div class="adv-card" onclick="toggle(this)">
+          <div class="adv-header-row">
+            <div class="adv-bar purple"></div>
+            <div class="adv-content">
+              <h3>Proposal Timeline Fields</h3>
+              <p>"If customer approves by" + Proposed Start/End Dates in the Customer Portal. Structured urgency vs. a hard cutoff. Auto-calculates start date from approval deadline.</p>
+              <div><span class="beyond-tag">★ Beyond PaintScout</span></div>
+              <div class="ticket-tag">86b15mryv</div>
+            </div>
+            <div class="adv-right">
+              <div class="chevron"><svg width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1L4.5 5L8 1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-inner">
+              <div class="expand-section">
+                <div class="expand-label">Summary</div>
+                <div class="expand-text">Add three date fields to the Proposal Builder: <em>"If customer approves by"</em> (approval deadline), <em>Proposed Start Date,</em> and <em>Proposed End Date.</em> Setting the approval deadline auto-calculates the start date as 7 days later. The Customer Portal displays the deadline prominently when the proposal is pending, and converts proposed dates to "Scheduled" dates on acceptance. Needs V1 scope pass — full ticket as written is V2-complexity.</div>
+              </div>
+              <div class="expand-section">
+                <div class="expand-label">User Story</div>
+                <div class="expand-text"><em>As a user,</em> I want to set and display proposal approval deadlines and proposed project dates so that I can create urgency for customer decisions and set clear project timeline expectations.<br><br><em>As a customer,</em> I want to see when I need to approve the proposal and when the project would start/end so that I can make informed decisions and plan accordingly.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pipeline & Automation -->
+        <div class="adv-card" onclick="toggle(this)">
+          <div class="adv-header-row">
+            <div class="adv-bar green"></div>
+            <div class="adv-content">
+              <h3>Pipeline &amp; Automation — Included on All Plans</h3>
+              <p>40+ pre-built drips, automated deal pipeline, DJ Chat, SMS. PaintScout CRM is +$42–49/mo with no native drip automation whatsoever.</p>
+            </div>
+            <div class="adv-right">
+              <div class="chevron"><svg width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1L4.5 5L8 1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-inner single">
+              <div class="expand-section">
+                <div class="expand-label">Why This Matters</div>
+                <div class="expand-text">PaintScout is estimating-first. Its CRM is a paid add-on (+$42–49/mo) with no built-in drip sequences, no automated follow-up, and no SMS. A PaintScout contractor on Day 1 has zero automated follow-up. A DripJobs contractor on Day 1 has 40+ pre-built drips running across their entire pipeline without any configuration. DripJobs' automated pipeline is included on all plans — Pro, Growth, and Scale — at no extra charge. DJ Chat, SMS blasts, and Blast campaigns are also native, with no third-party messaging tool required.</div>
+                <div class="no-ticket-note">✦ Strategic moat — no ticket needed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Job Costing -->
+        <div class="adv-card" onclick="toggle(this)">
+          <div class="adv-header-row">
+            <div class="adv-bar green"></div>
+            <div class="adv-content">
+              <h3>Job Costing, ACH, Deposits &amp; Change Orders</h3>
+              <p>Full financial operations built in. PaintScout has no job costing. DripJobs $97/mo vs PaintScout $141–168/mo for a comparable feature set.</p>
+            </div>
+            <div class="adv-right">
+              <div class="chevron"><svg width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1L4.5 5L8 1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-inner single">
+              <div class="expand-section">
+                <div class="expand-label">Why This Matters</div>
+                <div class="expand-text">PaintScout has no job costing module. DripJobs includes job costing, ACH payments, deposits, and change orders on applicable plans. At comparable feature levels: DripJobs costs ~$97/mo vs PaintScout's ~$141–168/mo when adding the CRM add-on. Change Orders are a particularly meaningful differentiator — contractors can issue scope changes, get customer signature, and track them against the original proposal, all within the same platform. PaintScout requires leaving the estimating tool entirely to handle any post-estimate financial workflow.</div>
+                <div class="no-ticket-note">✦ Strategic moat — no ticket needed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Overage Monetization -->
+        <div class="adv-card" onclick="toggle(this)">
+          <div class="adv-header-row">
+            <div class="adv-bar green"></div>
+            <div class="adv-content">
+              <h3>Overage Monetization — Revenue Recovery Built In</h3>
+              <p>PaintScout rounds products on the work order only. DripJobs lets contractors select per-product overage costs and add them to the proposal as line items in one action.</p>
+              <div><span class="beyond-tag">★ Beyond PaintScout</span></div>
+            </div>
+            <div class="adv-right">
+              <div class="chevron"><svg width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1L4.5 5L8 1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-inner single">
+              <div class="expand-section">
+                <div class="expand-label">Why This Matters</div>
+                <div class="expand-text">PaintScout's rounding feature applies to the <em>work order</em> only and is a global calculation preference — it rounds product quantities to avoid compound errors. It has no mechanism for the contractor to recover the cost of that rounding. DripJobs ships a complete flow: the contractor sees the per-product overage cost in the Product Report, selects which rows to charge for, and adds them to the proposal as <em>"Sherwin Williams ProMar 400 Interior (touch-up)"</em> line items or a single combined <em>"Leave behind touch-up product"</em> line item — all in two clicks. The feature is tied to ticket 86azcxv4c, shipped May 11, 2026.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jobi AI -->
+        <div class="adv-card" onclick="toggle(this)">
+          <div class="adv-header-row">
+            <div class="adv-bar accent"></div>
+            <div class="adv-content">
+              <h3>Jobi AI — Built on DripJobs' Own Anthropic Credentials</h3>
+              <p>Live today for line item descriptions. Roadmap: drip content generation, proposal scope summaries, lead temperature scoring. PaintScout has no AI layer.</p>
+            </div>
+            <div class="adv-right">
+              <div class="chevron"><svg width="9" height="6" viewBox="0 0 9 6" fill="none"><path d="M1 1L4.5 5L8 1" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            </div>
+          </div>
+          <div class="expand-panel">
+            <div class="expand-inner single">
+              <div class="expand-section">
+                <div class="expand-label">Why This Matters</div>
+                <div class="expand-text">DripJobs runs its own Anthropic API credentials — Jobi AI is live today for line item description generation (ticket 86b321euz, shipped). The AI Opportunities roadmap (GoForward Workstream 5, deadline May 25, 2026) expands this to: <em>drip content generation</em> (write drip sequences from a prompt), <em>proposal scope summaries</em> (AI-generated plain-English scope at the top of the Customer Portal proposal), <em>lead temperature scoring</em> (Hot / Warm / Cold / At Risk badges on deal cards), and <em>Metrics Natural Language Insights</em> (plain-English narrative on top of dashboard numbers). PaintScout has no AI layer of any kind.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- NEXT ACTIONS -->
+  <div class="next-actions">
+    <h3>Immediate Next Actions</h3>
+    <div class="actions-grid">
+      <div class="action-item">
+        <div class="action-num">1</div>
+        <div class="action-text">Write full spec for <strong style="color:#D4C5F0">86b2xn7hx</strong> — Proposal Expiry Enforcement → dev-ready</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">2</div>
+        <div class="action-text">PM scope pass on <strong style="color:#D4C5F0">86b15mryv</strong> — determine V1 vs V2 boundary for Timeline Fields</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">3</div>
+        <div class="action-text">Move <strong style="color:#D4C5F0">86b7u2fr9 + 86ba231jg</strong> to dev queue — Tax Rate + Named Discounts ready</div>
+      </div>
+      <div class="action-item">
+        <div class="action-num">4</div>
+        <div class="action-text">Create Hour &amp; Price Rounding ticket — scope post–Round Gallons ship learnings</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>DripJobs &nbsp;|&nbsp; Competitive Intelligence &nbsp;|&nbsp; May 21, 2026</p>
+    <p class="conf">Confidential — Internal Use Only</p>
+  </footer>
+
+</div>
+
+<script>
+  function toggle(el) {
+    const panel = el.querySelector('.expand-panel');
+    const isOpen = el.classList.contains('open');
+
+    if (isOpen) {
+      panel.style.maxHeight = '0';
+      el.classList.remove('open');
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + 'px';
+      el.classList.add('open');
+    }
+  }
+</script>
+</body>
+</html>
