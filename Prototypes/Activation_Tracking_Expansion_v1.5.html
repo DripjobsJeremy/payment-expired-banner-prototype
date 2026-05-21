@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activation Dashboard All Tenants Ticket 86b9512kq</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8f9fa;color:#212529;font-size:13px;line-height:1.4;}
+.proto-banner{background:linear-gradient(135deg,#7C3AED 0%,#9F7AEA 100%);color:white;padding:9px 20px;display:flex;align-items:center;gap:10px;font-size:12px;flex-wrap:wrap;}
+.proto-tag{background:rgba(255,255,255,0.22);padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+.proto-right{margin-left:auto;opacity:.85;font-size:11px;}
+.page-wrapper{max-width:100%;padding:16px 20px 32px;}
+.header{display:flex;align-items:flex-start;justify-content:space-between;padding:14px 0 12px;}
+.header h1{font-size:22px;font-weight:700;color:#111827;}
+.header p{color:#6b7280;font-size:13px;margin-top:3px;}
+.btn{padding:7px 14px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid #d1d5db;background:white;color:#374151;font-family:inherit;}
+.btn:hover{background:#f9fafb;}
+.btn-clear{background:none;border:none;color:#7C3AED;font-size:12px;font-weight:500;cursor:pointer;padding:4px 0;font-family:inherit;}
+.filters-card{background:white;border:1px solid #e5e7eb;border-radius:10px;padding:14px 16px;margin-bottom:14px;}
+.filters-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.filters-title{font-size:12px;font-weight:600;color:#374151;text-transform:uppercase;letter-spacing:.4px;}
+.filters-grid{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;}
+.filter-group{display:flex;flex-direction:column;gap:3px;}
+.filter-label{font-size:10px;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.4px;}
+.filter-select,.search-box{padding:6px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;color:#374151;background:white;cursor:pointer;min-height:32px;outline:none;font-family:inherit;}
+.filter-select:focus,.search-box:focus{border-color:#7C3AED;box-shadow:0 0 0 2px rgba(124,58,237,.1);}
+.search-box{min-width:220px;}
+.metrics-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.metric-card{background:white;border:1px solid #e5e7eb;border-radius:8px;padding:11px 14px;flex:1;min-width:140px;cursor:pointer;transition:box-shadow .12s,border-color .12s;}
+.metric-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.09);border-color:#9ca3af;}
+.metric-card.mc-active{box-shadow:0 0 0 2px #7C3AED;border-color:#7C3AED;}
+.metric-card.mc-active .mc-label{color:#7C3AED;}
+.metric-card.c-purple{border-left:3px solid #7C3AED;}
+.metric-card.c-green{border-left:3px solid #10b981;}
+.metric-card.c-amber{border-left:3px solid #f59e0b;}
+.metric-card.c-red{border-left:3px solid #ef4444;}
+.metric-card.c-blue{border-left:3px solid #3b82f6;}
+.mc-label{font-size:10px;font-weight:600;color:#9ca3af;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;}
+.mc-value{font-size:20px;font-weight:700;color:#111827;}
+.mc-sub{font-size:11px;color:#9ca3af;margin-top:2px;}
+.table-card{background:white;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;}
+.table-toolbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #e5e7eb;gap:12px;}
+.table-title{font-size:15px;font-weight:600;color:#111827;}
+.table-subtitle{font-size:12px;color:#6b7280;margin-top:1px;}
+.show-entries{display:flex;align-items:center;gap:7px;font-size:13px;color:#6b7280;white-space:nowrap;}
+.show-entries select{padding:5px 8px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;color:#374151;background:white;cursor:pointer;outline:none;font-family:inherit;}
+.show-entries select:focus{border-color:#7C3AED;box-shadow:0 0 0 2px rgba(124,58,237,.1);}
+.table-scroll{overflow-x:auto;overflow-y:auto;max-height:calc(100vh - 340px);min-height:300px;position:relative;}
+table{border-collapse:collapse;width:100%;min-width:3200px;}
+
+/* --- Sticky header row 1 (group labels) --- */
+thead tr.group-row{height:28px;}
+thead tr.group-row th{position:sticky;top:0;z-index:14;padding:5px 10px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:white;white-space:nowrap;}
+.cg-account{background:#8B5CF6;}
+.cg-core{background:#4b5563;}
+.cg-plan{background:#059669;}
+.cg-addons{background:#7C3AED;}
+.cg-integrations{background:#0891B2;}
+.cg-automations{background:#D97706;}
+
+/* --- Sticky header row 2 (column names) --- */
+thead tr.col-row th{position:sticky;top:28px;z-index:14;background:#f9fafb;padding:7px 10px;font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:.3px;border-bottom:1px solid #e5e7eb;white-space:nowrap;cursor:pointer;user-select:none;}
+thead tr.col-row th:hover{background:#efefef;color:#374151;}
+thead tr.col-row th.col-plan{background:#f0fdf8;}
+thead tr.col-row th.col-plan:hover{background:#e0faf0;}
+thead tr.col-row th.col-addons{background:#f5f3ff;}
+thead tr.col-row th.col-addons:hover{background:#ebe8fe;}
+thead tr.col-row th.col-integrations{background:#f0f9ff;}
+thead tr.col-row th.col-integrations:hover{background:#e0f2fe;}
+tbody td.col-integrations{background:#f8fbff;}
+tbody tr:hover td.col-integrations{background:#e0f7fa !important;}
+tfoot td.col-integrations{background:#cffafe;}
+tfoot td.col-integrations.group-sep{border-left:2px solid #67e8f9;}
+thead tr.col-row th.col-automations{background:#fffbeb;}
+thead tr.col-row th.col-automations:hover{background:#fef3c7;}
+tbody td.col-automations{background:#fffdf5;}
+tbody tr:hover td.col-automations{background:#fef9e7 !important;}
+tfoot td.col-automations{background:#fde68a;}
+tfoot td.col-automations.group-sep{border-left:2px solid #fcd34d;}
+thead tr.col-row th.group-sep{border-left:2px solid #c4c9d4;}
+
+/* Sort icons */
+.sort-icon{font-size:9px;opacity:.3;margin-left:3px;display:inline-block;}
+th.sort-active .sort-icon{opacity:1;color:#7C3AED;}
+
+/* --- Sticky LEFT columns ---
+     Scoped to col-row, tbody, and tfoot ONLY.
+     group-row is intentionally excluded so the group-label cells
+     (Core / Plan & Billing / Add-On Status & Cost) scroll freely
+     and stay visible as the user scrolls right. */
+thead tr.col-row th:nth-child(1),
+tbody td:nth-child(1),
+tfoot td:nth-child(1){position:sticky;left:0;z-index:4;background:white;border-right:1px solid #e5e7eb;min-width:95px;max-width:95px;}
+
+thead tr.col-row th:nth-child(2),
+tbody td:nth-child(2),
+tfoot td:nth-child(2){position:sticky;left:96px;z-index:4;background:white;border-right:1px solid #e5e7eb;min-width:190px;}
+
+/* Corner cells: sticky top + sticky left = must be highest z-index with solid bg */
+thead tr.col-row th:nth-child(1),
+thead tr.col-row th:nth-child(2){z-index:24;background:#f9fafb;}
+thead tr.col-row th:nth-child(1):hover,
+thead tr.col-row th:nth-child(2):hover{background:#efefef;}
+
+tbody tr{border-bottom:1px solid #f3f4f6;}
+tbody td{padding:8px 10px;color:#374151;white-space:nowrap;vertical-align:middle;background:white;}
+tbody td.col-plan{background:#fafffe;}
+tbody td.col-addons{background:#fdfaff;}
+tbody td.group-sep{border-left:2px solid #e5e7eb;}
+tbody tr:hover td{background:#f9fafb !important;}
+tbody tr:hover td.col-plan{background:#f3fdf8 !important;}
+tbody tr:hover td.col-addons{background:#f3f0fe !important;}
+
+tfoot td{padding:9px 10px;font-weight:700;color:#111827;background:#f3f4f6;border-top:2px solid #d1d5db;white-space:nowrap;position:sticky;bottom:0;z-index:4;font-size:12px;}
+tfoot td.col-plan{background:#e6faf2;}
+tfoot td.col-addons{background:#ede9fe;}
+tfoot td.group-sep{border-left:2px solid #c4b5fd;}
+tfoot td:nth-child(1){position:sticky;left:0;z-index:10;background:#f3f4f6;}
+tfoot td:nth-child(2){position:sticky;left:96px;z-index:10;background:#f3f4f6;}
+
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:10px;font-size:11px;font-weight:600;white-space:nowrap;line-height:1.5;}
+.b-success{background:#d1fae5;color:#065f46;}
+.b-danger{background:#fee2e2;color:#991b1b;}
+.b-warning{background:#fef3c7;color:#92400e;}
+.b-gray{background:#f3f4f6;color:#6b7280;}
+.h-healthy{background:#d1fae5;color:#065f46;}
+.h-on-track{background:#d1fae5;color:#065f46;}
+.h-warning{background:#fef3c7;color:#92400e;}
+.h-high-risk{background:#ffedd5;color:#9a3412;}
+.h-critical{background:#fee2e2;color:#991b1b;}
+.h-inactive{background:#f3f4f6;color:#6b7280;}
+.p-pro{background:#f3f4f6;color:#374151;}
+.p-advanced{background:#fff7ed;color:#c2410c;}
+.t-new{background:#dcfce7;color:#166534;}
+.t-legacy{background:#fef9c3;color:#854d0e;}
+.yn-yes{color:#059669;font-weight:700;font-size:12px;}
+.yn-no{color:#d1d5db;font-size:12px;}
+.cost-incl{color:#059669;font-weight:600;}
+.cost-std{color:#374151;font-weight:500;}
+.cost-none{color:#d1d5db;}
+.tid{font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:10px;color:#6b7280;letter-spacing:.3px;}
+.new-tag{display:inline-block;background:#7C3AED;color:white;font-size:7px;font-weight:700;padding:1px 4px;border-radius:3px;margin-left:3px;vertical-align:middle;letter-spacing:.5px;}
+.pagination-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid #e5e7eb;font-size:12px;color:#6b7280;}
+.pg-controls{display:flex;gap:6px;align-items:center;}
+.pg-btn{padding:5px 12px;border:1px solid #d1d5db;border-radius:6px;background:white;cursor:pointer;font-size:12px;color:#374151;font-family:inherit;}
+.pg-btn:hover{background:#f9fafb;}
+.pg-btn:disabled{opacity:.35;cursor:not-allowed;}
+.legend{display:flex;flex-wrap:wrap;gap:12px;padding:9px 16px;background:#fafafa;border-top:1px solid #e5e7eb;font-size:11px;color:#6b7280;align-items:center;}
+.legend strong{color:#374151;}
+.info-note{background:#f0fdf4;border:1px solid #a7f3d0;border-left:3px solid #059669;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:#065f46;}
+.info-note strong{font-weight:600;}
+.filter-divider{width:100%;height:1px;background:#f3f4f6;margin:6px 0 2px;}
+.filter-section-label{width:100%;font-size:10px;font-weight:700;color:#c4b5fd;text-transform:uppercase;letter-spacing:.5px;margin-bottom:-4px;}
+.multi-select{position:relative;}
+.ms-btn{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;color:#374151;background:white;cursor:pointer;min-height:32px;font-family:inherit;white-space:nowrap;min-width:150px;text-align:left;width:100%;}
+.ms-btn:focus{outline:none;border-color:#7C3AED;box-shadow:0 0 0 2px rgba(124,58,237,.1);}
+.ms-btn.ms-active{border-color:#7C3AED;color:#7C3AED;font-weight:600;}
+.ms-caret{font-size:8px;opacity:.35;flex-shrink:0;}
+.ms-btn.ms-active .ms-caret{opacity:1;}
+.ms-panel{position:absolute;top:calc(100% + 3px);left:0;background:white;border:1px solid #d1d5db;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.13);min-width:210px;z-index:300;display:none;max-height:260px;overflow-y:auto;}
+.ms-panel.ms-open{display:block;}
+.ms-item{display:flex;align-items:center;gap:9px;padding:7px 14px;cursor:pointer;font-size:12px;color:#374151;white-space:nowrap;user-select:none;}
+.ms-item:hover{background:#f5f3ff;}
+.ms-item input[type=checkbox]{accent-color:#7C3AED;width:13px;height:13px;cursor:pointer;flex-shrink:0;}
+.ms-footer{padding:6px 14px;font-size:11px;color:#7C3AED;cursor:pointer;font-weight:600;text-align:center;border-top:1px solid #f3f4f6;border-radius:0 0 8px 8px;}
+.ms-footer:hover{background:#faf5ff;}
+</style>
+</head>
+<body>
+<div class="proto-banner">
+  <span class="proto-tag">Prototype</span>
+  <strong>Ticket #86b9512kq</strong> &mdash; Activation Dashboard: All Tenants, New Columns &amp; Totals Row
+  <span class="proto-right">Pricing per #86b90vaqz &nbsp;&middot;&nbsp; Pro $79 &nbsp;&middot;&nbsp; Advanced $147 grandfathered</span>
+</div>
+<div class="page-wrapper">
+  <div class="header">
+    <div>
+      <h1>Activation Dashboard &mdash; All Accounts</h1>
+      <p>CS Team &middot; Super Admin View &middot; All tenant accounts, no date restriction &middot; Updated Mar 31, 2026</p>
+    </div>
+    <div><button class="btn" onclick="exportCSV()">&#x2B07; Export CSV</button></div>
+  </div>
+  <div class="info-note">
+    <strong>What&rsquo;s new in this view:</strong> All tenants are now visible regardless of signup date.
+    Legacy accounts (created before 12/28/25) show <strong>Total Invoiced Sales</strong> (lifetime) and <strong>&mdash;</strong> for Days Remaining &mdash; no 90-day activation rules apply.
+    Net-new accounts (after 12/28/25) continue tracking the 90-day activation window.
+    12 new columns added: Industry, Days Remaining, Plan, /Month, and 4 add-on status+cost pairs. Totals Row updates dynamically with filters.
+  </div>
+  <div class="filters-card">
+    <div class="filters-header">
+      <span class="filters-title">Filters</span>
+      <button class="btn-clear" onclick="clearAllFilters()">Clear All</button>
+    </div>
+    <div class="filters-grid">
+      <div class="filter-group">
+        <label class="filter-label">Search</label>
+        <input type="text" class="search-box" id="f-search" placeholder="Company name or Tenant ID&hellip;" oninput="applyFilters()">
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Account Type</label>
+        <select class="filter-select" id="f-type" onchange="applyFilters()">
+          <option value="">All Accounts</option>
+          <option value="new">New (after 12/28/25)</option>
+          <option value="legacy">Legacy (before 12/28/25)</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Plan</label>
+        <div class="multi-select" id="ms-plan">
+          <button class="ms-btn" onclick="toggleMS('ms-plan')"><span class="ms-label">All Plans</span><span class="ms-caret">&#9660;</span></button>
+          <div class="ms-panel" id="ms-plan-panel">
+            <label class="ms-item"><input type="checkbox" value="Pro" onchange="msChange('ms-plan')"> Pro ($79/m)</label>
+            <label class="ms-item"><input type="checkbox" value="Advanced" onchange="msChange('ms-plan')"> Advanced &mdash; Legacy ($147/m)</label>
+            <label class="ms-item"><input type="checkbox" value="none" onchange="msChange('ms-plan')"> No Active Plan</label>
+            <div class="ms-footer" onclick="clearMS('ms-plan')">Clear</div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Health Status</label>
+        <div class="multi-select" id="ms-health">
+          <button class="ms-btn" onclick="toggleMS('ms-health')"><span class="ms-label">All Statuses</span><span class="ms-caret">&#9660;</span></button>
+          <div class="ms-panel" id="ms-health-panel">
+            <label class="ms-item"><input type="checkbox" value="On Track" onchange="msChange('ms-health')"> 🟢 On Track</label>
+            <label class="ms-item"><input type="checkbox" value="Needs Attention" onchange="msChange('ms-health')"> 🟡 Needs Attention</label>
+            <label class="ms-item"><input type="checkbox" value="At Risk" onchange="msChange('ms-health')"> 🔴 At Risk</label>
+            <label class="ms-item"><input type="checkbox" value="Inactive" onchange="msChange('ms-health')"> ⬜ Inactive</label>
+            <div class="ms-footer" onclick="clearMS('ms-health')">Clear</div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Subscription</label>
+        <select class="filter-select" id="f-sub" onchange="applyFilters()">
+          <option value="">All</option>
+          <option>Active</option>
+          <option>Inactive</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">OBCSS</label>
+        <div class="multi-select" id="ms-obcss">
+          <button class="ms-btn" onclick="toggleMS('ms-obcss')"><span class="ms-label">All Team Members</span><span class="ms-caret">&#9660;</span></button>
+          <div class="ms-panel" id="ms-obcss-panel">
+            <div class="ms-footer" onclick="clearMS('ms-obcss')">Clear</div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Industry</label>
+        <div class="multi-select" id="ms-industry">
+          <button class="ms-btn" onclick="toggleMS('ms-industry')"><span class="ms-label">All Industries</span><span class="ms-caret">&#9660;</span></button>
+          <div class="ms-panel" id="ms-industry-panel">
+            <div class="ms-footer" onclick="clearMS('ms-industry')">Clear</div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-divider"></div>
+      <div class="filter-section-label">Account Data</div>
+      <div class="filter-group">
+        <label class="filter-label">Active Users</label>
+        <select class="filter-select" id="f-users" onchange="applyFilters()">
+          <option value="">All</option>
+          <option value="flagged">Flagged &mdash; 0&ndash;1</option>
+          <option value="2plus">2+ Users</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Contacts</label>
+        <select class="filter-select" id="f-contacts" onchange="applyFilters()">
+          <option value="">All</option>
+          <option value="100plus">100+ (Green)</option>
+          <option value="50to99">50&ndash;99 (Yellow)</option>
+          <option value="under50">Under 50 (Red)</option>
+        </select>
+      </div>
+      <div class="filter-divider"></div>
+      <div class="filter-section-label">Integrations &amp; Automations</div>
+      <div class="filter-group">
+        <label class="filter-label">Integration</label>
+        <div class="multi-select" id="ms-integration">
+          <button class="ms-btn" onclick="toggleMS('ms-integration')"><span class="ms-label">All Integrations</span><span class="ms-caret">&#9660;</span></button>
+          <div class="ms-panel" id="ms-integration-panel">
+            <label class="ms-item"><input type="checkbox" value="google" onchange="msChange('ms-integration')"> Google</label>
+            <label class="ms-item"><input type="checkbox" value="qbo" onchange="msChange('ms-integration')"> QBO</label>
+            <label class="ms-item"><input type="checkbox" value="qbt" onchange="msChange('ms-integration')"> QBT</label>
+            <label class="ms-item"><input type="checkbox" value="acorn" onchange="msChange('ms-integration')"> Acorn</label>
+            <label class="ms-item"><input type="checkbox" value="quo" onchange="msChange('ms-integration')"> Quo</label>
+            <label class="ms-item"><input type="checkbox" value="companyCam" onchange="msChange('ms-integration')"> CompanyCam</label>
+            <label class="ms-item"><input type="checkbox" value="routemize" onchange="msChange('ms-integration')"> Routemize</label>
+            <div class="ms-footer" onclick="clearMS('ms-integration')">Clear</div>
+          </div>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Automation</label>
+        <div class="multi-select" id="ms-automation">
+          <button class="ms-btn" onclick="toggleMS('ms-automation')"><span class="ms-label">All Automations</span><span class="ms-caret">&#9660;</span></button>
+          <div class="ms-panel" id="ms-automation-panel">
+            <label class="ms-item"><input type="checkbox" value="zapier" onchange="msChange('ms-automation')"> Zapier</label>
+            <label class="ms-item"><input type="checkbox" value="angi" onchange="msChange('ms-automation')"> Angi Leads</label>
+            <div class="ms-footer" onclick="clearMS('ms-automation')">Clear</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="metrics-row" id="metrics-row"></div>
+  <div class="table-card">
+    <div class="table-toolbar">
+      <div>
+        <div class="table-title">All Company Data</div>
+        <div class="table-subtitle" id="table-subtitle">Loading&hellip;</div>
+      </div>
+      <div class="show-entries">
+        Show
+        <select id="page-size-sel" onchange="changePageSize()">
+          <option value="10">10</option>
+          <option value="15">15</option>
+          <option value="25">25</option>
+          <option value="35">35</option>
+          <option value="50" selected>50</option>
+          <option value="100">100</option>
+          <option value="0">All</option>
+        </select>
+        entries
+      </div>
+    </div>
+    <div class="table-scroll" id="table-scroll">
+      <table>
+        <thead>
+          <tr class="group-row">
+            <th class="cg-account" colspan="6">Account Info</th>
+            <th class="cg-core" colspan="10">Core Activation Tracking</th>
+            <th class="cg-plan" colspan="2">Plan &amp; Billing</th>
+            <th class="cg-addons" colspan="4">Add-On Status</th>
+            <th class="cg-integrations" colspan="7">Integrations</th>
+            <th class="cg-automations" colspan="2">Automations</th>
+          </tr>
+          <tr class="col-row" id="col-headers">
+            <th data-col="0" style="min-width:95px;">Tenant ID<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="1" style="min-width:190px;">Company Name<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="3" style="min-width:160px;">Industry<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="2" style="min-width:68px;">Type<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="5" style="min-width:88px;">Created<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="26" style="min-width:90px;">Account Age<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="24" style="min-width:80px;">Active Users<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="25" style="min-width:80px;">Contacts<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="4" style="min-width:90px;">Health<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="6" style="min-width:72px;">Status<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="7" style="min-width:100px;">Total Sales<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="8" style="min-width:70px;">$10k<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="9" style="min-width:82px;">A2P Applied<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="10" style="min-width:82px;">A2P Status<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="11" style="min-width:130px;">OBCSS<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="12" style="min-width:80px;">Days Rem.<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="13" class="col-plan group-sep" style="min-width:90px;">Plan<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="14" class="col-plan" style="min-width:78px;">/Month<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="15" class="col-addons group-sep" style="min-width:78px;">Prod Rates<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="17" class="col-addons" style="min-width:70px;">Job Cost<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="19" class="col-addons" style="min-width:72px;">Text MSG<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="21" class="col-addons" style="min-width:66px;">Jobi AI<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="27" class="col-integrations group-sep" style="min-width:72px;">Google<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="28" class="col-integrations" style="min-width:60px;">QBO<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="29" class="col-integrations" style="min-width:60px;">QBT<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="30" class="col-integrations" style="min-width:66px;">Acorn<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="31" class="col-integrations" style="min-width:56px;">Quo<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="32" class="col-integrations" style="min-width:108px;">CompanyCam<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="33" class="col-integrations" style="min-width:90px;">Routemize<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="34" class="col-automations group-sep" style="min-width:72px;">Zapier<span class="sort-icon">&#x21C5;</span></th>
+            <th data-col="35" class="col-automations" style="min-width:90px;">Angi Leads<span class="sort-icon">&#x21C5;</span></th>
+          </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+        <tfoot><tr id="totals-row"></tr></tfoot>
+      </table>
+    </div>
+    <div class="pagination-bar">
+      <span id="pg-info-text">Loading&hellip;</span>
+      <div class="pg-controls">
+        <button class="pg-btn" id="prev-btn" onclick="changePage(-1)" disabled>&#8592; Previous</button>
+        <span id="pg-label" style="font-weight:600;color:#374151;font-size:13px;">Page 1</span>
+        <button class="pg-btn" id="next-btn" onclick="changePage(1)">Next &#8594;</button>
+      </div>
+    </div>
+    <div class="legend">
+      <strong>Plan bundling:</strong>
+      <span><span class="badge p-pro">Pro</span> $79/m &middot; no bundled add-ons</span>
+      <span><span class="badge p-advanced">Advanced &#9733;</span> $147/m &middot; grandfathered &middot; standard add-on prices</span>
+    </div>
+  </div>
+</div>
+<script>
+var OBCSS_TEAM=['Matt Fournier','Ximena Jimenez','Juan Quintero','Daniel Lee','Kennedy Smith','Alexis Calderon'];
+var INDUSTRIES=['Painting - Residential','Painting - Commercial','Painting - Industrial','Gutters & Drainage','Epoxy Flooring','Garage Floor Coatings','Concrete - Decorative','Concrete - Flatwork','Concrete - Stamped','Deck & Fence','Cabinet Refinishing','Drywall & Texture','Power Washing','Roof Coating','General Contractor'];
+var PLAN_COSTS={Pro:79,Advanced:147};
+var ADDON_COSTS={prodRates:99,jobCost:49,textMsg:25,jobiAi:39};
+var BUNDLED={Advanced:[],Pro:[]};
+var HEALTH_ORDER={'At Risk':0,'Needs Attention':1,'Inactive':2,'On Track':3};
+var PREFIXES=['Elite','Premium','Pro','Master','Superior','Quality','Precision','Expert','Prime','Apex','Summit','Peak','Crown','Royal','Diamond','Platinum','Certified','Licensed','Heritage','Legacy','Custom','Artisan','Craftsman','Professional','Reliable'];
+var MIDDLES=['Painting','Paint','Coatings','Finishes','Colors','Gutters','Seamless Gutters','Epoxy','Floor Coating','Garage Floor','Concrete','Flatwork','Deck','Fence','Drywall','Texture','Cabinet','Exterior','Power Wash','Stamped Concrete'];
+var SUFFIXES=['LLC','Inc','Co','Corp','Services','Solutions','Pros','Group','Team','Masters','Works','Experts','Specialists','Enterprises'];
+var LOCS=['Phoenix','Dallas','Houston','Austin','Denver','Seattle','Chicago','Atlanta','Miami','Tampa','Nashville','Charlotte','Raleigh','Boston','Las Vegas','San Diego','LA','Sacramento','Salt Lake','Boise','Tucson','Columbus','Pittsburgh','Indianapolis'];
+var FN=['Mike','John','David','James','Robert','Chris','Matt','Dan','Steve','Tom','Mark','Brian','Kevin','Jason','Jeff','Scott','Eric','Andrew','Maria','Jennifer','Sarah','Ashley','Jose','Carlos','Juan','Luis'];
+var LN=['Smith','Johnson','Williams','Brown','Jones','Garcia','Miller','Davis','Rodriguez','Martinez','Wilson','Taylor','Moore','Jackson','Lee','Perez','Sanchez','Clark','Ramirez','Lewis','Robinson','Walker','Young','King','Wright','Torres'];
+function ri(a){return a[Math.floor(Math.random()*a.length)];}
+function rd(lo,hi){return Math.floor(Math.random()*(hi-lo))+lo;}
+function fmtDate(d){return(d.getMonth()+1)+'/'+d.getDate()+'/'+d.getFullYear();}
+function fmtD(n){return n==null?'\u2014':'$'+Math.round(n).toLocaleString('en-US');}
+function addonNum(ao){return(ao.active&&ao.cost!=null)?ao.cost:0;}
+function genTid(){var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',id='TN-';for(var i=0;i<8;i++)id+=c[Math.floor(Math.random()*c.length)];return id;}
+function genName(){var r=Math.random();if(r<0.22)return ri(LOCS)+' '+ri(MIDDLES)+' '+ri(SUFFIXES);if(r<0.42)return ri(FN)+' '+ri(LN)+' '+ri(MIDDLES)+' '+ri(SUFFIXES);if(r<0.60)return ri(LN)+"'s "+ri(MIDDLES);if(r<0.80)return ri(PREFIXES)+' '+ri(MIDDLES)+' '+ri(SUFFIXES);var cr=['Brush Strokes','Color Theory','Paint Perfect','Smooth Finish','Fresh Coat','True Colors','Clean Lines','Sharp Edge','Solid Ground','Rain Guard','Floor Glow','Epoxy Elite','Garage Armor','Surface Pro','Coat Masters'];return ri(cr)+' '+ri(SUFFIXES);}
+function generateCompanies(total){
+  var out=[],used={},now=new Date(),legacyCount=Math.floor(total*0.43);
+  for(var i=0;i<total;i++){
+    var name,tries=0;
+    do{name=genName();tries++;}while(used[name]&&tries<20);
+    used[name]=true;
+    var isLegacy=i<legacyCount,created;
+    if(isLegacy){var lo=new Date('2022-01-01').getTime(),hi=new Date('2025-12-27').getTime();created=new Date(lo+Math.random()*(hi-lo));}
+    else{var lo2=new Date('2025-12-28').getTime(),hi2=new Date('2026-03-31').getTime();created=new Date(lo2+Math.random()*(hi2-lo2));}
+    var daysAgo=Math.floor((now-created)/86400000),isActive=isLegacy?Math.random()<0.76:Math.random()<0.89;
+    var plan=null;
+    if(isActive){var r=Math.random();if(isLegacy){if(r<0.55)plan='Advanced';else plan='Pro';}else{if(r<0.78)plan='Pro';}}
+    var planCost=plan?PLAN_COSTS[plan]:null,totalSales=0;
+    if(isActive&&daysAgo>14){var sf=Math.random(),base=isLegacy?40000:0;if(sf<0.18)totalSales=base+rd(0,5000);else if(sf<0.42)totalSales=base+rd(5000,35000);else if(sf<0.68)totalSales=base+rd(35000,150000);else if(sf<0.88)totalSales=base+rd(150000,650000);else totalSales=base+rd(650000,3500000);}
+    var activeUsers=!isActive?(Math.random()<0.2?1:0):(totalSales>500000?rd(8,25):totalSales>100000?rd(4,15):totalSales>25000?rd(2,8):rd(1,4));
+    var contacts=!isActive?rd(0,20):(totalSales>500000?rd(300,5000):totalSales>100000?rd(80,800):totalSales>25000?rd(20,200):totalSales>5000?rd(5,80):rd(0,30));
+    var reached10k=totalSales>=10000,a2pApplied=isActive&&(daysAgo>7?Math.random()<0.78:Math.random()<0.25),a2pActivated=a2pApplied&&(daysAgo>14?Math.random()<0.87:Math.random()<0.42);
+    var daysRemaining=(!isLegacy&&isActive)?Math.max(0,90-daysAgo):null,industry=Math.random()<0.70?ri(INDUSTRIES):null,obcss=ri(OBCSS_TEAM);
+    var bundled=BUNDLED[plan]||[];
+    function mkAddon(key){if(!isActive||!plan)return{active:false,cost:null};var rate=plan==='Advanced'?0.52:0.28,active=Math.random()<rate;return{active:active,cost:active?ADDON_COSTS[key]:null};}
+    var prodRates=mkAddon('prodRates'),jobCost=mkAddon('jobCost'),textMsg=mkAddon('textMsg'),jobiAi=mkAddon('jobiAi');
+    var googleInt=isActive&&Math.random()<0.42,qboInt=isActive&&Math.random()<0.31,qbtInt=isActive&&Math.random()<0.18,acornInt=isActive&&Math.random()<0.14,quoInt=isActive&&Math.random()<0.22,companyCamInt=isActive&&Math.random()<0.28,routemizeInt=isActive&&Math.random()<0.12,zapierInt=isActive&&Math.random()<0.19,angiInt=isActive&&Math.random()<0.16;
+    var onboardPart1=isActive&&Math.random()<(daysAgo>7?0.88:0.40);
+    var onboardPart2=onboardPart1&&Math.random()<(daysAgo>21?0.70:0.28);
+    var estimateSent=isActive&&daysAgo>3&&Math.random()<0.76;
+    var daysSinceEst=estimateSent?(Math.random()<0.72?rd(0,13):rd(14,50)):null;
+    var estimateGoneQuiet=estimateSent&&daysSinceEst!=null&&daysSinceEst>=14;
+    var sessionsMissed=!isActive?0:(Math.random()<0.68?0:Math.random()<0.60?1:2);
+    var sessionEngaged=isActive&&sessionsMissed===0&&Math.random()<0.84;
+    var activityLogged=isActive&&estimateSent&&Math.random()<0.80;
+    var health;
+    if(!isActive){health='Inactive';}
+    else if(!onboardPart1||(!a2pApplied&&daysAgo>14)||(totalSales===0&&daysAgo>60)||sessionsMissed>=2||estimateGoneQuiet){health='At Risk';}
+    else if(onboardPart1&&onboardPart2&&estimateSent&&a2pActivated&&sessionEngaged&&activityLogged){health='On Track';}
+    else{health='Needs Attention';}
+    out.push({tenantId:genTid(),name:name,isLegacy:isLegacy,created:created,createdStr:fmtDate(created),daysAgo:daysAgo,isActive:isActive,sub:isActive?'Active':'Inactive',totalSales:totalSales,reached10k:reached10k,a2pApplied:a2pApplied,a2pActivated:a2pActivated,industry:industry,obcss:obcss,daysRemaining:daysRemaining,plan:plan,planCost:planCost,prodRates:prodRates,jobCost:jobCost,textMsg:textMsg,jobiAi:jobiAi,health:health,onboardPart1:onboardPart1,onboardPart2:onboardPart2,estimateSent:estimateSent,sessionsMissed:sessionsMissed,sessionEngaged:sessionEngaged,activityLogged:activityLogged,activeUsers:activeUsers,contacts:contacts,googleInt:googleInt,qboInt:qboInt,qbtInt:qbtInt,acornInt:acornInt,quoInt:quoInt,companyCamInt:companyCamInt,routemizeInt:routemizeInt,zapierInt:zapierInt,angiInt:angiInt});
+  }
+  return out;
+}
+var ALL=generateCompanies(1400),filtered=ALL.slice(),page=1,pageSize=50,sortCol=null,sortDir='asc';
+var activeMetricCard=null;
+function fmtAge(d){if(d<30)return d+'d';if(d<365){return Math.floor(d/30)+'mo';}var y=Math.floor(d/365),m=Math.floor((d%365)/30);return m?y+'yr '+m+'mo':y+'yr';}
+function getSortVal(c,col){switch(col){case 0:return c.tenantId;case 1:return c.name.toLowerCase();case 24:return c.activeUsers;case 25:return c.contacts;case 26:return c.daysAgo;case 27:return c.googleInt?1:0;case 28:return c.qboInt?1:0;case 29:return c.qbtInt?1:0;case 30:return c.acornInt?1:0;case 31:return c.quoInt?1:0;case 32:return c.companyCamInt?1:0;case 33:return c.routemizeInt?1:0;case 34:return c.zapierInt?1:0;case 35:return c.angiInt?1:0;case 2:return c.isLegacy?1:0;case 3:return(c.industry||'').toLowerCase();case 4:return HEALTH_ORDER[c.health]!==undefined?HEALTH_ORDER[c.health]:99;case 5:return c.created.getTime();case 6:return c.sub;case 7:return c.totalSales;case 8:return c.reached10k?1:0;case 9:return c.a2pApplied?1:0;case 10:return c.a2pActivated?2:(c.a2pApplied?1:0);case 11:return c.obcss.toLowerCase();case 12:return c.daysRemaining!==null?c.daysRemaining:9999;case 13:return(c.plan||'').toLowerCase();case 14:return c.planCost||0;case 15:return c.prodRates.active?1:0;case 16:return addonNum(c.prodRates);case 17:return c.jobCost.active?1:0;case 18:return addonNum(c.jobCost);case 19:return c.textMsg.active?1:0;case 20:return addonNum(c.textMsg);case 21:return c.jobiAi.active?1:0;case 22:return addonNum(c.jobiAi);default:return'';}}
+function applySort(){if(sortCol===null)return;filtered.sort(function(a,b){var av=getSortVal(a,sortCol),bv=getSortVal(b,sortCol),r=typeof av==='string'?av.localeCompare(bv):av-bv;return sortDir==='asc'?r:-r;});}
+function updateSortUI(){var ths=document.querySelectorAll('#col-headers th');for(var i=0;i<ths.length;i++){var th=ths[i],col=parseInt(th.getAttribute('data-col')),icon=th.querySelector('.sort-icon');if(col===sortCol){th.classList.add('sort-active');icon.innerHTML=sortDir==='asc'?'&#x2191;':'&#x2193;';}else{th.classList.remove('sort-active');icon.innerHTML='&#x21C5;';}}}
+function initSortHeaders(){var ths=document.querySelectorAll('#col-headers th');for(var i=0;i<ths.length;i++){ths[i].addEventListener('click',(function(th){return function(){var col=parseInt(th.getAttribute('data-col'));if(sortCol===col){sortDir=sortDir==='asc'?'desc':'asc';}else{sortCol=col;sortDir='asc';}applySort();updateSortUI();page=1;render();};})(ths[i]));}}
+function hBadge(h){var m={'On Track':'h-on-track','Needs Attention':'h-warning','At Risk':'h-critical',Inactive:'h-inactive'};return'<span class="badge '+(m[h]||'h-inactive')+'">'+h+'</span>';}
+function pBadge(p){if(!p)return'<span class="cost-none">\u2014</span>';var m={Pro:'p-pro',Advanced:'p-advanced'};return'<span class="badge '+(m[p]||'p-pro')+'">'+p+(p==='Advanced'?' \u2605':'')+'</span>';}
+function ynCell(ao){return ao.active?'<span class="badge b-success">Yes</span>':'<span class="badge b-gray">No</span>';}
+function costCell(ao){if(!ao.active||ao.cost===null)return'<span class="cost-none">\u2014</span>';if(ao.cost===0)return'<span class="cost-incl">$0 Incl.</span>';return'<span class="cost-std">$'+ao.cost+'</span>';}
+function mkRow(c){
+  var drCell;if(c.isLegacy)drCell='<span class="cost-none">\u2014</span>';else if(c.daysRemaining===0)drCell='<span style="color:#ef4444;font-weight:700;">Expired</span>';else{var col=c.daysRemaining<10?'#ef4444':c.daysRemaining<30?'#f59e0b':'#6b7280';drCell='<span style="color:'+col+';font-weight:600;">'+c.daysRemaining+'d</span>';}
+  var tenk=c.isLegacy?'<span class="cost-none">\u2014</span>':'<span class="badge '+(c.reached10k?'b-success':'b-danger')+'">'+(c.reached10k?'Yes':'No')+'</span>';
+  var a2pLbl=c.a2pActivated?'Active':c.a2pApplied?'Pending':'None',a2pCls=c.a2pActivated?'b-success':c.a2pApplied?'b-warning':'b-danger';
+  return'<tr><td><span class="tid">'+c.tenantId+'</span></td><td><strong>'+c.name+'</strong></td><td>'+(c.industry||'<span class="cost-none">\u2014</span>')+'</td><td><span class="badge '+(c.isLegacy?'t-legacy':'t-new')+'">'+(c.isLegacy?'Legacy':'New')+'</span></td><td>'+c.createdStr+'</td><td style="color:#6b7280;">'+fmtAge(c.daysAgo)+'</td><td style="text-align:center;">'+(c.activeUsers<2?'<span class="badge b-danger">'+c.activeUsers+'</span>':c.activeUsers)+'</td><td style="text-align:center;"><span class="badge '+(c.contacts>=100?'b-success':c.contacts>=50?'b-warning':'b-danger')+'">'+c.contacts.toLocaleString('en-US')+'</span></td><td>'+hBadge(c.health)+'</td><td><span class="badge '+(c.isActive?'b-success':'b-gray')+'">'+c.sub+'</span></td><td><strong>'+fmtD(c.totalSales)+'</strong></td><td>'+tenk+'</td><td><span class="badge '+(c.a2pApplied?'b-success':'b-gray')+'">'+(c.a2pApplied?'Yes':'No')+'</span></td><td><span class="badge '+a2pCls+'">'+a2pLbl+'</span></td><td>'+c.obcss+'</td><td>'+drCell+'</td><td class="col-plan group-sep">'+pBadge(c.plan)+'</td><td class="col-plan">'+(c.planCost?'<strong>$'+c.planCost+'</strong>':'<span class="cost-none">\u2014</span>')+'</td><td class="col-addons group-sep">'+ynCell(c.prodRates)+'</td><td class="col-addons">'+ynCell(c.jobCost)+'</td><td class="col-addons">'+ynCell(c.textMsg)+'</td><td class="col-addons">'+ynCell(c.jobiAi)+'</td><td class="col-integrations group-sep">'+(c.googleInt?'<span class="badge b-success">Yes</span>':'<span class="badge b-gray">No</span>')+'</td><td class="col-integrations">'+(c.qboInt?'<span class="badge b-success">Yes</span>':'<span class="badge b-gray">No</span>')+'</td><td class="col-integrations">'+(c.qbtInt?'<span class="badge b-success">Yes</span>':'<span class="badge b-gray">No</span>')+'</td><td class="col-integrations">'+(c.acornInt?'<span class="badge b-success">Yes</span>':'<span class="badge b-gray">No</span>')+'</td><td class="col-integrations">'+(c.quoInt?'<span class="badge b-success">Yes</span>':'<span class="badge b-gray">No</span>')+'</td><td class="col-integrations">'+(c.companyCamInt?'<span class="badge b-success">Yes</span>':'<span class="badge b-gray">No</span>')+'</td><td class="col-integrations">'+(c.routemizeInt?'<span class="badge b-success">Yes</span>':'<span class="badge b-gray">No</span>')+'</td><td class="col-automations group-sep">'+(c.zapierInt?'<span class="badge b-success">Yes</span>':'<span class="badge b-gray">No</span>')+'</td><td class="col-automations">'+(c.angiInt?'<span class="badge b-success">Yes</span>':'<span class="badge b-gray">No</span>')+'</td></tr>';
+}
+function renderTotals(co){var tS=0,tM=0,tP=0,tJ=0,tT=0,tJo=0,tU=0,tC=0;for(var i=0;i<co.length;i++){var c=co[i];tS+=c.totalSales;tM+=(c.planCost||0);tP+=addonNum(c.prodRates);tJ+=addonNum(c.jobCost);tT+=addonNum(c.textMsg);tJo+=addonNum(c.jobiAi);tU+=c.activeUsers;tC+=c.contacts;}var tMRR=tM+tP+tJ+tT+tJo;document.getElementById('totals-row').innerHTML='<td colspan="2" style="font-size:10px;text-transform:uppercase;letter-spacing:.4px;color:#6b7280;font-weight:600;">TOTALS \u2014 '+co.length.toLocaleString()+' accounts shown</td><td></td><td></td><td></td><td></td><td style="text-align:center;font-weight:700;color:#111827;">'+tU.toLocaleString()+'</td><td style="text-align:center;font-weight:700;color:#111827;">'+tC.toLocaleString()+'</td><td></td><td></td><td>'+fmtD(tS)+'</td><td></td><td></td><td></td><td></td><td></td><td class="col-plan group-sep">'+fmtD(tM)+'/m</td><td class="col-plan" style="font-size:11px;color:#059669;font-weight:700;">MRR: '+fmtD(tMRR)+'</td><td class="col-addons group-sep"></td><td class="col-addons"></td><td class="col-addons"></td><td class="col-addons"></td><td class="col-integrations group-sep"></td><td class="col-integrations"></td><td class="col-integrations"></td><td class="col-integrations"></td><td class="col-integrations"></td><td class="col-integrations"></td><td class="col-integrations"></td><td class="col-automations group-sep"></td><td class="col-automations"></td>';}
+function renderMetrics(co){
+  var total=co.length,legacy=0,active=0,onTrack=0,needsAttn=0,atRisk=0;
+  for(var i=0;i<co.length;i++){var c=co[i];if(c.isLegacy)legacy++;if(c.isActive)active++;if(c.health==='On Track')onTrack++;if(c.health==='Needs Attention')needsAttn++;if(c.health==='At Risk')atRisk++;}
+  function card(id,colorCls,label,value,sub){
+    var isActive=activeMetricCard===id;
+    return '<div class="metric-card '+colorCls+(isActive?' mc-active':'')+'" onclick="filterByCard(\''+id+'\')" title="Click to filter by '+label+'"><div class="mc-label">'+label+'</div><div class="mc-value">'+value+'</div><div class="mc-sub">'+sub+'</div></div>';
+  }
+  document.getElementById('metrics-row').innerHTML=
+    card('total','c-purple','Total Accounts',total.toLocaleString(),(total-legacy).toLocaleString()+' new \u00b7 '+legacy.toLocaleString()+' legacy')+
+    card('active','c-green','Active Subscriptions',active.toLocaleString(),Math.round(active/Math.max(total,1)*100)+'% of accounts')+
+    card('on-track','c-green','On Track',onTrack.toLocaleString(),Math.round(onTrack/Math.max(total,1)*100)+'% all signals green')+
+    card('needs-attention','c-amber','Needs Attention',needsAttn.toLocaleString(),'Partial progress \u2014 missing signals')+
+    card('at-risk','c-red','At Risk',atRisk.toLocaleString(),'Major red flags \u2014 needs immediate action');
+}
+function render(){var eff=pageSize===0?filtered.length:pageSize,total=Math.ceil(filtered.length/Math.max(eff,1))||1,start=(page-1)*eff,end=Math.min(start+eff,filtered.length),slice=filtered.slice(start,end),html='';for(var i=0;i<slice.length;i++)html+=mkRow(slice[i]);document.getElementById('table-body').innerHTML=html;renderTotals(filtered);renderMetrics(filtered);document.getElementById('table-subtitle').textContent='Showing '+filtered.length.toLocaleString()+' accounts \u00b7 Page '+page+' of '+total;document.getElementById('pg-info-text').textContent='Showing '+(filtered.length?start+1:0).toLocaleString()+'\u2013'+end.toLocaleString()+' of '+filtered.length.toLocaleString()+' accounts';document.getElementById('pg-label').textContent='Page '+page+' of '+total;document.getElementById('prev-btn').disabled=page<=1;document.getElementById('next-btn').disabled=page>=total;}
+var MS={};
+var MS_LABELS={'ms-plan':'All Plans','ms-health':'All Statuses','ms-obcss':'All Team Members','ms-industry':'All Industries','ms-integration':'All Integrations','ms-automation':'All Automations'};
+function getMS(id){return MS[id]?Array.from(MS[id]):[];}
+function toggleMS(id){var panel=document.getElementById(id+'-panel'),isOpen=panel.classList.contains('ms-open');document.querySelectorAll('.ms-panel.ms-open').forEach(function(p){p.classList.remove('ms-open');});if(!isOpen)panel.classList.add('ms-open');}
+function msChange(id){if(!MS[id])MS[id]=new Set();MS[id].clear();document.querySelectorAll('#'+id+'-panel input[type=checkbox]:checked').forEach(function(cb){MS[id].add(cb.value);});updateMSBtn(id);applyFilters();}
+function updateMSBtn(id){var count=MS[id]?MS[id].size:0,lbl=document.querySelector('#'+id+' .ms-label'),btn=document.querySelector('#'+id+' .ms-btn');if(lbl)lbl.textContent=count?(count+' selected'):MS_LABELS[id];if(btn)btn.classList.toggle('ms-active',count>0);}
+function clearMS(id){if(MS[id])MS[id].clear();var panel=document.getElementById(id+'-panel');if(panel)panel.querySelectorAll('input[type=checkbox]').forEach(function(cb){cb.checked=false;});updateMSBtn(id);applyFilters();}
+document.addEventListener('click',function(e){if(!e.target.closest('.multi-select'))document.querySelectorAll('.ms-panel.ms-open').forEach(function(p){p.classList.remove('ms-open');});});
+function applyFilters(){
+  var q=document.getElementById('f-search').value.toLowerCase().trim(),type=document.getElementById('f-type').value,sub=document.getElementById('f-sub').value,usr=document.getElementById('f-users').value,con=document.getElementById('f-contacts').value;
+  var selPlan=getMS('ms-plan'),selHealth=getMS('ms-health'),selOb=getMS('ms-obcss'),selInd=getMS('ms-industry'),selInteg=getMS('ms-integration'),selAuto=getMS('ms-automation');
+  filtered=ALL.filter(function(c){
+    if(q&&c.name.toLowerCase().indexOf(q)<0&&c.tenantId.toLowerCase().indexOf(q)<0)return false;
+    if(type==='new'&&c.isLegacy)return false;
+    if(type==='legacy'&&!c.isLegacy)return false;
+    if(selPlan.length){var pm=false;for(var i=0;i<selPlan.length;i++){if(selPlan[i]==='none'&&!c.plan)pm=true;else if(c.plan===selPlan[i])pm=true;}if(!pm)return false;}
+    if(selHealth.length&&selHealth.indexOf(c.health)<0)return false;
+    if(sub&&c.sub!==sub)return false;
+    if(selOb.length&&selOb.indexOf(c.obcss)<0)return false;
+    if(selInd.length&&selInd.indexOf(c.industry||'')<0)return false;
+    if(usr==='flagged'&&c.activeUsers>=2)return false;
+    if(usr==='2plus'&&c.activeUsers<2)return false;
+    if(con==='100plus'&&c.contacts<100)return false;
+    if(con==='50to99'&&(c.contacts<50||c.contacts>=100))return false;
+    if(con==='under50'&&c.contacts>=50)return false;
+    if(selInteg.indexOf('google')>=0&&!c.googleInt)return false;
+    if(selInteg.indexOf('qbo')>=0&&!c.qboInt)return false;
+    if(selInteg.indexOf('qbt')>=0&&!c.qbtInt)return false;
+    if(selInteg.indexOf('acorn')>=0&&!c.acornInt)return false;
+    if(selInteg.indexOf('quo')>=0&&!c.quoInt)return false;
+    if(selInteg.indexOf('companyCam')>=0&&!c.companyCamInt)return false;
+    if(selInteg.indexOf('routemize')>=0&&!c.routemizeInt)return false;
+    if(selAuto.indexOf('zapier')>=0&&!c.zapierInt)return false;
+    if(selAuto.indexOf('angi')>=0&&!c.angiInt)return false;
+    return true;
+  });
+  applySort();page=1;render();
+}
+function clearAllFilters(){activeMetricCard=null;document.getElementById('f-search').value='';document.getElementById('f-type').value='';document.getElementById('f-sub').value='';document.getElementById('f-users').value='';document.getElementById('f-contacts').value='';['ms-plan','ms-health','ms-obcss','ms-industry','ms-integration','ms-automation'].forEach(clearMS);filtered=ALL.slice();applySort();page=1;render();}
+function filterByCard(id){
+  if(activeMetricCard===id){activeMetricCard=null;clearAllFilters();return;}
+  activeMetricCard=id;
+  /* reset everything first, then apply the card's filter */
+  document.getElementById('f-search').value='';document.getElementById('f-type').value='';document.getElementById('f-sub').value='';document.getElementById('f-users').value='';document.getElementById('f-contacts').value='';
+  ['ms-plan','ms-health','ms-obcss','ms-industry','ms-integration','ms-automation'].forEach(function(k){if(MS[k])MS[k].clear();var p=document.getElementById(k+'-panel');if(p)p.querySelectorAll('input[type=checkbox]').forEach(function(cb){cb.checked=false;});updateMSBtn(k);});
+  if(id==='active'){document.getElementById('f-sub').value='Active';}
+  else if(id==='on-track'||id==='needs-attention'||id==='at-risk'){
+    var val={'on-track':'On Track','needs-attention':'Needs Attention','at-risk':'At Risk'}[id];
+    if(!MS['ms-health'])MS['ms-health']=new Set();
+    MS['ms-health'].add(val);
+    var panel=document.getElementById('ms-health-panel');
+    if(panel){var cb=panel.querySelector('input[value="'+val+'"]');if(cb)cb.checked=true;}
+    updateMSBtn('ms-health');
+  }
+  applyFilters();
+}
+function changePage(dir){var eff=pageSize===0?filtered.length:pageSize,total=Math.ceil(filtered.length/Math.max(eff,1))||1;page=Math.max(1,Math.min(total,page+dir));render();document.getElementById('table-scroll').scrollTop=0;}
+function changePageSize(){pageSize=parseInt(document.getElementById('page-size-sel').value)||0;page=1;render();}
+function populateDropdowns(){
+  var obPanel=document.getElementById('ms-obcss-panel'),obFooter=obPanel.querySelector('.ms-footer');
+  OBCSS_TEAM.forEach(function(n){var lbl=document.createElement('label');lbl.className='ms-item';lbl.innerHTML='<input type="checkbox" value="'+n+'" onchange="msChange(\'ms-obcss\')"> '+n;obPanel.insertBefore(lbl,obFooter);});
+  var indPanel=document.getElementById('ms-industry-panel'),indFooter=indPanel.querySelector('.ms-footer');
+  INDUSTRIES.slice().sort().forEach(function(n){var lbl=document.createElement('label');lbl.className='ms-item';lbl.innerHTML='<input type="checkbox" value="'+n+'" onchange="msChange(\'ms-industry\')"> '+n;indPanel.insertBefore(lbl,indFooter);});
+}
+function exportCSV(){alert('[Prototype] Export would generate CSV \u2014 '+filtered.length.toLocaleString()+' rows \u00d7 23 columns.');}
+populateDropdowns();initSortHeaders();render();
+</script>
+</body>
+</html>
