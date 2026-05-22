@@ -184,7 +184,7 @@ tfoot td:nth-child(2){position:sticky;left:96px;z-index:10;background:#f3f4f6;}
     <div class="filters-grid">
       <div class="filter-group">
         <label class="filter-label">Search</label>
-        <input type="text" class="search-box" id="f-search" placeholder="Company name or Tenant ID&hellip;" oninput="applyFilters()">
+        <input type="text" class="search-box" id="f-search" placeholder="Company name or Tenant ID&hellip;" oninput="debounceSearch()">
       </div>
       <div class="filter-group">
         <label class="filter-label">Account Type</label>
@@ -315,9 +315,9 @@ tfoot td:nth-child(2){position:sticky;left:96px;z-index:10;background:#f3f4f6;}
         <select id="page-size-sel" onchange="changePageSize()">
           <option value="10">10</option>
           <option value="15">15</option>
-          <option value="25">25</option>
+          <option value="25" selected>25</option>
           <option value="35">35</option>
-          <option value="50" selected>50</option>
+          <option value="50">50</option>
           <option value="100">100</option>
           <option value="0">All</option>
         </select>
@@ -332,44 +332,10 @@ tfoot td:nth-child(2){position:sticky;left:96px;z-index:10;background:#f3f4f6;}
             <th class="cg-core" colspan="12">Core Activation Tracking</th>
             <th class="cg-plan" colspan="2">Plan &amp; Billing</th>
             <th class="cg-addons" colspan="4">Add-On Status</th>
-            <th class="cg-integrations" colspan="7">Integrations</th>
-            <th class="cg-automations" colspan="2">Automations</th>
+            <th class="cg-integrations" colspan="1" id="gh-integrations" onclick="toggleGroup('integrations')" style="cursor:pointer;">Integrations [+]</th>
+            <th class="cg-automations" colspan="1" id="gh-automations" onclick="toggleGroup('automations')" style="cursor:pointer;">Automations [+]</th>
           </tr>
-          <tr class="col-row" id="col-headers">
-            <th data-col="0" style="min-width:95px;">Tenant ID<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="1" style="min-width:190px;">Company Name<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="3" style="min-width:160px;">Industry<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="2" style="min-width:68px;">Type<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="5" style="min-width:88px;">Created<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="26" style="min-width:90px;">Account Age<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="24" style="min-width:80px;">Active Users<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="25" style="min-width:80px;">Contacts<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="4" style="min-width:90px;">Health<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="6" style="min-width:72px;">Status<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="7" style="min-width:100px;">Total Sales<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="8" style="min-width:70px;">$10k<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="36" style="min-width:80px;">Est. Sent<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="37" style="min-width:80px;">Last Est.<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="9" style="min-width:82px;">A2P Applied<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="10" style="min-width:82px;">A2P Status<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="11" style="min-width:130px;">OBCSS<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="12" style="min-width:80px;">Days Rem.<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="13" class="col-plan group-sep" style="min-width:90px;">Plan<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="14" class="col-plan" style="min-width:78px;">/Month<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="15" class="col-addons group-sep" style="min-width:78px;">Prod Rates<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="17" class="col-addons" style="min-width:70px;">Job Cost<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="19" class="col-addons" style="min-width:72px;">Text MSG<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="21" class="col-addons" style="min-width:66px;">Jobi AI<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="27" class="col-integrations group-sep" style="min-width:72px;">Google<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="28" class="col-integrations" style="min-width:60px;">QBO<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="29" class="col-integrations" style="min-width:60px;">QBT<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="30" class="col-integrations" style="min-width:66px;">Acorn<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="31" class="col-integrations" style="min-width:56px;">Quo<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="32" class="col-integrations" style="min-width:108px;">CompanyCam<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="33" class="col-integrations" style="min-width:90px;">Routemize<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="34" class="col-automations group-sep" style="min-width:72px;">Zapier<span class="sort-icon">&#x21C5;</span></th>
-            <th data-col="35" class="col-automations" style="min-width:90px;">Angi Leads<span class="sort-icon">&#x21C5;</span></th>
-          </tr>
+          <tr class="col-row" id="col-headers"></tr>
         </thead>
         <tbody id="table-body"></tbody>
         <tfoot><tr id="totals-row"></tr></tfoot>
@@ -455,7 +421,7 @@ function generateCompanies(total){
   return out;
 }
 
-var ALL=generateCompanies(1400),filtered=ALL.slice(),page=1,pageSize=50,sortCol=null,sortDir='asc';
+var ALL=generateCompanies(1400),filtered=ALL.slice(),page=1,pageSize=25,sortCol=null,sortDir='asc';
 var activeMetricCard=null;
 function fmtAge(d){if(d<30)return d+'d';if(d<365){return Math.floor(d/30)+'mo';}var y=Math.floor(d/365),m=Math.floor((d%365)/30);return m?y+'yr '+m+'mo':y+'yr';}
 
@@ -499,7 +465,7 @@ function getSortVal(c,col){
 }
 
 function applySort(){if(sortCol===null)return;filtered.sort(function(a,b){var av=getSortVal(a,sortCol),bv=getSortVal(b,sortCol),r=typeof av==='string'?av.localeCompare(bv):av-bv;return sortDir==='asc'?r:-r;});}
-function updateSortUI(){var ths=document.querySelectorAll('#col-headers th');for(var i=0;i<ths.length;i++){var th=ths[i],col=parseInt(th.getAttribute('data-col')),icon=th.querySelector('.sort-icon');if(col===sortCol){th.classList.add('sort-active');icon.innerHTML=sortDir==='asc'?'&#x2191;':'&#x2193;';}else{th.classList.remove('sort-active');icon.innerHTML='&#x21C5;';}}}
+function updateSortUI(){var ths=document.querySelectorAll('#col-headers th');for(var i=0;i<ths.length;i++){var th=ths[i],col=parseInt(th.getAttribute('data-col')),icon=th.querySelector('.sort-icon');if(col===sortCol){th.classList.add('sort-active');if(icon)icon.innerHTML=sortDir==='asc'?'&#x2191;':'&#x2193;';}else{th.classList.remove('sort-active');if(icon)icon.innerHTML='&#x21C5;';}}}
 function initSortHeaders(){var ths=document.querySelectorAll('#col-headers th');for(var i=0;i<ths.length;i++){ths[i].addEventListener('click',(function(th){return function(){var col=parseInt(th.getAttribute('data-col'));if(sortCol===col){sortDir=sortDir==='asc'?'desc':'asc';}else{sortCol=col;sortDir='asc';}applySort();updateSortUI();page=1;render();};})(ths[i]));}}
 
 function hBadge(h){var m={'On Track':'h-on-track','Needs Attention':'h-warning','At Risk':'h-critical','Inactive':'h-inactive'};return'<span class="badge '+(m[h]||'h-inactive')+'">'+h+'</span>';}
@@ -546,15 +512,19 @@ function mkRow(c){
     '<td class="col-addons">'+ynCell(c.jobCost)+'</td>'+
     '<td class="col-addons">'+ynCell(c.textMsg)+'</td>'+
     '<td class="col-addons">'+ynCell(c.jobiAi)+'</td>'+
-    '<td class="col-integrations group-sep">'+intCell(c.googleInt)+'</td>'+
-    '<td class="col-integrations">'+intCell(c.qboInt)+'</td>'+
-    '<td class="col-integrations">'+intCell(c.qbtInt)+'</td>'+
-    '<td class="col-integrations">'+intCell(c.acornInt)+'</td>'+
-    '<td class="col-integrations">'+intCell(c.quoInt)+'</td>'+
-    '<td class="col-integrations">'+intCell(c.companyCamInt)+'</td>'+
-    '<td class="col-integrations">'+intCell(c.routemizeInt)+'</td>'+
-    '<td class="col-automations group-sep">'+intCell(c.zapierInt)+'</td>'+
-    '<td class="col-automations">'+intCell(c.angiInt)+'</td>'+
+    (integrationsExpanded?
+      '<td class="col-integrations group-sep">'+intCell(c.googleInt)+'</td>'+
+      '<td class="col-integrations">'+intCell(c.qboInt)+'</td>'+
+      '<td class="col-integrations">'+intCell(c.qbtInt)+'</td>'+
+      '<td class="col-integrations">'+intCell(c.acornInt)+'</td>'+
+      '<td class="col-integrations">'+intCell(c.quoInt)+'</td>'+
+      '<td class="col-integrations">'+intCell(c.companyCamInt)+'</td>'+
+      '<td class="col-integrations">'+intCell(c.routemizeInt)+'</td>':
+      '<td class="col-integrations group-sep" style="width:0;min-width:0;padding:0;border:none;"></td>')+
+    (automationsExpanded?
+      '<td class="col-automations group-sep">'+intCell(c.zapierInt)+'</td>'+
+      '<td class="col-automations">'+intCell(c.angiInt)+'</td>':
+      '<td class="col-automations group-sep" style="width:0;min-width:0;padding:0;border:none;"></td>')+
     '</tr>';
 }
 
@@ -578,8 +548,8 @@ function renderTotals(co){
     '<td class="col-plan group-sep" style="color:#059669;font-weight:700;">'+fmtD(tM)+'/m</td>'+
     '<td class="col-plan"></td>'+
     '<td class="col-addons group-sep"></td><td class="col-addons"></td><td class="col-addons"></td><td class="col-addons"></td>'+
-    '<td class="col-integrations group-sep"></td><td class="col-integrations"></td><td class="col-integrations"></td><td class="col-integrations"></td><td class="col-integrations"></td><td class="col-integrations"></td><td class="col-integrations"></td>'+
-    '<td class="col-automations group-sep"></td><td class="col-automations"></td>';
+    (integrationsExpanded?'<td class="col-integrations group-sep"></td><td class="col-integrations"></td><td class="col-integrations"></td><td class="col-integrations"></td><td class="col-integrations"></td><td class="col-integrations"></td><td class="col-integrations"></td>':'<td class="col-integrations group-sep" style="width:0;min-width:0;padding:0;border:none;"></td>')+
+    (automationsExpanded?'<td class="col-automations group-sep"></td><td class="col-automations"></td>':'<td class="col-automations group-sep" style="width:0;min-width:0;padding:0;border:none;"></td>');
 }
 
 function renderMetrics(co){
@@ -597,18 +567,89 @@ function renderMetrics(co){
     card('at-risk','c-red','At Risk',atRisk.toLocaleString(),'Major red flags \u2014 needs immediate action');
 }
 
-function render(){
-  var eff=pageSize===0?filtered.length:pageSize,total=Math.ceil(filtered.length/Math.max(eff,1))||1;
-  var start=(page-1)*eff,end=Math.min(start+eff,filtered.length),slice=filtered.slice(start,end),html='';
-  for(var i=0;i<slice.length;i++)html+=mkRow(slice[i]);
-  document.getElementById('table-body').innerHTML=html;
-  renderTotals(filtered);
-  renderMetrics(filtered);
+var integrationsExpanded=false,automationsExpanded=false;
+
+function renderColHeaders(){
+  var h=
+    '<th data-col="0" style="min-width:95px;">Tenant ID<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="1" style="min-width:190px;">Company Name<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="3" style="min-width:160px;">Industry<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="2" style="min-width:68px;">Type<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="5" style="min-width:88px;">Created<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="26" style="min-width:90px;">Account Age<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="24" style="min-width:80px;">Active Users<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="25" style="min-width:80px;">Contacts<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="4" style="min-width:90px;">Health<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="6" style="min-width:72px;">Status<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="7" style="min-width:100px;">Total Sales<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="8" style="min-width:70px;">$10k<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="36" style="min-width:80px;">Est. Sent<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="37" style="min-width:80px;">Last Est.<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="9" style="min-width:82px;">A2P Applied<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="10" style="min-width:82px;">A2P Status<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="11" style="min-width:130px;">OBCSS<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="12" style="min-width:80px;">Days Rem.<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="13" class="col-plan group-sep" style="min-width:90px;">Plan<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="14" class="col-plan" style="min-width:78px;">/Month<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="15" class="col-addons group-sep" style="min-width:78px;">Prod Rates<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="17" class="col-addons" style="min-width:70px;">Job Cost<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="19" class="col-addons" style="min-width:72px;">Text MSG<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="21" class="col-addons" style="min-width:66px;">Jobi AI<span class="sort-icon">&#x21C5;</span></th>';
+  if(integrationsExpanded){h+=
+    '<th data-col="27" class="col-integrations group-sep" style="min-width:72px;">Google<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="28" class="col-integrations" style="min-width:60px;">QBO<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="29" class="col-integrations" style="min-width:60px;">QBT<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="30" class="col-integrations" style="min-width:66px;">Acorn<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="31" class="col-integrations" style="min-width:56px;">Quo<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="32" class="col-integrations" style="min-width:108px;">CompanyCam<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="33" class="col-integrations" style="min-width:90px;">Routemize<span class="sort-icon">&#x21C5;</span></th>';}
+  else{h+='<th class="col-integrations group-sep" style="width:0;min-width:0;padding:0;border:none;overflow:hidden;"></th>';}
+  if(automationsExpanded){h+=
+    '<th data-col="34" class="col-automations group-sep" style="min-width:72px;">Zapier<span class="sort-icon">&#x21C5;</span></th>'+
+    '<th data-col="35" class="col-automations" style="min-width:90px;">Angi Leads<span class="sort-icon">&#x21C5;</span></th>';}
+  else{h+='<th class="col-automations group-sep" style="width:0;min-width:0;padding:0;border:none;overflow:hidden;"></th>';}
+  document.getElementById('col-headers').innerHTML=h;
+  updateSortUI();
+  initSortHeaders();
+}
+
+function toggleGroup(group){
+  if(group==='integrations'){
+    integrationsExpanded=!integrationsExpanded;
+    var gh=document.getElementById('gh-integrations');
+    gh.colSpan=integrationsExpanded?7:1;
+    gh.innerHTML='Integrations '+(integrationsExpanded?'[&minus;]':'[+]');
+  }else{
+    automationsExpanded=!automationsExpanded;
+    var gh=document.getElementById('gh-automations');
+    gh.colSpan=automationsExpanded?2:1;
+    gh.innerHTML='Automations '+(automationsExpanded?'[&minus;]':'[+]');
+  }
+  render();
+}
+
+function updateSubtitleAndPagination(total,start,end){
   document.getElementById('table-subtitle').textContent='Showing '+filtered.length.toLocaleString()+' accounts \u00b7 Page '+page+' of '+total;
   document.getElementById('pg-info-text').textContent='Showing '+(filtered.length?start+1:0).toLocaleString()+'\u2013'+end.toLocaleString()+' of '+filtered.length.toLocaleString()+' accounts';
   document.getElementById('pg-label').textContent='Page '+page+' of '+total;
   document.getElementById('prev-btn').disabled=page<=1;
   document.getElementById('next-btn').disabled=page>=total;
+}
+
+function render(){
+  var eff=pageSize===0?filtered.length:pageSize,total=Math.ceil(filtered.length/Math.max(eff,1))||1;
+  var start=(page-1)*eff,end=Math.min(start+eff,filtered.length),slice=filtered.slice(start,end);
+  renderMetrics(filtered);
+  renderColHeaders();
+  document.getElementById('table-body').innerHTML='<tr><td colspan="99" style="text-align:center;padding:24px;color:#9ca3af;font-size:13px;">Loading accounts\u2026</td></tr>';
+  updateSubtitleAndPagination(total,start,end);
+  setTimeout(function(){
+    var html='';
+    for(var i=0;i<slice.length;i++)html+=mkRow(slice[i]);
+    document.getElementById('table-body').innerHTML=html;
+    clearTimeout(totalsDebounce);
+    totalsDebounce=setTimeout(function(){renderTotals(filtered);},500);
+  },0);
 }
 
 var MS={};
@@ -619,6 +660,9 @@ function msChange(id){if(!MS[id])MS[id]=new Set();MS[id].clear();document.queryS
 function updateMSBtn(id){var count=MS[id]?MS[id].size:0,lbl=document.querySelector('#'+id+' .ms-label'),btn=document.querySelector('#'+id+' .ms-btn');if(lbl)lbl.textContent=count?(count+' selected'):MS_LABELS[id];if(btn)btn.classList.toggle('ms-active',count>0);}
 function clearMS(id){if(MS[id])MS[id].clear();var panel=document.getElementById(id+'-panel');if(panel)panel.querySelectorAll('input[type=checkbox]').forEach(function(cb){cb.checked=false;});updateMSBtn(id);applyFilters();}
 document.addEventListener('click',function(e){if(!e.target.closest('.multi-select'))document.querySelectorAll('.ms-panel.ms-open').forEach(function(p){p.classList.remove('ms-open');});});
+
+var searchDebounce,totalsDebounce;
+function debounceSearch(){clearTimeout(searchDebounce);searchDebounce=setTimeout(applyFilters,300);}
 
 function applyFilters(){
   var q=document.getElementById('f-search').value.toLowerCase().trim();
@@ -654,6 +698,13 @@ function applyFilters(){
     return true;
   });
   applySort();page=1;render();
+  var sm=sessionStorage;
+  sm.setItem('djdash_search',document.getElementById('f-search').value);
+  sm.setItem('djdash_type',document.getElementById('f-type').value);
+  sm.setItem('djdash_sub',document.getElementById('f-sub').value);
+  sm.setItem('djdash_users',document.getElementById('f-users').value);
+  sm.setItem('djdash_contacts',document.getElementById('f-contacts').value);
+  sm.setItem('djdash_estsent',document.getElementById('f-estsent').value);
 }
 
 function clearAllFilters(){
@@ -665,6 +716,7 @@ function clearAllFilters(){
   document.getElementById('f-contacts').value='';
   document.getElementById('f-estsent').value='';
   ['ms-plan','ms-health','ms-obcss','ms-industry','ms-integration','ms-automation'].forEach(clearMS);
+  ['djdash_search','djdash_type','djdash_sub','djdash_users','djdash_contacts','djdash_estsent'].forEach(function(k){sessionStorage.removeItem(k);});
   filtered=ALL.slice();applySort();page=1;render();
 }
 
@@ -687,7 +739,15 @@ function filterByCard(id){
 }
 
 function changePage(dir){var eff=pageSize===0?filtered.length:pageSize,total=Math.ceil(filtered.length/Math.max(eff,1))||1;page=Math.max(1,Math.min(total,page+dir));render();document.getElementById('table-scroll').scrollTop=0;}
-function changePageSize(){pageSize=parseInt(document.getElementById('page-size-sel').value)||0;page=1;render();}
+function changePageSize(){
+  var sel=document.getElementById('page-size-sel'),val=parseInt(sel.value)||0;
+  if(val===0){
+    if(!confirm('This will load all '+filtered.length.toLocaleString()+' accounts across 31 columns and may be slow. Continue?')){
+      sel.value=pageSize===0?'0':String(pageSize);return;
+    }
+  }
+  pageSize=val;page=1;render();
+}
 
 function populateDropdowns(){
   var obPanel=document.getElementById('ms-obcss-panel'),obFooter=obPanel.querySelector('.ms-footer');
@@ -698,7 +758,19 @@ function populateDropdowns(){
 
 function exportCSV(){alert('[Prototype] Export would generate CSV \u2014 '+filtered.length.toLocaleString()+' rows \u00d7 31 columns.');}
 
-populateDropdowns();initSortHeaders();render();
+populateDropdowns();initSortHeaders();
+(function(){
+  var sm=sessionStorage,v;
+  v=sm.getItem('djdash_search');if(v!==null)document.getElementById('f-search').value=v;
+  v=sm.getItem('djdash_type');if(v!==null)document.getElementById('f-type').value=v;
+  v=sm.getItem('djdash_sub');document.getElementById('f-sub').value=v!==null?v:'Active';
+  v=sm.getItem('djdash_users');if(v!==null)document.getElementById('f-users').value=v;
+  v=sm.getItem('djdash_contacts');if(v!==null)document.getElementById('f-contacts').value=v;
+  v=sm.getItem('djdash_estsent');if(v!==null)document.getElementById('f-estsent').value=v;
+})();
+sortCol=5;sortDir='desc';
+updateSortUI();
+applyFilters();
 </script>
 </body>
 </html>
