@@ -272,6 +272,31 @@ tfoot td:nth-child(2){position:sticky;left:96px;z-index:10;background:#f3f4f6;}
           <option value="no">No</option>
         </select>
       </div>
+      <div class="filter-group">
+        <label class="filter-label">$10K</label>
+        <select class="filter-select" id="f-10k" onchange="applyFilters()">
+          <option value="">All</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">A2P Applied</label>
+        <select class="filter-select" id="f-a2papplied" onchange="applyFilters()">
+          <option value="">All</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">A2P Status</label>
+        <select class="filter-select" id="f-a2pstatus" onchange="applyFilters()">
+          <option value="">All</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="none">None</option>
+        </select>
+      </div>
       <div class="filter-divider"></div>
       <div class="filter-section-label">Integrations &amp; Automations</div>
       <div class="filter-group">
@@ -668,6 +693,7 @@ function applyFilters(){
   var q=document.getElementById('f-search').value.toLowerCase().trim();
   var type=document.getElementById('f-type').value,sub=document.getElementById('f-sub').value;
   var usr=document.getElementById('f-users').value,con=document.getElementById('f-contacts').value,est=document.getElementById('f-estsent').value;
+  var tenk=document.getElementById('f-10k').value,a2pApp=document.getElementById('f-a2papplied').value,a2pSt=document.getElementById('f-a2pstatus').value;
   var selPlan=getMS('ms-plan'),selHealth=getMS('ms-health'),selOb=getMS('ms-obcss');
   var selInd=getMS('ms-industry'),selInteg=getMS('ms-integration'),selAuto=getMS('ms-automation');
   filtered=ALL.filter(function(c){
@@ -686,6 +712,13 @@ function applyFilters(){
     if(con==='under50'&&c.contacts>=50)return false;
     if(est==='yes'&&!c.estimateSent)return false;
     if(est==='no'&&c.estimateSent)return false;
+    if(tenk==='yes'&&!c.reached10k)return false;
+    if(tenk==='no'&&c.reached10k)return false;
+    if(a2pApp==='yes'&&!c.a2pApplied)return false;
+    if(a2pApp==='no'&&c.a2pApplied)return false;
+    if(a2pSt==='active'&&!c.a2pActivated)return false;
+    if(a2pSt==='pending'&&!(c.a2pApplied&&!c.a2pActivated))return false;
+    if(a2pSt==='none'&&c.a2pApplied)return false;
     if(selInteg.indexOf('google')>=0&&!c.googleInt)return false;
     if(selInteg.indexOf('qbo')>=0&&!c.qboInt)return false;
     if(selInteg.indexOf('qbt')>=0&&!c.qbtInt)return false;
@@ -705,6 +738,9 @@ function applyFilters(){
   sm.setItem('djdash_users',document.getElementById('f-users').value);
   sm.setItem('djdash_contacts',document.getElementById('f-contacts').value);
   sm.setItem('djdash_estsent',document.getElementById('f-estsent').value);
+  sm.setItem('djdash_10k',document.getElementById('f-10k').value);
+  sm.setItem('djdash_a2papplied',document.getElementById('f-a2papplied').value);
+  sm.setItem('djdash_a2pstatus',document.getElementById('f-a2pstatus').value);
 }
 
 function clearAllFilters(){
@@ -715,8 +751,11 @@ function clearAllFilters(){
   document.getElementById('f-users').value='';
   document.getElementById('f-contacts').value='';
   document.getElementById('f-estsent').value='';
+  document.getElementById('f-10k').value='';
+  document.getElementById('f-a2papplied').value='';
+  document.getElementById('f-a2pstatus').value='';
   ['ms-plan','ms-health','ms-obcss','ms-industry','ms-integration','ms-automation'].forEach(clearMS);
-  ['djdash_search','djdash_type','djdash_sub','djdash_users','djdash_contacts','djdash_estsent'].forEach(function(k){sessionStorage.removeItem(k);});
+  ['djdash_search','djdash_type','djdash_sub','djdash_users','djdash_contacts','djdash_estsent','djdash_10k','djdash_a2papplied','djdash_a2pstatus'].forEach(function(k){sessionStorage.removeItem(k);});
   filtered=ALL.slice();applySort();page=1;render();
 }
 
@@ -725,6 +764,7 @@ function filterByCard(id){
   activeMetricCard=id;
   document.getElementById('f-search').value='';document.getElementById('f-type').value='';
   document.getElementById('f-sub').value='';document.getElementById('f-users').value='';document.getElementById('f-contacts').value='';
+  document.getElementById('f-estsent').value='';document.getElementById('f-10k').value='';document.getElementById('f-a2papplied').value='';document.getElementById('f-a2pstatus').value='';
   ['ms-plan','ms-health','ms-obcss','ms-industry','ms-integration','ms-automation'].forEach(function(k){if(MS[k])MS[k].clear();var p=document.getElementById(k+'-panel');if(p)p.querySelectorAll('input[type=checkbox]').forEach(function(cb){cb.checked=false;});updateMSBtn(k);});
   if(id==='active'){document.getElementById('f-sub').value='Active';}
   else if(id==='on-track'||id==='needs-attention'||id==='at-risk'){
@@ -767,6 +807,9 @@ populateDropdowns();initSortHeaders();
   v=sm.getItem('djdash_users');if(v!==null)document.getElementById('f-users').value=v;
   v=sm.getItem('djdash_contacts');if(v!==null)document.getElementById('f-contacts').value=v;
   v=sm.getItem('djdash_estsent');if(v!==null)document.getElementById('f-estsent').value=v;
+  v=sm.getItem('djdash_10k');if(v!==null)document.getElementById('f-10k').value=v;
+  v=sm.getItem('djdash_a2papplied');if(v!==null)document.getElementById('f-a2papplied').value=v;
+  v=sm.getItem('djdash_a2pstatus');if(v!==null)document.getElementById('f-a2pstatus').value=v;
 })();
 sortCol=5;sortDir='desc';
 updateSortUI();
